@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../App.css";
+import SideBar from "./SideBar";
 
 export default function ViewLeads() {
   const [showLeads, setShowLeads] = useState([]);
@@ -43,21 +44,7 @@ export default function ViewLeads() {
   return (
     <>
       <div className="viewleads-container">
-        {/* Sidebar */}
-        <aside className="sidebar">
-          <h2>📋 CRM </h2>
-          <nav>
-            <ul>
-              <li><Link to="/">🏠 Dashboard</Link></li>
-              <li><Link to="/Product">📦 Products</Link></li>
-              <li><Link to="/viewLeads">🧾 View Leads</Link></li>
-              <li><Link to="/customer">👤 Customers</Link></li>
-              <li><Link to="/ViewTicket">🎟️ Ticket</Link></li>
-              <li><Link to={`/MyTickets/${localStorage.getItem("userId")}`}>My Ticket</Link></li>
-            </ul>
-          </nav>
-        </aside>
-
+      <SideBar/>
         {/* Main Content */}
         <main className="main-content">
           <div className="header">
@@ -77,6 +64,7 @@ export default function ViewLeads() {
                 <th>Status</th>
                 <th>Assigner</th>
                 <th colSpan={4}>Actions</th>
+                <th>Quatation</th>
               </tr>
             </thead>
             <tbody>
@@ -99,6 +87,12 @@ export default function ViewLeads() {
                     ) : (
                       <button className="btn btn-convert" onClick={() => handleConvert(v._id)}>Convert</button>
                     )}
+                  </td>
+                  <td>
+                    {v.status==="Intrested" || v.status==="Converted"?(
+                      <Link to={`/Quotation/${v._id}`}>Add </Link>
+                    ):null
+                  }
                   </td>
                 </tr>
               ))}

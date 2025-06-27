@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../App.css"; // Make sure CSS is correctly imported
+import SideBar from "./SideBar";
 
 export default function AddLead() {
   const [products, setProducts] = useState([]);
@@ -59,19 +60,7 @@ useEffect(() => {
 
   return (
     <div className="addlead-container">
-      <aside className="sidebar">
-        <h2 className="logo">📋 CRM Panel</h2>
-        <nav>
-          <ul>
-            <li><Link to="/">🏠 Dashboard</Link></li>
-            <li><Link to="/Product">📦 Products</Link></li>
-            <li><Link to="/viewLeads">🧾 View Leads</Link></li>
-            <li><Link to="/customer">👤 Customers</Link></li>
-            <li><Link to="/Ticket">Ticket</Link></li>
-            <li><Link to={`/MyTickets/${localStorage.getItem("userId")}`}>My Ticket</Link></li>
-          </ul>
-        </nav>
-      </aside>
+     <SideBar/>
 
       <main className="main-section">
         <div className="form-header">

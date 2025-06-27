@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../App.css"; 
+import SideBar from "./SideBar";
 
 export default function ShowFollowUp() {
   const [showLeads, setShowLeads] = useState([]);
@@ -48,21 +49,7 @@ export default function ShowFollowUp() {
   };
   return (
     <div className="viewleads-container">
-      {/* Sidebar */}
-      <aside className="sidebar">
-        <h2>📋 CRM </h2>
-        <nav>
-          <ul>
-            <li><Link to="/">🏠 Dashboard</Link></li>
-            <li><Link to="/Product">📦 Products</Link></li>
-            <li><Link to="/viewLeads">🧾 View Leads</Link></li>
-            <li><Link to="/customer">👤 Customers</Link></li>
-            {/* <li><Link to="/AddLead">➕ Add Lead</Link></li> */}
-            <li><Link to="/ViewTicket">🎟️ Ticket</Link></li>
-            <li> <Link to={`/MyTickets/${localStorage.getItem("userId")}`}>My Ticket</Link></li>
-          </ul>
-        </nav>
-      </aside>
+      <SideBar/>
 
       {/* Main Content */}
       <main className="main-content">

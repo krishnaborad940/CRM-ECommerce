@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import '../App.css'
+import SideBar from "./SideBar";
 
 export default function AllProduct() {
   const [seeProduct, setSeeProduct] = useState([]);
@@ -18,24 +19,12 @@ export default function AllProduct() {
 
   return (
     <div style={{ display: "flex", fontFamily: "sans-serif", minHeight: "100vh" }}>
-      {/* Sidebar */}
-     <div className="sidebar">
-        <h2>Menu</h2>
-        <ul className="nav-list">
-          <li><Link to="/" className="nav-link">🛒 Dashbord</Link></li>
-          <li><Link to="/Product" className="nav-link">🛒 Product</Link></li>
-          <li><Link to="/viewLeads" className="nav-link">📋  Leads</Link></li>
-          <li><Link to="/customer" className="nav-link">👤 Customers</Link></li>
-          <li><Link to="/ViewTicket">🎟️ Ticket</Link></li>
-          <li><Link to={`/MyTickets/${localStorage.getItem("userId")}`}></Link></li>
-        </ul>
-      </div>
-
+     <SideBar/>
       {/* Main content */}
       <div className="main">
         <div className="header">
           <h1 style={{ margin: 0 }}>All Products</h1>
-          <Link to="/Product"  className="addLeadBtn">➕ Add Product</Link>
+          <Link to="/addProduct"  className="addLeadBtn">➕ Add Product</Link>
         </div>
 
         {/* Product Grid */}

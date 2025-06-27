@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "../App.css"; // 👈 Import the CSS file
+import SideBar from "./SideBar";
 
 export default function DashPage() {
   const todayDate=new Date().toISOString().split("T")[0];
@@ -29,19 +30,8 @@ export default function DashPage() {
 
   return (
     <div className="dashboard-container">
-      {/* Sidebar */}
-     <div className="sidebar">
-         <h2>📋 CRM </h2>
-        <ul className="nav-list">
-          <li><Link to="/" className="nav-link">🛒 Dashbord</Link></li>
-          <li><Link to="/Product" className="nav-link">🛒 Product</Link></li>
-          <li><Link to="/viewLeads" className="nav-link">📋  Leads</Link></li>
-          <li><Link to="/customer" className="nav-link">👤 Customers</Link></li>
-          <li><Link to="/ViewTicket">🎟️ Ticket</Link></li>
-         <li> <Link to={`/MyTickets/${localStorage.getItem("userId")}`}>My Ticket</Link></li>
-        
-        </ul>
-      </div>
+     
+      <SideBar/>
       {/* Main Content */}
       <div className="main-content">
         <h1>📊 Dashboard</h1>

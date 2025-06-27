@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../App.css"; 
+import SideBar from "./SideBar";
 
 export default function Customer() {
   const [showCustomer, setShowCustomer] = useState([]);
@@ -18,21 +19,7 @@ export default function Customer() {
 
   return (
     <div className="viewleads-container">
-      {/* Sidebar */}
-      <aside className="sidebar">
-        <h2>📋 CRM </h2>
-        <nav>
-          <ul>
-            <li><Link to="/">🏠 Dashboard</Link></li>
-            <li><Link to="/Product">📦 Products</Link></li>
-            <li><Link to="/viewLeads">🧾 View Leads</Link></li>
-            <li><Link to="/customer">👤 Customers</Link></li>
-            {/* <li><Link to="/AddLead">➕ Add Lead</Link></li> */}
-            <li><Link to="/ViewTicket">🎟️ Ticket</Link></li>
-            <li><Link to={`/MyTickets/${localStorage.getItem("userId")}`}></Link></li>
-          </ul>
-        </nav>
-      </aside>
+     <SideBar/>
 
       {/* Main Content */}
       <main className="main-content">
@@ -68,7 +55,7 @@ export default function Customer() {
                 <td><button className="btn btn-edit" onClick={() => navigate(`/EditCustomer/${v._id}`)}>✏️</button></td>
                 {/* <td><button className="btn btn-delete" onClick={() => handleDelete(v._id)}>🗑️</button></td> */}
                 <td><button className="btn btn-follow" onClick={() => navigate(`/Ticket/${v._id}`)}>🎟️</button></td>
-             
+             <td><Link to={`/AddSales/${v._id}`}>Add Sales</Link></td>
               </tr>
             ))}
           </tbody>

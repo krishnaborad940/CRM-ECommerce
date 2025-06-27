@@ -15,10 +15,15 @@ import ViewTicket from "../Pages/ViewTicket";
 import ShowFollowUp from "../Pages/ShowFollowUp";
 import MyTickets from "../Pages/MyTickets";
 import NewFollowUp from "../Pages/NewFollowUp";
+import Quotation from "../Pages/Quotation";
+import ViewQuotation from "../Pages/ViewQuotation";
+import QuotationDetails from "../Pages/QuotationDetails";
+import AddSales from "../Pages/AddSales";
 
 export default function AllRoutes() {
   return (
     <Routes>
+      {/* <Route  path=""/> */}
       <Route path="/" element={<DashPage />} />
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
@@ -35,6 +40,12 @@ export default function AllRoutes() {
  <Route path="/ViewTicket" element={<ViewTicket/>}/>
  <Route path="/MyTickets/:assigner" element={<MyTickets />}/>
  <Route path="/NewFollowUp/:id" element={<NewFollowUp/>}/>
+
+ <Route path="/Quotation/:id" element={<Quotation/>}/>
+ <Route path="/ViewQuotation"element={<ViewQuotation/>}/>
+ <Route path="/QuotationDetails/:id"element={<QuotationDetails/>}/>
+
+ <Route path="/AddSales/:id" element={<AddSales/>}/>
     </Routes>
   );
 }

@@ -1,59 +1,37 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import SideBar from "./SideBar";
 
 export default function NewFollowUp() {
   const { id } = useParams(); // lead ID
-//   console.log("lead id:-"+id)
   const navigate = useNavigate();
 
   const [lead, setLead] = useState(null);
   const [remark, setRemark] = useState("");
-  
   const [nextFollowup, setNextFollowup] = useState("");
   const [FollowUpType, setFollowUpType] = useState("");
   const [status, setStatus] = useState("");
 
   // Fetch lead details for context (name, product)
   useEffect(() => {
-    
-    fetch(`http://localhost:8007/api/EditLead/${id}`,{
-        method:'GET'
-    })
+    fetch(`http://localhost:8007/api/editLead/${id}`)
       .then((res) => res.json())
       .then((data) => {
-       
         console.log("Lead Data:", data.data);
         setLead(data.data);
       });
   }, [id]);
-//   localStorage
-// useEffect(() => {
-//   const leads = JSON.parse(localStorage.getItem("Lead")) || [];
-
-//   console.log("All leads:", leads);
-//   console.log("Current ID from params:", id);
-
-//   const currentLead = leads.find((lead) => lead._id === id);
-
-//   if (currentLead) {
-//     console.log("Matched Lead:", currentLead);
-//     setLead(currentLead);
-//   } else {
-//     alert("Lead not found in local storage.");
-//   }
-// }, [id]);
-
 
   // Form submit handler
   const handleSubmit = (e) => {
     e.preventDefault();
 
-
-    let assigner=localStorage.getItem("userId")
     if (!remark || !FollowUpType || !status) {
       alert("Please fill all required fields.");
       return;
     }
+    
+  const assigner = localStorage.getItem("userId");
 
     fetch(`http://localhost:8007/api/AddNewFollowUp/${id}`, {
       method: "POST",
@@ -64,7 +42,7 @@ export default function NewFollowUp() {
         remark,
         nextFollowup,
         FollowUpType,
-        Lead:lead?._id,
+        Lead: id,
         product: lead?.product?._id,
         status,
         assigner
@@ -74,17 +52,17 @@ export default function NewFollowUp() {
       .then((data) => {
         console.log(data)
         alert("Follow-Up Added Successfully");
-        navigate("/ViewTicket");
+        navigate("/ViewLeads");
       })
-      .catch((err) => {
-        console.error("FollowUp Error:", err);
-        alert("Something went wrong.");
-      });
+      
   };
 
   return (
     <>
-      <h2>Set Follow-Up</h2>
+      <div className="viewleads-container">
+        <SideBar/>
+        <div className="main-content">
+            <h2>Set Follow-Up</h2>
       {lead && (
         <div>
           <p><b>Name:</b> {lead.name}</p>
@@ -160,6 +138,8 @@ export default function NewFollowUp() {
           </tbody>
         </table>
       </form>
+        </div>
+      </div>
     </>
   );
 }

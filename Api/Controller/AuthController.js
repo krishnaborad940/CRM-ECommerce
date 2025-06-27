@@ -9,7 +9,8 @@ const FollowUp=require("../Model/FollowUpModel");
 const Customer = require("../Model/CustomerModel");
 const Ticket=require('../Model/TicketModel')
 const Auth=require("../Model/AuthModel");
-const { default: mongoose } = require("mongoose");
+const NewFollowUp = require("../Model/NewFollowUpModel");
+const Quatation = require("../Model/QuatationModel");
 // const mongoose=require("mongoose")
 
 module.exports.Register=async(req,res)=>{
@@ -298,7 +299,7 @@ module.exports.AddTicket=async(req,res)=>{
     try{
         const {subject,message,assigner,Lead,role,status,category,priority}=req.body
         let findid=await Customer.findById(req.params.id)
-        // let findProduct=await product.findById(productId)
+        // let findProduct=await product.findById(productId)S
 
         if(findid){
             let createFollowup=await  Ticket.create({
@@ -332,25 +333,24 @@ module.exports.DeleteTicket=async(req,res)=>{
         return res.status(200).json({msg:"somthing went wrong"})
     }
 }
-module.exports.AddClosed=async(req,res)=>{
-    try{
+module.exports.AddClosed = async (req, res) => {
+   try{
+        // console.log(req.params.id);
+        let findLead=await Ticket.findById(req.params.id)
+
        
-        let findLead=await FollowUp.findById(req.params.id)
-let findTicket=await Ticket.findById(req.params.id)
-        if(findLead){
-           
-        const updateLead=await FollowUp.findByIdAndUpdate(req.params.id,{status:"Closed"})
-        const updateTicket=await Ticket.findByIdAndUpdate(req.params.id,{status:"Closed"})
+        const updateLead=await Ticket.findByIdAndUpdate(req.params.id,{status:"Closed"})
+        // const updateFoloowup=await FollowUp.findByIdAndUpdate(req.params.id,{status:"Closed"})
 
             // await Lead.findByIdAndDelete(req.params.id)
-            return res.status(200).json({msg:"customer added sucessfully",data:updateLead,updateTicket})
-        }
+            return res.status(200).json({msg:"customer added sucessfully",data:createCustomer})
+        
         
     }catch(err){
          console.log(err)
         return res.status(200).json({msg:"somthing went Wrong"})
     }
-}
+};
 module.exports.AllFollowUp=async(req,res)=>{
     try{
         let findCustomer=await FollowUp.find().populate("product").populate("Lead").exec()
@@ -363,7 +363,7 @@ module.exports.AllFollowUp=async(req,res)=>{
 module.exports.CloseTicket=async(req,res)=>{
     try{
        
-let findTicket=await Ticket.findById(req.params.id)
+            let findTicket=await Ticket.findById(req.params.id)
         if(findTicket){
         const updateTicket=await Ticket.findByIdAndUpdate(req.params.id,{status:"Closed"})
 
@@ -379,52 +379,22 @@ let findTicket=await Ticket.findById(req.params.id)
 module.exports.MyTickets = async (req, res) => {
   try {
     // console.log(req.params.id)
-    const findTicket = await Ticket.find({ assigner: req.params.id }).populate("customer").populate("lead")
+    const findTicket = await Ticket.find({ assigner: req.params.id }).populate("Lead")
     return res.status(200).json({ data: findTicket });
   } catch (err) {
     console.log(err);
     return res.status(200).json({ msg: "something went wrong" });
   }
 };
-module.exports.UpdateTicketStatus = async (req, res) => {
-  try {
-    const ticketId = req.params.id;
-    const { status } = req.body;
-
-    const updatedTicket = await Ticket.findByIdAndUpdate(
-      ticketId,
-      { status },
-      { new: true }
-    );
-
-    if (!updatedTicket) {
-      return res.status(404).json({ msg: "Ticket not found" });
-    }
-
-    res.status(200).json(updatedTicket);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ msg: "Failed to update ticket status" });
-  }
-};
 
 module.exports.AddNewFollowUp = async (req, res) => {
   try {
-    console.log(req.body);
-    console.log(req.params.id)
     const { remark, nextFollowup, FollowUpType, status,assigner } = req.body;
-
-    if (!remark || !FollowUpType || !status ) {
-      return res.status(400).json({ msg: "All fields are required" });
-    }
 
     const lead = await Lead.findById(req.params.id).populate("product");
     console.log("lead:-"+lead)
-    if (!lead) {
-      return res.status(404).json({ msg: "Lead not found" });
-    }
-
-    const followup = await FollowUp.create({
+  
+    const followup = await NewFollowUp.create({
       remark,
       nextFollowup,
       FollowUpType,
@@ -440,9 +410,61 @@ module.exports.AddNewFollowUp = async (req, res) => {
     return res.status(500).json({ msg: "Something went wrong", error: err.message });
   }
 };
-    module.exports.EditLead=async(req,res)=>{
+module.exports.EditLead=async(req,res)=>{
         let findid=await Lead.findById(req.params.id).populate('product').exec()
       if(findid){
         return res.status(200).json({ msg: "edit details", data: findid })
       } 
 }
+
+
+module.exports.AddQuatation = async (req, res) => {
+  try {
+    const { quotationDate, items, totalAmount, notes,status } = req.body;
+    const leadId = req.params.id;
+    const lead = await Lead.findById(leadId);
+    const calculatedTotal = items.reduce((sum, item) => sum + item.quantity * item.price, 0);
+    const newQuotation = await Quatation.create({
+      lead: lead._id,
+      quotationDate: quotationDate || new Date(),
+      items,
+      totalAmount: totalAmount || calculatedTotal,
+      notes,
+      status:status,
+      createdBy: lead.assigner
+    });
+
+    return res.status(200).json({msg: "Quotation Added Successfully",data: newQuotation });
+
+  } catch (err) {
+    console.error("Quotation Add Error:", err);
+    return res.status(500).json({ msg: "Internal Server Error", error: err.message });
+  }
+};
+
+module.exports.ViewQuotation=async(req,res)=>{
+    try{
+            let findQuotation=await Quatation.find().populate("items.product").populate("lead").populate("createdBy")
+            return res.status(200).json({msg:"added Quotation",data:findQuotation})
+    }catch(err){
+         console.error("Quotation Add Error:", err);
+    return res.status(500).json({ msg: "Something went wrong", error: err.message });
+    }
+}
+module.exports.ViewQuotationById=async(req,res)=>{
+    try{
+            let findQuotation=await Quatation.findById(req.params.id).populate("items.product").populate("lead").populate("createdBy")
+            return res.status(200).json({msg:"added Quotation",data:findQuotation})
+    }catch(err){
+         console.error("Quotation Add Error:", err);
+    return res.status(500).json({ msg: "Something went wrong", error: err.message });
+    }
+}
+// module.exports.AddSales=async(req,res)=>{
+//     try{
+//             const {}=req.body
+//     }catch(err){
+//          console.error("Quotation Add Error:", err);
+//     return res.status(500).json({ msg: "Something went wrong", error: err.message });
+//     }
+// }

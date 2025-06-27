@@ -4,7 +4,6 @@ const routes=express.Router()
 const AuthCtl=require('../Controller/AuthController');
 const Auth = require('../Model/AuthModel');
 const Product=require("../Model/ProductModel");
-const Customer = require('../Model/CustomerModel');
 
 routes.post("/",Auth.uploadImageFile,AuthCtl.Register)
 routes.post("/Login",AuthCtl.Login)
@@ -47,7 +46,12 @@ routes.post("/AddClosed/:id",AuthCtl.AddClosed)
 routes.get("/MyTickets/:id",AuthCtl.MyTickets);
 routes.post("/AddNewFollowUp/:id",AuthCtl.AddNewFollowUp)
 routes.get("/EditLead/:id",AuthCtl.EditLead)
-// assigner
-routes.patch("/UpdateTicketStatus:id",AuthCtl.UpdateTicketStatus)
 
+// Quatation
+routes.post("/AddQuatation/:id",AuthCtl.AddQuatation)
+routes.get("/ViewQuotation",AuthCtl.ViewQuotation)
+routes.get("/ViewQuotationById/:id",AuthCtl.ViewQuotationById)
+
+// Sales
+// routes.post("/AddSales/:id",AuthCtl.AddSales)
 module.exports=routes

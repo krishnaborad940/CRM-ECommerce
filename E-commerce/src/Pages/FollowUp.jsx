@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import SideBar from "./SideBar";
+import "../App.css"; // Custom CSS
 
 export default function FollowUp() {
-  const { id } = useParams(); // lead ID
+  const { id } = useParams();
   const navigate = useNavigate();
 
   const [lead, setLead] = useState(null);
@@ -11,17 +13,12 @@ export default function FollowUp() {
   const [FollowUpType, setFollowUpType] = useState("");
   const [status, setStatus] = useState("");
 
-  // Fetch lead details for context (name, product)
   useEffect(() => {
     fetch(`http://localhost:8007/api/editLead/${id}`)
       .then((res) => res.json())
-      .then((data) => {
-        console.log("Lead Data:", data.data);
-        setLead(data.data);
-      });
+      .then((data) => setLead(data.data));
   }, [id]);
 
-  // Form submit handler
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -29,8 +26,8 @@ export default function FollowUp() {
       alert("Please fill all required fields.");
       return;
     }
-    
-  const assigner = localStorage.getItem("userId");
+
+    const assigner = localStorage.getItem("userId");
 
     fetch(`http://localhost:8007/api/AddFollowUp/${id}`, {
       method: "POST",
@@ -44,96 +41,74 @@ export default function FollowUp() {
         Lead: id,
         product: lead?.product?._id,
         status,
-        assigner
+        assigner,
       }),
     })
       .then((res) => res.json())
-      .then((data) => {
-        console.log(data)
+      .then(() => {
         alert("Follow-Up Added Successfully");
         navigate("/ViewLeads");
-      })
-      
+      });
   };
 
   return (
-    <>
-      <h2>Set Follow-Up</h2>
-      {lead && (
-        <div>
-          <p><b>Name:</b> {lead.name}</p>
-          <p><b>Product:</b> {lead.product?.title} - ₹{lead.product?.Price}</p>        </div>
-      )}
+    <div className="viewleads-container">
+      <SideBar />
+      <div className="main-content">
+        <div className="followup-header">
+          <h2>📞 Set Follow-Up</h2>
+          {lead && (
+            <div className="lead-info">
+              <p><strong>Name:</strong> {lead.name}</p>
+              <p><strong>Product:</strong> {lead.product?.title} - ₹{lead.product?.Price}</p>
+            </div>
+          )}
+        </div>
 
-      <form onSubmit={handleSubmit}>
-        <table border={1}>
-          <tbody>
-            <tr>
-              <td>Remark</td>
-              <td>
-                <input
-                  type="text"
-                  name="remark"
-                  placeholder="Enter your Remark"
-                  value={remark}
-                  onChange={(e) => setRemark(e.target.value)}
-                  required
-                />
-              </td>
-            </tr>
-            <tr>
-              <td>Next Follow-Up Date</td>
-              <td>
-                <input
-                  type="date"
-                  name="Followup"
-                  value={nextFollowup}
-                  onChange={(e) => setNextFollowup(e.target.value)}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td>Follow-Up Type</td>
-              <td>
-                <select
-                  name="FollowUpType"
-                  value={FollowUpType}
-                  onChange={(e) => setFollowUpType(e.target.value)}
-                  required
-                >
-                  <option value="">--select--</option>
-                  <option value="Call">Call</option>
-                  <option value="Visit">Visit</option>
-                  <option value="Whatsapp">Whatsapp</option>
-                  <option value="Email">Email</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td>Status</td>
-              <td>
-                <select
-                  name="status"
-                  value={status}
-                  onChange={(e) => setStatus(e.target.value)}
-                  required
-                >
-                  <option value="">--select--</option>
-                  <option value="Intrested">Interested</option>
-                  <option value="Converted">Converted</option>
-                  <option value="Closed">Closed</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td></td>
-              <td>
-                <input type="submit" value="Set Follow-Up" />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </form>
-    </>
+        <form onSubmit={handleSubmit} className="followup-form">
+          <label>
+            Remark:
+            <input
+              type="text"
+              value={remark}
+              onChange={(e) => setRemark(e.target.value)}
+              required
+            />
+          </label>
+
+          <label>
+            Next Follow-Up Date:
+            <input
+              type="date"
+              value={nextFollowup}
+              onChange={(e) => setNextFollowup(e.target.value)}
+            />
+          </label>
+
+          <label>
+            Follow-Up Type:
+            <select value={FollowUpType} onChange={(e) => setFollowUpType(e.target.value)} required>
+              <option value="">-- Select --</option>
+              <option value="Call">Call</option>
+              <option value="Visit">Visit</option>
+              <option value="Whatsapp">Whatsapp</option>
+              <option value="Email">Email</option>
+            </select>
+          </label>
+
+          <label>
+            Status:
+            <select value={status} onChange={(e) => setStatus(e.target.value)} required>
+              <option value="">-- Select --</option>
+              <option value="Intrested">Interested</option>
+              <option value="Converted">Converted</option>
+              <option value="Closed">Closed</option>
+            </select>
+          </label>
+
+          <button type="submit" className="submit-btn">➕ Set Follow-Up</button>
+        </form>
+      </div>
+    </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import "../App.css";
+import SideBar from "./SideBar";
 
 export default function MyTickets() {
   const { assigner } = useParams();
@@ -15,46 +16,25 @@ export default function MyTickets() {
       });
   }, [assigner]);
 
-  const handleStatusUpdate = (ticketId, newStatus) => {
-    fetch(`http://localhost:8007/api/UpdateTicketStatus/${ticketId}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ status: newStatus }),
+   const handleStatusUpdate = (_id) => {
+    fetch(`http://localhost:8007/api/AddClosed/${_id}`, {
+      method: "POST",
     })
       .then((res) => res.json())
-      .then((data) => {
-        console.log(data.data)
-        alert("Status Updated Successfully");
-        // Refresh ticket list
-        setTickets((prev) =>
-          prev.map((t) =>
-            t._id === ticketId ? { ...t, status: newStatus } : t
+      .then(() => {
+        alert("Converted Successfully");
+        setTickets((pre) =>
+          pre.map((lead) =>
+            lead._id === _id ? { ...lead, status: "Closed" } : lead
           )
         );
-      })
-      .catch((err) => {
-        console.error(err);
-        alert("Failed to update status");
       });
   };
   console.log(tickets)
 
   return (
     <div className="dashboard-container">
-      {/* Sidebar */}
-      <div className="sidebar">
-        <h2>📋 CRM </h2>
-        <ul className="nav-list">
-          <li><Link to="/" className="nav-link">📊 Dashboard</Link></li>
-          <li><Link to="/Product" className="nav-link">🛒 Product</Link></li>
-          <li><Link to="/viewLeads" className="nav-link">📋 Leads</Link></li>
-          <li><Link to="/customer" className="nav-link">👤 Customers</Link></li>
-          <li><Link to="/ViewTicket" className="nav-link">🎟️ All Tickets</Link></li>
-          <li><Link to={`/MyTickets/${localStorage.getItem("userId")}`} className="nav-link">🎯 My Ticket</Link></li>
-        </ul>
-      </div>
+      <SideBar/>
 
       {/* Main Content */}
       <div className="main-content">
@@ -81,12 +61,14 @@ export default function MyTickets() {
                   <td>{ticket.priority}</td>
                   <td>{ticket.category}</td>
                   <td>
-                    <button
-                      onClick={() => handleStatusUpdate(ticket._id, "Closed")}
-                      style={{ marginRight: "10px", backgroundColor: "#ff4d4d", color: "#fff", border: "none", padding: "5px 10px", borderRadius: "5px" }}
-                    >
-                      Close
-                    </button>
+                
+                    {ticket.status === "Closed" ? (
+                      <span className="Closed">✔️</span>
+                    ) : (
+                      <button className="btn btn-convert" onClick={() => handleStatusUpdate(ticket._id)}>Closed</button>
+                    )}
+                  
+                    
                     <Link
                       to={`/NewFollowUp/${ticket.Lead}`}
                       style={{ backgroundColor: "#28a745", color: "#fff", padding: "5px 10px", borderRadius: "5px", textDecoration: "none" }}
