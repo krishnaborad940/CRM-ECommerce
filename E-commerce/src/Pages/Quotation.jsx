@@ -72,6 +72,7 @@ export default function Quotation() {
       totalAmount,
       notes,
       status,
+      // customerId
     };
 
     const res = await fetch(`http://localhost:8007/api/AddQuatation/${id}`, {
@@ -82,7 +83,7 @@ export default function Quotation() {
 
     if (res.ok) {
       alert("Quotation created successfully!");
-      navigate("/ViewQuotations");
+      navigate("/ViewQuotation");
     } else {
       alert("Failed to create quotation");
     }

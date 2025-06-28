@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import SideBar from "./SideBar";
 
 export default function ViewQuotations() {
+ 
   const [quotations, setQuotations] = useState([]);
 
   useEffect(() => {
@@ -12,6 +13,25 @@ export default function ViewQuotations() {
       .then((data) => setQuotations(data.data))
       .catch((err) => console.log("Error:", err));
   }, []);
+
+
+  const handleSales=(id)=>{
+  
+    fetch(`http://localhost:8007/api/AddSales/${id}`,
+      {
+        method:'POST'
+      })
+      .then((res)=>res.json())
+      .then((data)=>{
+        console.log(data);
+        alert("Sales Added Sucessfully")
+        setQuotations((pre)=>
+        pre.map((quote)=>(
+          quote._id===id ?{...quote,status:"Approved"}:quote
+        )))
+      })
+
+  }
 
   return (
     <div className="viewleads-container">
@@ -32,6 +52,8 @@ export default function ViewQuotations() {
             <th>Total (₹)</th>
             <th>Status</th>
             <th>Created By</th>
+            <th>Details</th>
+            <th>Sale</th>
           </tr>
         </thead>
         <tbody>
@@ -54,7 +76,15 @@ export default function ViewQuotations() {
               </td>
               <td>{quote.createdBy?.name || "N/A"}</td>
               <td><Link to={`/QuotationDetails/${quote._id}`}>View</Link></td>
-              
+                 <td>
+                 
+                      {quote.status === "Approved" ? (
+                      <span className="converted">✔️</span>
+                    ) : (
+                      <button  className="add-sale-btn"   onClick={() => handleSales(quote._id)}>➕ Add to Sales</button>
+                         )}
+                  
+                  </td>
             </tr>
           ))}
         </tbody>

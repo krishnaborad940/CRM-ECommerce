@@ -14,6 +14,7 @@ export default function SideBar(){
               <li><Link to="/ViewTicket">🎟️ Ticket</Link></li>
              <li> <Link to={`/MyTickets/${localStorage.getItem("userId")}`}>My Ticket</Link></li>
             <li><Link to="/ViewQuotation " className="nav-link">Quotation</Link></li>
+            <li><Link to="/ViewSales" className="nav-link">Sales</Link></li>
             </ul>
           </div>
     </>

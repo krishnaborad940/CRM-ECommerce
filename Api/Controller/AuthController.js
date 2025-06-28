@@ -10,7 +10,9 @@ const Customer = require("../Model/CustomerModel");
 const Ticket=require('../Model/TicketModel')
 const Auth=require("../Model/AuthModel");
 const NewFollowUp = require("../Model/NewFollowUpModel");
-const Quatation = require("../Model/QuatationModel");
+const Quotation = require("../Model/QuotationModel");
+const Sales = require("../Model/SalesModel");
+const { model } = require("mongoose");
 // const mongoose=require("mongoose")
 
 module.exports.Register=async(req,res)=>{
@@ -423,15 +425,18 @@ module.exports.AddQuatation = async (req, res) => {
     const { quotationDate, items, totalAmount, notes,status } = req.body;
     const leadId = req.params.id;
     const lead = await Lead.findById(leadId);
+
+    // const customerData=await Customer.find()
     const calculatedTotal = items.reduce((sum, item) => sum + item.quantity * item.price, 0);
-    const newQuotation = await Quatation.create({
+    const newQuotation = await Quotation.create({
       lead: lead._id,
       quotationDate: quotationDate || new Date(),
       items,
       totalAmount: totalAmount || calculatedTotal,
       notes,
       status:status,
-      createdBy: lead.assigner
+      createdBy: lead.assigner,
+    //   customerId:customerData.customerId
     });
 
     return res.status(200).json({msg: "Quotation Added Successfully",data: newQuotation });
@@ -444,7 +449,7 @@ module.exports.AddQuatation = async (req, res) => {
 
 module.exports.ViewQuotation=async(req,res)=>{
     try{
-            let findQuotation=await Quatation.find().populate("items.product").populate("lead").populate("createdBy")
+            let findQuotation=await Quotation.find().populate("items.product").populate("lead").populate("createdBy")
             return res.status(200).json({msg:"added Quotation",data:findQuotation})
     }catch(err){
          console.error("Quotation Add Error:", err);
@@ -453,18 +458,83 @@ module.exports.ViewQuotation=async(req,res)=>{
 }
 module.exports.ViewQuotationById=async(req,res)=>{
     try{
-            let findQuotation=await Quatation.findById(req.params.id).populate("items.product").populate("lead").populate("createdBy")
+            let findQuotation=await Quotation.findById(req.params.id).populate("items.product").populate("lead").populate("createdBy")
             return res.status(200).json({msg:"added Quotation",data:findQuotation})
     }catch(err){
          console.error("Quotation Add Error:", err);
     return res.status(500).json({ msg: "Something went wrong", error: err.message });
     }
 }
-// module.exports.AddSales=async(req,res)=>{
-//     try{
-//             const {}=req.body
-//     }catch(err){
-//          console.error("Quotation Add Error:", err);
-//     return res.status(500).json({ msg: "Something went wrong", error: err.message });
-//     }
-// }
+module.exports.AddSales = async (req, res) => {
+  try {
+    let quotationId = req.params.id;
+    const findQuotation = await Quotation.findById(quotationId)
+      .populate("lead")
+      .populate("items.product")
+      .populate("createdBy");
+
+   
+
+    const Products = findQuotation.items.map((item) => ({
+      productId: item.product._id,
+      quantity: item.quantity,
+      price: item.price,
+      
+    }));
+
+    const createSales = await Sales.create({
+      QuotationId: findQuotation._id,
+      customerId: findQuotation.lead?._id,
+      product: Products,
+      totalAmount: findQuotation.totalAmount,
+      createBy: findQuotation.createdBy._id,
+      PaymentStatus: "Paid",
+      lead:findQuotation._id,
+      saleDate: Date.now(),
+    });
+let updateStatus=await Quotation.findByIdAndUpdate(req.params.id,{status:"Approved"})
+    return res.status(200).json({
+      msg: "Sales Added Successfully",
+      data: createSales,
+    });
+  } catch (err) {
+    console.error("Quotation Add Error:", err);
+    return res.status(500).json({
+      msg: "Something went wrong",
+      error: err.message,
+    });
+  }
+};
+module.exports.ViewSales=async(req,res)=>{
+    try{
+            let findSales=await Sales.find().populate({
+                path:"QuotationId",
+                populate:{
+                    path:"lead",
+                    model:"Lead"
+                }
+            }).populate("customerId").populate("createBy").populate('product.productId').populate('lead')
+            return res.status(200).json({msg:"added Quotation",data:findSales})
+    }catch(err){
+         console.error("Quotation Add Error:", err);
+    return res.status(500).json({ msg: "Something went wrong", error: err.message });
+    }
+}
+module.exports.ConvertPaid = async (req, res) => {
+  try {
+    const findSales = await Sales.findById(req.params.id)
+
+let updateStatus=await Sales.findByIdAndUpdate(req.params.id,{PaymentStatus:"Paid"})
+    return res.status(200).json({
+      msg: "Sales Added Successfully",
+      data: updateStatus,
+    });
+  } catch (err) {
+    console.error("Quotation Add Error:", err);
+    return res.status(500).json({
+      msg: "Something went wrong",
+      error: err.message,
+    });
+  }
+};
+

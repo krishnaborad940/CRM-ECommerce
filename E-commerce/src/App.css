@@ -136,9 +136,9 @@ a {
   border-radius: 6px;
   cursor: pointer;
   padding: 12px;
-  margin-top: 10px;
-  margin-left: 1000px;
-  /* margin-bottom: 100px; */
+  margin-top: 20px;
+  /* margin-left: 1000px; */
+  margin-bottom: 10px;
   transition: background-color 0.3s ease;
 }
 
@@ -203,7 +203,20 @@ a {
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
   margin-top: 20px;
 }
+.add-sale-btn {
+  margin-left: 8px;
+  padding: 4px 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
 
+.add-sale-btn:hover {
+  background-color: #45a049;
+}
 .lead-table th,
 .lead-table td,
 .quotation-table th,
@@ -320,3 +333,16 @@ desc {
   background-color: #218838;
 }
 
+.status-badge-Paid {
+  background-color: #4caf50;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 5px;
+}
+
+.status-badge-Pending {
+  background-color: #f44336;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 5px;
+}

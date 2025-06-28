@@ -19,6 +19,7 @@ import Quotation from "../Pages/Quotation";
 import ViewQuotation from "../Pages/ViewQuotation";
 import QuotationDetails from "../Pages/QuotationDetails";
 import AddSales from "../Pages/AddSales";
+import ViewSales from "../Pages/ViewSales";
 
 export default function AllRoutes() {
   return (
@@ -46,6 +47,7 @@ export default function AllRoutes() {
  <Route path="/QuotationDetails/:id"element={<QuotationDetails/>}/>
 
  <Route path="/AddSales/:id" element={<AddSales/>}/>
+ <Route path="/ViewSales" element={<ViewSales/>}/>
     </Routes>
   );
 }

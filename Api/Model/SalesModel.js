@@ -9,7 +9,7 @@ const SalesSchema=mongoose.Schema({
                 required:true
    },
    customerId:{
-    type:mongoose.Schema.Types.ObjectId,
+                type:mongoose.Schema.Types.ObjectId,
                 ref:"Customer",
                 required:true
    },
@@ -20,6 +20,11 @@ const SalesSchema=mongoose.Schema({
             price:Number    
             
    }],
+   lead:{
+        type:mongoose.Schema.Types.ObjectId,
+                ref:"Lead",
+                required:true
+   },
    totalAmount:{
     type:Number
    },

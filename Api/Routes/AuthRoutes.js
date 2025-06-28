@@ -53,5 +53,7 @@ routes.get("/ViewQuotation",AuthCtl.ViewQuotation)
 routes.get("/ViewQuotationById/:id",AuthCtl.ViewQuotationById)
 
 // Sales
-// routes.post("/AddSales/:id",AuthCtl.AddSales)
+routes.post("/AddSales/:id",AuthCtl.AddSales)
+routes.get("/ViewSales",AuthCtl.ViewSales)
+routes.post("/ConvertPaid/:id",AuthCtl.ConvertPaid)
 module.exports=routes
