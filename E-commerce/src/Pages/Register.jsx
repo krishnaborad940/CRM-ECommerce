@@ -37,7 +37,7 @@ export default function Register() {
     data.append("role", formData.role);
     data.append("Image", formData.Image);
 
-    fetch("http://localhost:8007/api/", {
+    fetch("http://localhost:8007/api", {
       method: "POST",
       body: data,
     })
@@ -46,10 +46,18 @@ export default function Register() {
         console.log("Register Response:", data);
 
         if (data?.data?._id) {
-          // ✅ Save user ID in localStorage
-          localStorage.setItem("userId", data.data._id);
-          alert("Registered Successfully");
-          navigate("/");
+        const user = data.data;
+
+        // ✅ Save all data in localStorage
+        localStorage.setItem("userId", user._id);
+        localStorage.setItem("userName", user.name);
+        localStorage.setItem("userEmail", user.email);
+        localStorage.setItem("userRole", user.role);
+        localStorage.setItem("userImage", user.Image); // if backend returns image filename
+          //  const assignerData= localStorage.getItem("assigner");
+          //  setFormData(assignerData)
+        alert("Registered Successfully");
+        navigate("/");
         } else {
           alert("Registration failed, please check your data");
         }

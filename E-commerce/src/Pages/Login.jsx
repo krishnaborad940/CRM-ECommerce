@@ -34,7 +34,13 @@ export default function Login() {
 const allUsers=data.data;
 const matchUser=allUsers.find((user)=>user.email===isLogin.email &&user.password===isLogin.password)
         if (matchUser) {
-            localStorage.setItem("assigner", matchUser.role);
+             localStorage.setItem("userId", matchUser._id);
+  localStorage.setItem("userName", matchUser.name); // ✅ Needed for header
+  localStorage.setItem("userEmail", matchUser.email);
+  localStorage.setItem("userRole", matchUser.role);
+  localStorage.setItem("userImage", matchUser.Image); // optional if image used
+  localStorage.setItem("assigner", matchUser.role); // already present
+
           alert("Login Successfully");
           navigate("/");
         } else {

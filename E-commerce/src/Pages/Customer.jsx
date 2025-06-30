@@ -25,7 +25,7 @@ export default function Customer() {
       <main className="main-content">
          <div className="header">
           <h1 style={{ margin: 0 }}>All Products</h1>
-          {/* <Link to="/AddLead"  className="addLeadBtn">➕ Add Lead</Link> */}
+          <Link to="/AddSales"  className="addLeadBtn">➕ Add sale</Link>
         </div>
         <table className="lead-table">
           <thead>
@@ -55,7 +55,7 @@ export default function Customer() {
                 <td><button className="btn btn-edit" onClick={() => navigate(`/EditCustomer/${v._id}`)}>✏️</button></td>
                 {/* <td><button className="btn btn-delete" onClick={() => handleDelete(v._id)}>🗑️</button></td> */}
                 <td><button className="btn btn-follow" onClick={() => navigate(`/Ticket/${v._id}`)}>🎟️</button></td>
-             <td><Link to={`/AddSales/${v._id}`}>Add Sales</Link></td>
+            
               </tr>
             ))}
           </tbody>

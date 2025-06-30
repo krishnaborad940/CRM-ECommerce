@@ -43,7 +43,7 @@ routes.get("/AllFollowUp",AuthCtl.AllFollowUp)
 routes.post("/AddClosed/:id",AuthCtl.AddClosed)
 
 // ticket-assigne
-routes.get("/MyTickets/:id",AuthCtl.MyTickets);
+routes.get("/MyTickets/:userId",AuthCtl.MyTickets);
 routes.post("/AddNewFollowUp/:id",AuthCtl.AddNewFollowUp)
 routes.get("/EditLead/:id",AuthCtl.EditLead)
 
@@ -53,7 +53,10 @@ routes.get("/ViewQuotation",AuthCtl.ViewQuotation)
 routes.get("/ViewQuotationById/:id",AuthCtl.ViewQuotationById)
 
 // Sales
-routes.post("/AddSales/:id",AuthCtl.AddSales)
+routes.post("/AddSales",AuthCtl.AddSales)
 routes.get("/ViewSales",AuthCtl.ViewSales)
-routes.post("/ConvertPaid/:id",AuthCtl.ConvertPaid)
+// payment
+routes.post("/AddPayment",AuthCtl.AddPayment)
+routes.get("/ViewPayments",AuthCtl.ViewPayments)
+
 module.exports=routes

@@ -52,6 +52,7 @@ export default function Ticket() {
         customer: id,
         category,
         Lead: lead?._id,
+        
       }),
     })
       .then((res) => res.json())

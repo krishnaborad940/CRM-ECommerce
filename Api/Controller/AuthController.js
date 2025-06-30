@@ -12,7 +12,7 @@ const Auth=require("../Model/AuthModel");
 const NewFollowUp = require("../Model/NewFollowUpModel");
 const Quotation = require("../Model/QuotationModel");
 const Sales = require("../Model/SalesModel");
-const { model } = require("mongoose");
+const Payment=require('../Model/PaymentModel')
 // const mongoose=require("mongoose")
 
 module.exports.Register=async(req,res)=>{
@@ -241,19 +241,49 @@ module.exports.AddConvert=async(req,res)=>{
         return res.status(200).json({msg:"somthing went Wrong"})
     }
 }
-module.exports.dashCount=async(req,res)=>{
-    try{
+module.exports.dashCount = async (req, res) => {
+  try {
+    const leadCount = await Lead.countDocuments();
+    const CustomerCount = await Customer.countDocuments();
+    const TicketCount = await Ticket.countDocuments();
+    const FollowupCount = await FollowUp.countDocuments();
+    const SalesCount = await Sales.countDocuments();
 
-        const leadCount=await Lead.countDocuments();
-        const CustomerCount=await Customer.countDocuments();
-        const TicketCount=await Ticket.countDocuments();
-        const FollowupCount=await FollowUp.countDocuments()
-        return res.status(200).json({msg:"lead and customer count",leadCount,CustomerCount,TicketCount,FollowupCount})
-    }catch(err){
-        console.log(err)
-        return res.status(200).json({msg:"somthing went Wrong"})
-    }
-}
+    const today = new Date().toISOString().split("T")[0];
+    const startOfDay = new Date(today);
+    const endOfDay = new Date(today);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const todayFollowups = await FollowUp.find({
+      nextFollowup: { $gte: startOfDay, $lte: endOfDay },
+    }).countDocuments();
+
+    const totalSalesData = await Sales.aggregate([
+      {
+        $group: {
+          _id: null,
+          totalAmount: { $sum: "$totalAmount" },
+        },
+      },
+    ]);
+    const TotalSalesAmount = totalSalesData[0]?.totalAmount || 0;
+
+    return res.status(200).json({
+      msg: "lead and customer count",
+      todayFollowups,
+      leadCount,
+      CustomerCount,
+      TicketCount,
+      FollowupCount,
+      SalesCount,
+      TotalSalesAmount,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ msg: "Something went wrong" });
+  }
+};
+
 
 module.exports.AllCustomer=async(req,res)=>{
     try{
@@ -338,10 +368,10 @@ module.exports.DeleteTicket=async(req,res)=>{
 module.exports.AddClosed = async (req, res) => {
    try{
         // console.log(req.params.id);
-        let findLead=await Ticket.findById(req.params.id)
+        let findLead=await FollowUp.findById(req.params.id)
 
        
-        const updateLead=await Ticket.findByIdAndUpdate(req.params.id,{status:"Closed"})
+        const updateLead=await FollowUp.findByIdAndUpdate(req.params.id,{status:"Closed"})
         // const updateFoloowup=await FollowUp.findByIdAndUpdate(req.params.id,{status:"Closed"})
 
             // await Lead.findByIdAndDelete(req.params.id)
@@ -380,8 +410,7 @@ module.exports.CloseTicket=async(req,res)=>{
 }
 module.exports.MyTickets = async (req, res) => {
   try {
-    // console.log(req.params.id)
-    const findTicket = await Ticket.find({ assigner: req.params.id }).populate("Lead")
+    const findTicket = await Ticket.find({ assigner: req.params.userId }).populate("Lead").populate("customer");
     return res.status(200).json({ data: findTicket });
   } catch (err) {
     console.log(err);
@@ -465,46 +494,50 @@ module.exports.ViewQuotationById=async(req,res)=>{
     return res.status(500).json({ msg: "Something went wrong", error: err.message });
     }
 }
+
 module.exports.AddSales = async (req, res) => {
   try {
-    let quotationId = req.params.id;
-    const findQuotation = await Quotation.findById(quotationId)
-      .populate("lead")
-      .populate("items.product")
-      .populate("createdBy");
+    const {
+      totalAmount,
+      PaymentStatus,
+      saleDate,QuotationId,lead,product,createBy,customerId
 
-   
-
-    const Products = findQuotation.items.map((item) => ({
-      productId: item.product._id,
-      quantity: item.quantity,
-      price: item.price,
-      
-    }));
-
-    const createSales = await Sales.create({
-      QuotationId: findQuotation._id,
-      customerId: findQuotation.lead?._id,
-      product: Products,
-      totalAmount: findQuotation.totalAmount,
-      createBy: findQuotation.createdBy._id,
-      PaymentStatus: "Paid",
-      lead:findQuotation._id,
-      saleDate: Date.now(),
+    } = req.body;
+console.log(req.body)
+  const findCustomer=await Customer.findById(req.body.customerId).populate("product").populate('lead').populate("assigner")
+// console.log(findCustomer)
+const quotation = await Quotation.findById(req.body.QuotationId);
+    // Create sales entry
+    const sale = await Sales.create({
+        QuotationId:req.body.QuotationId,
+      customerId: req.body.customerId,
+      lead: findCustomer.lead._id ,
+       product: req.body.products.map((item) => ({
+    productId: item.productId,  // <- check karo ye exist karta hai ya nahi
+    quantity: item.quantity,
+    price: item.Price,
+  })),
+      totalAmount: req.body.totalAmount,
+      createBy: findCustomer.assigner._id,
+      PaymentStatus: req.body.PaymentStatus || "Pending",
+      saleDate: req.body.saleDate || Date.now(),
     });
-let updateStatus=await Quotation.findByIdAndUpdate(req.params.id,{status:"Approved"})
+// console.log(sale)
+  
+
     return res.status(200).json({
       msg: "Sales Added Successfully",
-      data: createSales,
+      data: sale,
     });
   } catch (err) {
-    console.error("Quotation Add Error:", err);
+    console.error("Sales Add Error:", err);
     return res.status(500).json({
       msg: "Something went wrong",
       error: err.message,
     });
   }
 };
+
 module.exports.ViewSales=async(req,res)=>{
     try{
             let findSales=await Sales.find().populate({
@@ -520,21 +553,54 @@ module.exports.ViewSales=async(req,res)=>{
     return res.status(500).json({ msg: "Something went wrong", error: err.message });
     }
 }
-module.exports.ConvertPaid = async (req, res) => {
-  try {
-    const findSales = await Sales.findById(req.params.id)
 
-let updateStatus=await Sales.findByIdAndUpdate(req.params.id,{PaymentStatus:"Paid"})
+exports.AddPayment = async (req, res) => {
+  try {
+    const { saleId, amount, method, receivedDate, customerId ,status} = req.body;
+
+    const payment = await Payment.create({
+      saleId,
+      amount,
+      method,
+      receivedDate,
+      customerId,
+      status
+    });
+
+    // Calculate total paid
+    const payments = await Payment.find({ saleId, customerId });
+    const totalPaid = payments.reduce((acc, p) => acc + p.amount, 0);
+
+    // Update PaymentStatus in Sales
+  const sale = await Sales.findById(saleId);
+
+    if (sale.totalAmount <= totalPaid) {
+      // ✅ status update
+      sale.PaymentStatus = "Paid";
+    } else {
+      sale.PaymentStatus = "Pending";
+    }
+
+    await sale.save();
+
+    // Populate customer and return
+    const populatedPayment = await Payment.findById(payment._id).populate("customerId");
+
     return res.status(200).json({
-      msg: "Sales Added Successfully",
-      data: updateStatus,
+      msg: "Payment Added",
+      payment: populatedPayment,
     });
   } catch (err) {
-    console.error("Quotation Add Error:", err);
-    return res.status(500).json({
-      msg: "Something went wrong",
-      error: err.message,
-    });
+    return res.status(500).json({ error: err.message });
   }
 };
 
+module.exports.ViewPayments=async(req,res)=>{
+    try{
+        let findPayments=await Payment.find().populate("customerId");
+        return res.status(200).json({msg:"All Payments",data:findPayments})
+    }catch(err){
+        console.log(err)
+        return res.status(200).json({msg:"Somthing Went Wrong"})
+    }
+}

@@ -6,7 +6,7 @@ const SalesSchema=mongoose.Schema({
    QuotationId:{
                 type:mongoose.Schema.Types.ObjectId,
                 ref:"Quotation",
-                required:true
+                // required:true
    },
    customerId:{
                 type:mongoose.Schema.Types.ObjectId,
@@ -23,7 +23,7 @@ const SalesSchema=mongoose.Schema({
    lead:{
         type:mongoose.Schema.Types.ObjectId,
                 ref:"Lead",
-                required:true
+                // required:true
    },
    totalAmount:{
     type:Number
@@ -35,7 +35,7 @@ const SalesSchema=mongoose.Schema({
    PaymentStatus:{
     type:String,
     enum:["Pending","Paid"],
-    default:"Panding"
+    default:"Pending"
    },
    createBy:{
     type:mongoose.Schema.Types.ObjectId,

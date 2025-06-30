@@ -1,20 +1,18 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "../App.css";
 import SideBar from "./SideBar";
 
 export default function MyTickets() {
-  const { assigner } = useParams();
   const [tickets, setTickets] = useState([]);
-
-  useEffect(() => {
-    fetch(`http://localhost:8007/api/MyTickets/${assigner}`)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("Tickets:", data.data);
-        setTickets(data.data);
-      });
-  }, [assigner]);
+let userId=localStorage.getItem("userId")
+useEffect(() => {
+  fetch(`http://localhost:8007/api/MyTickets/${userId}`)
+    .then((res) => res.json())
+    .then((data) => {
+      setTickets(data.data);
+    });
+}, [userId]);
 
    const handleStatusUpdate = (_id) => {
     fetch(`http://localhost:8007/api/AddClosed/${_id}`, {

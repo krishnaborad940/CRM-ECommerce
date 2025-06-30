@@ -19,7 +19,7 @@ closed:0
         const allTickets=data.data
         setShowLeads(allTickets);
               const open = allTickets.filter(t => t.status === "Open").length;
-      const inprocess = allTickets.filter(t => t.status === "In-Process").length;
+      const inprocess = allTickets.filter(t =>t.status === "In-Progress").length;
       const closed = allTickets.filter(t => t.status === "Closed").length;
 
       setStatusCount({ open, inprocess, closed });

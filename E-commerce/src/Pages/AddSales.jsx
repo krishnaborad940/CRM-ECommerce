@@ -5,17 +5,17 @@ export default function AddSales() {
   const [products, setProducts] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState("");
   const [productItems, setProductItems] = useState([
-    { productId: "", quantity: 1, price: 0 },
+    { productId: "", quantity: 1, Price: 0 },
   ]);
   const [totalAmount, setTotalAmount] = useState(0);
 
   // Load customers and products
   useEffect(() => {
-    fetch("http://localhost:8007/api/customers")
+    fetch("http://localhost:8007/api/AllCustomer")
       .then((res) => res.json())
       .then((data) => setCustomers(data.data));
 
-    fetch("http://localhost:8007/api/products")
+    fetch("http://localhost:8007/api/showProduct")
       .then((res) => res.json())
       .then((data) => setProducts(data.data));
   }, []);
@@ -23,20 +23,29 @@ export default function AddSales() {
   // Calculate total amount
   useEffect(() => {
     const total = productItems.reduce(
-      (acc, item) => acc + item.quantity * item.price,
+      (acc, item) => acc + item.quantity * item.Price,
       0
     );
     setTotalAmount(total);
   }, [productItems]);
 
-  const handleProductChange = (index, field, value) => {
-    const newItems = [...productItems];
-    newItems[index][field] = field === "quantity" || field === "price" ? Number(value) : value;
-    setProductItems(newItems);
-  };
+ const handleProductChange = (index, field, value) => {
+  const newItems = [...productItems];
+
+  if (field === "productId") {
+    // Product object dhoondo us ID ke base pe
+    const selectedProduct = products.find(p => p._id === value);
+    newItems[index].productId = value;
+    newItems[index].Price = selectedProduct ? selectedProduct.Price : 0; // auto-fill price
+  } else {
+    newItems[index][field] = Number(value);
+  }
+
+  setProductItems(newItems);
+};
 
   const addProductItem = () => {
-    setProductItems([...productItems, { productId: "", quantity: 1, price: 0 }]);
+    setProductItems([...productItems, { productId: "", quantity: 1, Price: 0 }]);
   };
 
   const handleSubmit = async (e) => {
@@ -48,7 +57,7 @@ export default function AddSales() {
       totalAmount,
     };
 
-    const res = await fetch("http://localhost:8007/api/addSale", {
+    const res = await fetch("http://localhost:8007/api/AddSales", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -85,7 +94,7 @@ export default function AddSales() {
             >
               <option value="">Select Product</option>
               {products.map((p) => (
-                <option key={p._id} value={p._id}>{p.name}</option>
+                <option key={p._id} value={p._id}>{p.title} - ₹{p.Price}</option>
               ))}
             </select>
 
@@ -98,14 +107,14 @@ export default function AddSales() {
               required
             />
 
-            <input
-              type="number"
-              value={item.price}
-              min="0"
-              onChange={(e) => handleProductChange(index, "price", e.target.value)}
-              placeholder="Price"
-              required
-            />
+           <input
+  type="number"
+  value={item.Price}
+  min="0"
+  onChange={(e) => handleProductChange(index, "Price", e.target.value)}
+  placeholder="Price"
+  required
+/>
           </div>
         ))}
         <button type="button" onClick={addProductItem}>+ Add Product</button>
