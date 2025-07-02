@@ -67,3 +67,5 @@ routes.post("/AddCandidate",Candidate.uploadeImageFile,AuthCtl.AddCandidate)
 routes.get("/ViewCandidate",AuthCtl.ViewCandidate)
 
 module.exports=routes
+
+// 65,26,88,29,23,86,32

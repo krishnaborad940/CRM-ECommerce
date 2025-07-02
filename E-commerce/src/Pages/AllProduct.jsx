@@ -43,6 +43,7 @@ export default function AllProduct() {
                 <p><b>Price:</b> ₹{v.Price}</p>
                 <p><b>Stock:</b> {v.stock}</p>
                 <p><b>Rating:</b> ⭐ {v.rate}</p>
+                <a  href="/AddLead" style={{border:'1px solid black',padding:"3px",backgroundColor:"skyblue",marginTop:"20px"}}>Add Lead</a>
               </div>
             );
           })}

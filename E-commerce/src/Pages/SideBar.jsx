@@ -47,7 +47,7 @@ export default function CRMLayout() {
             <li><Link to="/ViewQuotation" className="nav-link">📄 Quotation</Link></li>
             <li><Link to="/ViewSales" className="nav-link">💰 Sales</Link></li>
             <li><Link to="/ViewPayment" className="nav-link">💳 Payment</Link></li>
-             <li><Link to="/ViewCandidates" className="nav-link">💳 Candidate</Link></li>
+             <li><Link to="/ViewCandidates" className="nav-link">🤵 Candidate</Link></li>
             {parsedUser && (
               <li>
                 <button
