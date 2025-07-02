@@ -53,6 +53,7 @@ export default function Register() {
         localStorage.setItem("userName", user.name);
         localStorage.setItem("userEmail", user.email);
         localStorage.setItem("userRole", user.role);
+        localStorage.setItem("password",user.password)
         localStorage.setItem("userImage", user.Image); // if backend returns image filename
           //  const assignerData= localStorage.getItem("assigner");
           //  setFormData(assignerData)

@@ -23,7 +23,7 @@ const AuthSchema=mongoose.Schema({
     },
     role:{
         type:String,
-        enum:["Admin","teleCaller","Supporter","sales"],
+        enum:["Admin","teleCaller","sales"],
         default:"Supporter"
     },
     status:{

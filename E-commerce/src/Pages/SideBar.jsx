@@ -1,13 +1,8 @@
 import { Link } from "react-router-dom";
-import "../App.css";
 
 export default function CRMLayout() {
- const userName = localStorage.getItem("userName");
-  // const userImage = localStorage.getItem("userImage");
-
-// const imageUrl = userImage?.startsWith("http")
-//   ? userImage
-//   : `http://localhost:8007${userImage}`;
+  const user = localStorage.getItem("user");
+  const parsedUser = user ? JSON.parse(user) : null;
 
   return (
     <div className="layout-container">
@@ -15,43 +10,32 @@ export default function CRMLayout() {
       <header className="crm-header">
         <h1>📋 CRM Panel</h1>
         <div className="user-info">
-<div className="user-info">
-   {userName ? (
-    <>
-      <div style={{display:"flex",alignItems:"center"}}>
-        <div
-        style={{
-          width: "35px",
-          height: "35px",
-          borderRadius: "50%",
-          backgroundColor: "#007bff",
-          color: "white",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          marginRight: "10px",
-          fontWeight: "bold",
-          fontSize: "18px"
-        }}
-      >
-        {userName.charAt(0).toUpperCase()}
-      </div>
-      {userName}
-      </div>
-    </>
-  ) : (
-    <>
-      <button onClick={() => window.location.href = "/login"} className="btn">Login</button>
-      <button onClick={() => window.location.href = "/Register"} className="btn">Signup</button>
-    </>
-  )}
-  </div>
-  </div>
+          {parsedUser ? (
+            <>
+              <Link to="/Profile">
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" ,color:"white"}}>
+                  <img
+                    src={`http://localhost:8007${parsedUser.userImage}`}
+                    alt="User"
+                    width="35"
+                    height="35"
+                    style={{ borderRadius: "50%" }}
+                  />
+                  {parsedUser.userName}
+                </div>
+              </Link>
+            </>
+          ) : (
+            <>
+              <button onClick={() => window.location.href = "/login"} className="btn">Login</button>
+              <button onClick={() => window.location.href = "/Register"} className="btn">Signup</button>
+            </>
+          )}
+        </div>
       </header>
 
-      {/* Main Section: Sidebar + Content */}
+      {/* Main Section */}
       <div className="crm-main">
-        {/* Sidebar */}
         <aside className="crm-sidebar">
           <ul className="nav-list">
             <li><Link to="/" className="nav-link">📊 Dashboard</Link></li>
@@ -63,26 +47,31 @@ export default function CRMLayout() {
             <li><Link to="/ViewQuotation" className="nav-link">📄 Quotation</Link></li>
             <li><Link to="/ViewSales" className="nav-link">💰 Sales</Link></li>
             <li><Link to="/ViewPayment" className="nav-link">💳 Payment</Link></li>
-              {userName && (
-    <li>
-      <button
-        onClick={() => {
-          localStorage.clear();
-          window.location.href = "/login";
-        }}
-        className="nav-link"
-        style={{ background: "none", border: "none", cursor: "pointer", paddingLeft: "0" }}
-      >
-        🚪 Logout
-      </button>
-    </li>
-  )}
+             <li><Link to="/ViewCandidates" className="nav-link">💳 Candidate</Link></li>
+            {parsedUser && (
+              <li>
+                <button
+                  onClick={() => {
+                    localStorage.clear();
+                    window.location.href = "/login";
+                  }}
+                  className="nav-link"
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    paddingLeft: "0",
+                  }}
+                >
+                  🚪 Logout
+                </button>
+              </li>
+            )}
           </ul>
         </aside>
 
-        {/* Page Content */}
         <section className="crm-content">
-        {/* {children} */}
+          {/* {children} */}
         </section>
       </div>
     </div>

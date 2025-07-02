@@ -4,10 +4,13 @@ const routes=express.Router()
 const AuthCtl=require('../Controller/AuthController');
 const Auth = require('../Model/AuthModel');
 const Product=require("../Model/ProductModel");
+const Candidate=require("../Model/CandidateModel")
 
 routes.post("/",Auth.uploadImageFile,AuthCtl.Register)
 routes.post("/Login",AuthCtl.Login)
 routes.get("/AllUser",AuthCtl.AllUser)
+routes.put("/UpdateProfile/:id",Auth.uploadImageFile,AuthCtl.UpdateProfile)
+
 
 
 routes.post("/Product",Product.uploadImageFile,AuthCtl.Product)
@@ -58,5 +61,9 @@ routes.get("/ViewSales",AuthCtl.ViewSales)
 // payment
 routes.post("/AddPayment",AuthCtl.AddPayment)
 routes.get("/ViewPayments",AuthCtl.ViewPayments)
+
+// Candidate
+routes.post("/AddCandidate",Candidate.uploadeImageFile,AuthCtl.AddCandidate)
+routes.get("/ViewCandidate",AuthCtl.ViewCandidate)
 
 module.exports=routes

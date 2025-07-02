@@ -45,19 +45,20 @@ export default function ViewSales() {
       }),
     })
       .then((res) => res.json())
-      .then((data) => {
-        console.log(data)
-        alert("Payment added successfully");
-        setShowModal(false);
-        setSalesList((pre) =>
-          pre.map((item) =>
-            item._id === selectedSaleId
-              ? { ...item, PaymentStatus: "Paid" }
-              : item
-          )
-        );
-      })
-      .catch((err) => console.log(err));
+.then((data) => {
+  alert("Payment added successfully");
+  setShowModal(false);
+
+  const newStatus = data.updatedSale?.PaymentStatus || "Pending";
+
+  setSalesList((prev) =>
+    prev.map((item) =>
+      item._id === selectedSaleId
+        ? { ...item, PaymentStatus: newStatus }
+        : item
+    )
+  );
+});
   };
 
 
@@ -83,6 +84,7 @@ const totalPending = salesList
             <div className="modal">
               <h3>Add Payment</h3>
              <form onSubmit={handlePaymentSubmit}>
+                <input type="hidden" name="status" value="Paid" />
   <label>
     Amount:
     <input type="number" name="amount" defaultValue={selectedSale?.totalAmount} required />

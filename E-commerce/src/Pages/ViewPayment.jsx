@@ -34,8 +34,7 @@ export default function ViewPayment(){
                   <td>{payment.amount}
                   </td>
                   <td>{payment.method}</td>
-                   <td>{payment.status}</td>
-                
+                   <td>{payment.saleId?.PaymentStatus}</td>
                 </tr>
               ))}
             </tbody>

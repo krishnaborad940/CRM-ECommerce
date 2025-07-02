@@ -14,6 +14,8 @@ app.use(express.json()); // ✅ JSON parsing
 app.use(express.urlencoded({ extended: true }));
 app.use("/Uploads/Auth",express.static(path.join(__dirname,'Uploads/Auth')))
 app.use("/Uploads/Product",express.static(path.join(__dirname,'Uploads/Product')))
+app.use("/Uploads/Candidate",express.static(path.join(__dirname,'Uploads/Candidate')))
+
 
 app.use(session({
     name:"CRM",

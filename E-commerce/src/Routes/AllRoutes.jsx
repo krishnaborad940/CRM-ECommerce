@@ -21,6 +21,9 @@ import QuotationDetails from "../Pages/QuotationDetails";
 import AddSales from "../Pages/AddSales";
 import ViewSales from "../Pages/ViewSales";
 import ViewPayment from "../Pages/ViewPayment";
+import Profile from "../Pages/Profile";
+import Candidate from "../Pages/Candidate";
+import ViewCandidates from "../Pages/ViewCandidates";
 
 export default function AllRoutes() {
   return (
@@ -50,6 +53,11 @@ export default function AllRoutes() {
  <Route path="/AddSales" element={<AddSales/>}/>
  <Route path="/ViewSales" element={<ViewSales/>}/>
  <Route path="/ViewPayment" element={<ViewPayment/>}/>
+
+ <Route path="/Profile" element={<Profile/>} />
+ <Route path="/Candidate" element={<Candidate/>} />
+ <Route path="/ViewCandidates" element={<ViewCandidates/>} />
+
 
     </Routes>
   );

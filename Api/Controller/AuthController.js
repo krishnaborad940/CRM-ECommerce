@@ -12,7 +12,8 @@ const Auth=require("../Model/AuthModel");
 const NewFollowUp = require("../Model/NewFollowUpModel");
 const Quotation = require("../Model/QuotationModel");
 const Sales = require("../Model/SalesModel");
-const Payment=require('../Model/PaymentModel')
+const Payment=require('../Model/PaymentModel');
+const Candidate=require("../Model/CandidateModel")
 // const mongoose=require("mongoose")
 
 module.exports.Register=async(req,res)=>{
@@ -22,7 +23,7 @@ module.exports.Register=async(req,res)=>{
             if(req.body.password===req.body.ConfirmPassword){
                     let newImg=''
                 if(req.file){
-                    newImg=await Auth.ImgPath+"-"+req.file.filename;
+                    newImg=await Auth.ImgPath+"/"+req.file.filename;
                 }else{
                     return res.status(200).json({msg:"file not Found"})
                 }
@@ -556,7 +557,7 @@ module.exports.ViewSales=async(req,res)=>{
 
 exports.AddPayment = async (req, res) => {
   try {
-    const { saleId, amount, method, receivedDate, customerId ,status} = req.body;
+    const { saleId, amount, method, receivedDate, customerId,status  } = req.body;
 
     const payment = await Payment.create({
       saleId,
@@ -597,10 +598,66 @@ exports.AddPayment = async (req, res) => {
 
 module.exports.ViewPayments=async(req,res)=>{
     try{
-        let findPayments=await Payment.find().populate("customerId");
+        let findPayments=await Payment.find().populate("customerId").populate("saleId");
         return res.status(200).json({msg:"All Payments",data:findPayments})
     }catch(err){
         console.log(err)
         return res.status(200).json({msg:"Somthing Went Wrong"})
+    }
+}
+
+module.exports.UpdateProfile=async(req,res)=>{
+    try{
+        if(req.file){
+            let checkEmail=await Auth.findById(req.params.id);
+            if(checkEmail){
+              try{
+                  let delpath=path.join(__dirname,'..',checkEmail.Image);
+                    fs.unlinkSync(delpath);
+              }catch(err){
+                console.log(err)
+                return res.status(200).json({msg:"Image Error"})
+              }
+              let newImg=await Auth.ImgPath+'/'+req.file.filename;
+              req.body.Image=newImg;
+              let updateProfiles=await Auth.findByIdAndUpdate(req.params.id,req.body)
+              return res.status(200).json({msg:"Data Updated Suessfully",data:updateProfiles})
+            }
+
+        }else{
+            let checkEmail=await Auth.findById(req.params.id);
+            req.body.Image=checkEmail.Image;
+             let updateProfiles=await Auth.findByIdAndUpdate(req.params.id,req.body)
+              return res.status(200).json({msg:"Data Updated Suessfully",data:updateProfiles})
+
+        }
+
+    }catch(err){
+        return res.status(200).json({msg:'somthing went wrong',data:err})
+    }
+}
+
+module.exports.AddCandidate=async(req,res)=>{
+    try{
+        // console.log(req.body)
+        // console.log(req.files)
+
+        req.body.resume = req.files.resume ? Candidate.ImgPath + '/' + req.files.resume[0].filename : '';
+req.body.coverLetter = req.files.coverLetter ? Candidate.ImgPath + '/' + req.files.coverLetter[0].filename : '';
+req.body.contract = req.files.contract ? Candidate.ImgPath + '/' + req.files.contract[0].filename : '';
+req.body.profileImage = req.files.profileImage ? Candidate.ImgPath + '/' + req.files.profileImage[0].filename : '';
+
+        let createCandidate=await Candidate.create(req.body)
+        return res.status(200).json({msg:"Candidate Added Successfully",data:createCandidate})
+    }catch(err){
+        return res.status(200).json({msg:'somthing went wrong',data:err})
+    }
+}
+module.exports.ViewCandidate=async(req,res)=>{
+    try{
+            let findCandidate=await Candidate.find()
+            return res.status(200).json({mag:"AllCandidate",data:findCandidate})
+    }catch(err){
+        return res.status(200).json({msg:'Somthing Went Wrong',data:err})
     }
 }
