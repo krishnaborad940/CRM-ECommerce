@@ -132,6 +132,7 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    marginTop:"50px"
   },
   title: {
     marginBottom: "20px",

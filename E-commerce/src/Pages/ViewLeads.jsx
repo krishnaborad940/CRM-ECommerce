@@ -63,8 +63,7 @@ export default function ViewLeads() {
                 <th>Remark</th>
                 <th>Status</th>
                 <th>Assigner</th>
-                <th colSpan={4}>Actions</th>
-                <th>Quatation</th>
+                <th colSpan={6}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -79,8 +78,8 @@ export default function ViewLeads() {
                   <td>{v.status}</td>
                   <td>{v.role}</td>
                   <td><button className="btn btn-edit" onClick={() => navigate(`/EditLead/${v._id}`)}>✏️</button></td>
-                  <td><button className="btn btn-delete" onClick={() => handleDelete(v._id)}>🗑️</button></td>
-                  <td><button className="btn btn-follow" onClick={() => navigate(`/FollowUp/${v._id}`)}>📞</button></td>
+                 <td><button className="btn btn-delete" onClick={() => handleDelete(v._id)}>🗑️</button></td>
+                 <td> <button className="btn btn-follow" onClick={() => navigate(`/FollowUp/${v._id}`)}>📞</button></td>
                   <td>
                     {v.status === "Converted" ? (
                       <span className="converted">✔️</span>
@@ -88,12 +87,8 @@ export default function ViewLeads() {
                       <button className="btn btn-convert" onClick={() => handleConvert(v._id)}>Convert</button>
                     )}
                   </td>
-                  <td>
-                  
-                      <Link to={`/Quotation/${v._id}`}>Add </Link>
-                    
-                  
-                  </td>
+                  <td><Link to={`/Quotation/${v._id}`}>Add </Link></td>
+                  <td><Link to={`/LeadDetails/${v._id}`}>View </Link></td>
                 </tr>
               ))}
             </tbody>

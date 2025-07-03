@@ -11,7 +11,7 @@ const SalesSchema=mongoose.Schema({
    customerId:{
                 type:mongoose.Schema.Types.ObjectId,
                 ref:"Customer",
-                required:true
+                // required:true
    },
    product: [
     {

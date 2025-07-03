@@ -23,12 +23,14 @@ routes.get("/ViewLead",AuthCtl.ViewLead)
 routes.delete("/DeleteLead/:id",AuthCtl.DeleteLead)
 routes.get("/editLead/:id",AuthCtl.editLead)
 routes.put("/UpdateLead/:id",AuthCtl.UpdateLead)
+routes.get("/LeadDetails/:id",AuthCtl.LeadDetails)
 
 
 // FollowUp
 routes.post("/AddFollowup/:id",AuthCtl.AddFollowup)
 // lead=>customer
 routes.post("/AddConvert/:id",AuthCtl.AddConvert)
+routes.get("/ViewCustomerDetails/:id",AuthCtl.ViewCustomerDetails)
 
 // totalCount
 routes.get("/dashCount",AuthCtl.dashCount)
@@ -43,6 +45,7 @@ routes.post("/AddTicket/:id",AuthCtl.AddTicket)
 routes.get("/ShowTicket",AuthCtl.ShowTicket)
 routes.delete("/DeleteTicket/:id",AuthCtl.DeleteTicket)
 routes.post("/CloseTicket/:id",AuthCtl.CloseTicket)
+routes.get("/ViewTicketDetails/:id",AuthCtl.ViewTicketDetails)
 // foolowup-->closed
 routes.get("/AllFollowUp",AuthCtl.AllFollowUp)
 routes.post("/AddClosed/:id",AuthCtl.AddClosed)
@@ -60,6 +63,7 @@ routes.get("/ViewQuotationById/:id",AuthCtl.ViewQuotationById)
 // Sales
 routes.post("/AddSales",AuthCtl.AddSales)
 routes.get("/ViewSales",AuthCtl.ViewSales)
+routes.get("/ViewSalesDetails/:id",AuthCtl.ViewSalesDetails)
 // payment
 routes.post("/AddPayment",AuthCtl.AddPayment)
 routes.get("/ViewPayments",AuthCtl.ViewPayments)

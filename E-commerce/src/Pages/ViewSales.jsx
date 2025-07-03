@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../App.css";
 import SideBar from "./SideBar";
+import { Link } from "react-router-dom";
 
 export default function ViewSales() {
   const [salesList, setSalesList] = useState([]);
@@ -181,6 +182,7 @@ const totalPending = salesList
                       </button>
                     )}
                   </td>
+                  <td><Link to={`/SalesDetails/${sale._id}`}>View</Link></td>
                 </tr>
               ))}
             </tbody>

@@ -39,7 +39,7 @@ export default function ViewQuotations() {
         <div className="main-content">
              <div className="header">
                          <h2 className="heading">All Quotations</h2>
-                        {/* <Link to="/Quotation" className="addLeadBtn">➕ Add Quotation</Link> */}
+                        <Link to="/Quotation" className="addLeadBtn">➕ Add Quotation</Link>
                       </div>
                  <div className="quotation-container">
      

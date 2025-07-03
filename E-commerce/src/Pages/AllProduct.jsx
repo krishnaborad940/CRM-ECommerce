@@ -84,7 +84,8 @@ export default function AllProduct() {
                   <p><b>Price:</b> ₹{v.Price}</p>
                   <p><b>Stock:</b> {v.stock}</p>
                   <p><b>Rating:</b> ⭐ {v.rate}</p>
-                  <button style={{
+                   </Link>
+                  <a  href="/AddLead"style={{
                     marginTop: "10px",
                     backgroundColor: "skyblue",
                     border: "none",
@@ -94,8 +95,8 @@ export default function AllProduct() {
                     fontWeight: "bold"
                   }}>
                     ➕ Add Lead
-                  </button>
-                </Link>
+                  </a>
+               
               </div>
             );
           })}

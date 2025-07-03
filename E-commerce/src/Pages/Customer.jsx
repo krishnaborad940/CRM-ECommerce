@@ -55,7 +55,7 @@ export default function Customer() {
                 <td><button className="btn btn-edit" onClick={() => navigate(`/EditCustomer/${v._id}`)}>✏️</button></td>
                 {/* <td><button className="btn btn-delete" onClick={() => handleDelete(v._id)}>🗑️</button></td> */}
                 <td><button className="btn btn-follow" onClick={() => navigate(`/Ticket/${v._id}`)}>🎟️</button></td>
-            
+                <td><Link to={`/CustomerDetails/${v._id}`} >View</Link><Link/></td>
               </tr>
             ))}
           </tbody>

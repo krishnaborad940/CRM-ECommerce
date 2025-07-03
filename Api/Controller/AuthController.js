@@ -208,6 +208,18 @@ module.exports.UpdateLead=async(req,res)=>{
         return res.status(500).json({ msg: "Something Went Wrong", error: err.message });
     }
 }
+module.exports.LeadDetails=async(req,res)=>{
+    try{
+        let findLead=await Lead.findById(req.params.id).populate("product").populate("assigner")
+        if(findLead){
+            return res.status(200).json({msg:"lead find",data:findLead})
+        }else{
+            return res.status(200).json({msg:'Lead Not Find'})
+        }
+    }catch(err){
+        return res.status(200).json({msg:'Somthing Went Wrong',data:err})
+    }
+}
 module.exports.AddFollowup=async(req,res)=>{
     try{
         const {remark,nextFollowup,FollowUpType,status,assigner}=req.body
@@ -261,6 +273,18 @@ module.exports.AddConvert=async(req,res)=>{
     }catch(err){
          console.log(err)
         return res.status(200).json({msg:"somthing went Wrong"})
+    }
+}
+module.exports.ViewCustomerDetails=async(req,res)=>{
+    try{
+            let findCustomer=await Customer.findById(req.params.id).populate("product").populate("lead");
+            if(findCustomer){
+                return res.status(200).json({msg:'customer Find',data:findCustomer})
+            }else{
+                return res.status(200).json({msg:'somthing went wrong',data:err})
+            }
+    }catch(err){
+        return res.status(200).json({msg:'somthing Went Wrong',data:err})
     }
 }
 module.exports.dashCount = async (req, res) => {
@@ -480,6 +504,18 @@ module.exports.CloseTicket=async(req,res)=>{
         return res.status(200).json({msg:"somthing went Wrong"})
     }
 }
+module.exports.ViewTicketDetails=async(req,res)=>{
+    try{
+            let findTicket=await Ticket.findById(req.params.id).populate('customer').populate("assigner").populate("Lead")
+            if(findTicket){
+                return res.status(200).json({msg:'ticket find',data:findTicket})
+            }else{
+                return res.status(200).json({msg:'Ticket Not Found',data:err})
+            }
+    }catch(err){
+        return res.status(200).json({msg:'somthing went wrong',data:err})
+    }
+}
 module.exports.MyTickets = async (req, res) => {
   try {
     const findTicket = await Ticket.find({ assigner: req.params.userId }).populate("Lead").populate("customer");
@@ -596,16 +632,16 @@ module.exports.AddSales = async (req, res) => {
 const quotation = await Quotation.findById(req.body.QuotationId);
     // Create sales entry
     const sale = await Sales.create({
-        QuotationId:req.body.QuotationId,
-      customerId: req.body.customerId,
-      lead: findCustomer.lead._id ,
+        QuotationId:QuotationId,
+      customerId: customerId,
+      lead: quotation?.lead._id ,
        product: req.body.products.map((item) => ({
     productId: item.productId,  // <- check karo ye exist karta hai ya nahi
     quantity: item.quantity,
     price: item.Price,
   })),
       totalAmount: req.body.totalAmount,
-      createBy: findCustomer.assigner._id,
+      createBy: req.body.createBy,
       PaymentStatus: req.body.PaymentStatus || "Pending",
       saleDate: req.body.saleDate || Date.now(),
     });
@@ -636,6 +672,19 @@ module.exports.ViewSales=async(req,res)=>{
     }catch(err){
          console.error("Quotation Add Error:", err);
     return res.status(500).json({ msg: "Something went wrong", error: err.message });
+    }
+}
+module.exports.ViewSalesDetails=async(req,res)=>{
+    try{
+ let findSales=await Sales.findById(req.params.id).
+            populate("customerId").populate("createBy").populate('product.productId').populate('lead')
+        if(findSales){
+            return res.status(200).json({msg:"Sales Find",data:findSales})
+        }else{
+            return res.status(200).json({msg:'Sales Not Found'})
+        }
+    }catch(err){
+        return res.status(200).json({msg:'somthing Went Wrong',data:err})
     }
 }
 exports.AddPayment = async (req, res) => {

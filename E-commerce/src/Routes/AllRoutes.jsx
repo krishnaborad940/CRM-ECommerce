@@ -25,6 +25,10 @@ import Profile from "../Pages/Profile";
 import Candidate from "../Pages/Candidate";
 import ViewCandidates from "../Pages/ViewCandidates";
 import ProductDetails  from "../Pages/ProductDetails";
+import LeadDetails from "../Pages/LeadDetails";
+import CustomerDetails from "../Pages/CustomerDetails";
+import TicketDetails from "../Pages/TicketDetails";
+import SalesDetails from "../Pages/SalesDetails";
 
 export default function AllRoutes() {
   return (
@@ -37,21 +41,25 @@ export default function AllRoutes() {
         <Route path="/AddLead" element={<AddLead />} />
         <Route path="/ViewLeads" element={<ViewLeads/>}/>
         <Route path="/EditLead/:id" element={<EditLead/>}/>
+        <Route path="/LeadDetails/:id" element={<LeadDetails/>}/>
         <Route path="/FollowUp/:id" element={<FollowUp/>}/>
         <Route path="/ShowFollowUp" element={<ShowFollowUp/>}/>
         <Route path="/Product" element={<AllProduct/>}/>
         <Route path="/ProductDetails/:id" element={<ProductDetails/>}/>
         <Route path="/Customer" element={<Customer/>}/>
         <Route path="/EditCustomer/:id" element={<EditCustomer/>}/>
+        <Route path="/CustomerDetails/:id" element={<CustomerDetails/>}/>
         <Route path="/Ticket/:id" element={<Ticket/>}/>
         <Route path="/ViewTicket" element={<ViewTicket/>}/>
         <Route path="/MyTickets/:userRole" element={<MyTickets />}/>
+        <Route path="/TicketDetails/:id" element={<TicketDetails/>}/>
         <Route path="/NewFollowUp/:id" element={<NewFollowUp/>}/>
         <Route path="/Quotation/:id" element={<Quotation/>}/>
         <Route path="/ViewQuotation"element={<ViewQuotation/>}/>
         <Route path="/QuotationDetails/:id"element={<QuotationDetails/>}/>
         <Route path="/AddSales" element={<AddSales/>}/>
         <Route path="/ViewSales" element={<ViewSales/>}/>
+        <Route path="/SalesDetails/:id" element={<SalesDetails/>} />
         <Route path="/ViewPayment" element={<ViewPayment/>}/>
         <Route path="/Profile" element={<Profile/>} />
         <Route path="/Candidate" element={<Candidate/>} />

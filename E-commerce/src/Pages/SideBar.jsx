@@ -27,8 +27,7 @@ export default function CRMLayout() {
             </>
           ) : (
             <>
-              <button onClick={() => window.location.href = "/login"} className="btn">Login</button>
-              <button onClick={() => window.location.href = "/Register"} className="btn">Signup</button>
+              <button onClick={() => window.location.href = "/login"} className="btnLogin">Login</button>
             </>
           )}
         </div>
