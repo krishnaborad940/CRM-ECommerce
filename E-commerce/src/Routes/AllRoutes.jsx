@@ -24,6 +24,7 @@ import ViewPayment from "../Pages/ViewPayment";
 import Profile from "../Pages/Profile";
 import Candidate from "../Pages/Candidate";
 import ViewCandidates from "../Pages/ViewCandidates";
+import ProductDetails  from "../Pages/ProductDetails";
 
 export default function AllRoutes() {
   return (
@@ -39,6 +40,8 @@ export default function AllRoutes() {
     <Route path="/FollowUp/:id" element={<FollowUp/>}/>
     <Route path="/ShowFollowUp" element={<ShowFollowUp/>}/>
     <Route path="/Product" element={<AllProduct/>}/>
+    <Route path="/ProductDetails/:id" element={<ProductDetails/>}/>
+
     <Route path="/Customer" element={<Customer/>}/>
     <Route path="/EditCustomer/:id" element={<EditCustomer/>}/>
  <Route path="/Ticket/:id" element={<Ticket/>}/>

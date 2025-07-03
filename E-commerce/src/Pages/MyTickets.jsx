@@ -5,7 +5,8 @@ import SideBar from "./SideBar";
 
 export default function MyTickets() {
   const [tickets, setTickets] = useState([]);
-let userId=localStorage.getItem("userId")
+let userId=JSON.parse(localStorage.getItem("user"))?.userId
+
 useEffect(() => {
   fetch(`http://localhost:8007/api/MyTickets/${userId}`)
     .then((res) => res.json())
@@ -15,7 +16,7 @@ useEffect(() => {
 }, [userId]);
 
    const handleStatusUpdate = (_id) => {
-    fetch(`http://localhost:8007/api/AddClosed/${_id}`, {
+    fetch(`http://localhost:8007/api/CloseTicket/${_id}`, {
       method: "POST",
     })
       .then((res) => res.json())
@@ -68,7 +69,7 @@ useEffect(() => {
                   
                     
                     <Link
-                      to={`/NewFollowUp/${ticket.Lead}`}
+                      to={`/NewFollowUp/${ticket.customer?.lead}`}
                       style={{ backgroundColor: "#28a745", color: "#fff", padding: "5px 10px", borderRadius: "5px", textDecoration: "none" }}
                     >
                       Follow Up

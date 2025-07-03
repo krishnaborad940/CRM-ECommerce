@@ -43,7 +43,7 @@ export default function CRMLayout() {
             <li><Link to="/viewLeads" className="nav-link">📋 Leads</Link></li>
             <li><Link to="/customer" className="nav-link">👤 Customers</Link></li>
             <li><Link to="/ViewTicket" className="nav-link">🎟️ Ticket</Link></li>
-            <li><Link to={`/MyTickets/${localStorage.getItem("userId")}`} className="nav-link">🎟️ My Ticket</Link></li>
+            <li><Link to={`/MyTickets/${JSON.parse(localStorage.getItem("user"))?.userId}`} className="nav-link">🎟️ My Ticket</Link></li>
             <li><Link to="/ViewQuotation" className="nav-link">📄 Quotation</Link></li>
             <li><Link to="/ViewSales" className="nav-link">💰 Sales</Link></li>
             <li><Link to="/ViewPayment" className="nav-link">💳 Payment</Link></li>

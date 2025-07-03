@@ -89,10 +89,10 @@ export default function ViewLeads() {
                     )}
                   </td>
                   <td>
-                    {v.status==="Intrested" || v.status==="Converted"?(
+                  
                       <Link to={`/Quotation/${v._id}`}>Add </Link>
-                    ):null
-                  }
+                    
+                  
                   </td>
                 </tr>
               ))}

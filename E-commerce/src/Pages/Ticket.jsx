@@ -5,7 +5,7 @@ import SideBar from "./SideBar";
 export default function Ticket() {
   const { id } = useParams();
   const navigate = useNavigate();
-
+let user=JSON.parse(localStorage.getItem("user"))
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState("");
@@ -45,7 +45,7 @@ export default function Ticket() {
       body: JSON.stringify({
         subject,
         message,
-        assigner,
+        assigner:user?.userId,
         status,
         priority,
         role,
@@ -108,7 +108,7 @@ export default function Ticket() {
             <select value={status} onChange={(e) => setStatus(e.target.value)} required>
               <option value="">--select--</option>
               <option value="Open">Open</option>
-              <option value="In Progress">In Progress</option>
+              <option value="In-Progress">In-Progress</option>
               <option value="Closed">Closed</option>
             </select>
           </label>

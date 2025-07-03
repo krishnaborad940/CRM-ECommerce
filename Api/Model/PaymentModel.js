@@ -25,7 +25,7 @@ const PaymentSchema = mongoose.Schema({
       ref:"Customer",
       required:true
   },status:{
-    type:Boolean,
+    type:String,
     enum:["Paid","Partial"],
     default:"Paid"
   }

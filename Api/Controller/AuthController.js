@@ -9,11 +9,11 @@ const FollowUp=require("../Model/FollowUpModel");
 const Customer = require("../Model/CustomerModel");
 const Ticket=require('../Model/TicketModel')
 const Auth=require("../Model/AuthModel");
-const NewFollowUp = require("../Model/NewFollowUpModel");
 const Quotation = require("../Model/QuotationModel");
 const Sales = require("../Model/SalesModel");
 const Payment=require('../Model/PaymentModel');
-const Candidate=require("../Model/CandidateModel")
+const Candidate=require("../Model/CandidateModel");
+
 // const mongoose=require("mongoose")
 
 module.exports.Register=async(req,res)=>{
@@ -102,6 +102,15 @@ module.exports.showProduct=async(req,res)=>{
         console.log(err)
         return res.status(200).json({msg:"Somthing Went Wrong"})
 
+    }
+}
+
+module.exports.ProductDetails=async(req,res)=>{
+    try{
+             let findProduct=await Product.findById(req.params.id)
+            return res.status(200).json({msg:"added Quotation",data:findProduct})
+    }catch(err){
+        return res.status(200).json({msg:'somthing went wrong',data:errss})
     }
 }
 
@@ -212,7 +221,7 @@ module.exports.AddFollowup=async(req,res)=>{
         return res.status(200).json({msg:"somthing went Wrong"})
     }
 }
-
+// followup convet
 module.exports.AddConvert=async(req,res)=>{
     try{
         // console.log(req.params.id);
@@ -249,6 +258,13 @@ module.exports.dashCount = async (req, res) => {
     const TicketCount = await Ticket.countDocuments();
     const FollowupCount = await FollowUp.countDocuments();
     const SalesCount = await Sales.countDocuments();
+    const todays = new Date().setHours(0, 0, 0, 0);
+const tomorrow = new Date(todays);
+tomorrow.setDate(tomorrow.getDate() + 1);
+
+const expiringCount = await Quotation.countDocuments({
+  expiryDate: { $gte: new Date(todays), $lt: tomorrow }
+});
 
     const today = new Date().toISOString().split("T")[0];
     const startOfDay = new Date(today);
@@ -278,12 +294,39 @@ module.exports.dashCount = async (req, res) => {
       FollowupCount,
       SalesCount,
       TotalSalesAmount,
+      QuotationCount:expiringCount
     });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ msg: "Something went wrong" });
   }
 };
+module.exports.ResentActivities=async(req,res)=>{
+    try{
+        const findLead=await Lead.findOne().sort({createdAt:-1})
+         const findTicket=await Ticket.findOne().sort({createdAt:-1})
+          const findFollowup=await FollowUp.findOne().sort({createdAt:-1})
+           const findQuotation=await Quotation.findOne().sort({createdAt:-1})
+            const findSales=await Payment.findOne().sort({createdAt:-1})
+             const findCandidate=await Candidate.findOne().sort({createdAt:-1})
+
+             let activityList=[];
+           
+    if (findLead) activityList.push({ text: `New Lead Added: ${findLead.name}` });
+    if (findTicket) activityList.push({ text: `Ticket Created: ${findTicket.subject}` });
+    if (findFollowup) activityList.push({ text: `Follow Up on: ${new Date(findFollowup.nextFollowup).toLocaleDateString()}` });
+    if (findQuotation) activityList.push({ text: `Quotation Of: ₹${findQuotation.totalAmount}` });
+    if (findSales) activityList.push({ text: `Sale Made: ₹${findSales.amount}` });
+    if (findCandidate) activityList.push({ text: `Candidate Added: ${findCandidate.name}` });
+
+    activityList = activityList.slice(0, 5);
+
+
+               return res.status(200).json({msg:"Recent Activity",data:activityList})
+    }catch(err){
+        return res.status(200).json({msg:"somthing went wrong",data:err})
+    }
+}
 
 
 module.exports.AllCustomer=async(req,res)=>{
@@ -333,6 +376,7 @@ module.exports.AddTicket=async(req,res)=>{
         const {subject,message,assigner,Lead,role,status,category,priority}=req.body
         let findid=await Customer.findById(req.params.id)
         // let findProduct=await product.findById(productId)S
+        
 
         if(findid){
             let createFollowup=await  Ticket.create({
@@ -376,7 +420,7 @@ module.exports.AddClosed = async (req, res) => {
         // const updateFoloowup=await FollowUp.findByIdAndUpdate(req.params.id,{status:"Closed"})
 
             // await Lead.findByIdAndDelete(req.params.id)
-            return res.status(200).json({msg:"customer added sucessfully",data:createCustomer})
+            return res.status(200).json({msg:"customer added sucessfully",data:this.UpdateLead})
         
         
     }catch(err){
@@ -424,9 +468,9 @@ module.exports.AddNewFollowUp = async (req, res) => {
     const { remark, nextFollowup, FollowUpType, status,assigner } = req.body;
 
     const lead = await Lead.findById(req.params.id).populate("product");
-    console.log("lead:-"+lead)
+    // console.log("lead:-"+lead)
   
-    const followup = await NewFollowUp.create({
+    const followup = await FollowUp.create({
       remark,
       nextFollowup,
       FollowUpType,
@@ -557,6 +601,7 @@ module.exports.ViewSales=async(req,res)=>{
 
 exports.AddPayment = async (req, res) => {
   try {
+    console.log(req.body)
     const { saleId, amount, method, receivedDate, customerId,status  } = req.body;
 
     const payment = await Payment.create({
@@ -592,6 +637,7 @@ exports.AddPayment = async (req, res) => {
       payment: populatedPayment,
     });
   } catch (err) {
+    console.log(err)
     return res.status(500).json({ error: err.message });
   }
 };

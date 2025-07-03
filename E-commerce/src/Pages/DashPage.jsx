@@ -27,17 +27,13 @@ export default function DashPage() {
     todayFollowups: 0,
     SalesCount: 0,
     TotalSalesAmount: 0,
-  });
+    QuotationCount:0
+  }); 
+  //  const [reminders, setReminders] = useState([]);
 
-  const [recentActivities, setRecentActivities] = useState([
-    { id: 1, text: "Krishna added new Lead: ABC Corp" },
-    { id: 2, text: "You closed ticket #123" },
-  ]);
+  const [recentActivities, setRecentActivities] = useState([]);
 
-  const [reminders, setReminders] = useState([
-    { id: 1, text: "3 follow-ups due today" },
-    { id: 2, text: "2 quotations expire tomorrow" },
-  ]);
+  
 
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#aa00ff"];
 
@@ -75,9 +71,23 @@ export default function DashPage() {
           SalesCount: data.SalesCount,
           todayFollowups: data.todayFollowups,
           TotalSalesAmount: data.TotalSalesAmount,
+          QuotationCount: data.QuotationCount,
+
+          // leadCount:data.leadCount,
+
         });
       });
   }, []);
+
+  useEffect(()=>{
+    fetch("http://localhost:8007/api/ResentActivities")
+    .then(res=>res.json())
+    .then((data)=>{
+      console.log(data.data)
+      setRecentActivities(data.data)
+    })
+  },[])
+
 
   return (
     <div className="dashboard-container" style={{ display: "flex", minHeight: "100vh" }}>
@@ -94,6 +104,7 @@ export default function DashPage() {
           <CardLink count={count.SalesCount} label="Total Sales" color="#ffc107" link="/ViewSales" />
           <CardLink count={count.todayFollowups} label="Today's FollowUps" color="#fd7e14" link="/ShowFollowUp" />
           <CardLink count={`₹${count.TotalSalesAmount}`} label="Total Sales Amount" color="#dc3545" link="/ViewSales"/>
+         <CardLink count={`${count.QuotationCount}`} label="Total Quotation" color="blue" link="/ViewQuotation"/>
         </div>
 
         {/* Charts */}
@@ -141,32 +152,70 @@ export default function DashPage() {
         </div>
 
         {/* Activity + Reminders + Quick Buttons */}
-        <div style={{ display: "flex", gap: "30px", flexWrap: "wrap" }}>
-          <div style={{ flex: 1, minWidth: 300 }}>
-            <h3>📝 Recent Activities</h3>
-            <ul>
-              {recentActivities.map((activity) => (
-                <li key={activity.id}>{activity.text}</li>
-              ))}
-            </ul>
-          </div>
+       <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
+  {/* 📝 Recent Activities */}
+  <div style={{
+    flex: 1,
+    minWidth: 300,
+    background: "#fff",
+    padding: "20px",
+    borderRadius: "12px",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+  }}>
+    <h3 style={{ marginBottom: "15px", color: "#007bff" }}>📝 Recent Activities</h3>
+    <ul style={{ paddingLeft: "20px" }}>
+      {recentActivities.map((activity, index) => (
+        <li key={index} style={{ marginBottom: "10px", lineHeight: "1.4" }}>
+          {activity.text}
+        </li>
+      ))}
+    </ul>
+  </div>
 
-          <div style={{ flex: 1, minWidth: 300 }}>
-            <h3>📅 Reminders</h3>
-            <ul>
-              {reminders.map((reminder) => (
-                <li key={reminder.id}>{reminder.text}</li>
-              ))}
-            </ul>
-          </div>
+  {/* 📅 Reminders */}
+  <div style={{
+    flex: 1,
+    minWidth: 300,
+    background: "#fff",
+    padding: "20px",
+    borderRadius: "12px",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+  }}>
+    <h3 style={{ marginBottom: "15px", color: "#28a745" }}>📅 Reminders</h3>
+    <ul style={{ paddingLeft: "20px" }}>
+      <li style={{ marginBottom: "10px" }}>
+        🔔 <strong>{count.todayFollowups}</strong> Follow-Up(s) Due Today
+      </li>
+      <li>
+        📄 <strong>{count.QuotationCount}</strong> Quotation(s) Expire Today
+      </li>
+    </ul>
+  </div>
 
-          <div style={{ flex: 1, minWidth: 300 }}>
-            <h3>✅ Quick Actions</h3>
-            <Link to="/AddLead"><button style={{ marginBottom: 10 }}>+ Add Lead</button></Link><br />
-            <Link to="/AddSales"><button style={{ marginBottom: 10 }}>+ Add Sale</button></Link><br />
-            <Link to="/ShowFollowUp"><button>+ Add FollowUp</button></Link>
-          </div>
-        </div>
+  {/* ✅ Quick Actions */}
+  <div style={{
+    flex: 1,
+    minWidth: 300,
+    background: "#fff",
+    padding: "20px",
+    borderRadius: "12px",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+  }}>
+    <h3 style={{ marginBottom: "15px", color: "#dc3545" }}>✅ Quick Actions</h3>
+    <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+      <Link to="/AddLead">
+        <button style={quickBtnStyle}>➕ Add Lead</button>
+      </Link>
+      <Link to="/AddSales">
+        <button style={quickBtnStyle}>➕ Add Sale</button>
+      </Link>
+      <Link to="/ShowFollowUp">
+        <button style={quickBtnStyle}>➕ Add FollowUp</button>
+      </Link>
+    </div>
+  </div>
+</div>
+
       </div>
     </div>
   );
@@ -189,4 +238,16 @@ function CardLink({ count, label, color, link }) {
       </div>
     </Link>
   );
+  
 }
+const quickBtnStyle = {
+  width: "100%",
+  padding: "10px",
+  backgroundColor: "#007bff",
+  color: "white",
+  border: "none",
+  borderRadius: "8px",
+  fontWeight: "bold",
+  cursor: "pointer",
+  transition: "0.3s ease",
+};

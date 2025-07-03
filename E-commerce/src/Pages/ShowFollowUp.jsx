@@ -80,7 +80,7 @@ export default function ShowFollowUp() {
                 <td>{v.remark}</td>
                 <td>{v.status}</td>
                 <td>{v.Lead?.role}</td>
-                <td><button className="btn btn-follow" onClick={() => navigate(`/FollowUp/${v._id}`)}>📞</button></td>
+                <td><button className="btn btn-follow" onClick={() => navigate(`/FollowUp/${v?.Lead._id}`)}>📞</button></td>
                 <td>
                   {v.status === "Closed" ? (
                     <span className="converted">✔️</span>

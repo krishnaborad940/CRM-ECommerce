@@ -30,7 +30,7 @@ export default function ViewPayment(){
               {payments.map((payment) => (
                 <tr key={payment._id}>
                   <td>{new Date(payment.receivedDate).toLocaleDateString()}</td>
-                  <td>{payment.customerId?.name}</td>
+                  <td>{payment.customerId?.name }</td>
                   <td>{payment.amount}
                   </td>
                   <td>{payment.method}</td>

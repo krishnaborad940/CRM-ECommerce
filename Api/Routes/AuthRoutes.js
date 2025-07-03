@@ -15,6 +15,7 @@ routes.put("/UpdateProfile/:id",Auth.uploadImageFile,AuthCtl.UpdateProfile)
 
 routes.post("/Product",Product.uploadImageFile,AuthCtl.Product)
 routes.get("/showProduct",AuthCtl.showProduct)
+routes.get("/ProductDetails/:id",AuthCtl.ProductDetails)
 
 
 routes.post("/AddLead",AuthCtl.AddLead)
@@ -31,6 +32,7 @@ routes.post("/AddConvert/:id",AuthCtl.AddConvert)
 
 // totalCount
 routes.get("/dashCount",AuthCtl.dashCount)
+routes.get("/ResentActivities",AuthCtl.ResentActivities)
 // allCustomer
 routes.get("/AllCustomer",AuthCtl.AllCustomer)
 routes.get("/editCustomer/:id",AuthCtl.editCustomer)

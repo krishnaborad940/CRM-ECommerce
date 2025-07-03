@@ -38,10 +38,12 @@ export default function ViewSales() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        saleId: selectedSaleId,
-        customerId: selectedSale?.customerId?._id,
-        amount,
-        method,
+          saleId: selectedSale?._id,                // string (required)
+    amount: Number(amount),        // number (required)
+    method: method,                // string (e.g. UPI, Cash, etc.)
+    receivedDate: new Date(),      // current or selected date
+    customerId:selectedSale?.customerId?._id || selectedSale?.QuotationId?.lead?._id,        // ✅ required
+    status: "Paid"              
       }),
     })
       .then((res) => res.json())

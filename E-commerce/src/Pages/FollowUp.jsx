@@ -13,10 +13,13 @@ export default function FollowUp() {
   const [FollowUpType, setFollowUpType] = useState("");
   const [status, setStatus] = useState("");
 
-  useEffect(() => {
+    useEffect(() => {
     fetch(`http://localhost:8007/api/editLead/${id}`)
       .then((res) => res.json())
-      .then((data) => setLead(data.data));
+      .then((data) => {
+        console.log("Lead Data:", data.data);
+        setLead(data.data);
+      });
   }, [id]);
 
   const handleSubmit = (e) => {

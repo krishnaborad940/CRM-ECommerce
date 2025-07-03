@@ -30,10 +30,10 @@ useEffect(() => {
       .then((data) => setProducts(data.data || []));
   }, []);
 
-  useEffect(()=>{
-    let addLead=JSON.parse(localStorage.getItem("Lead"))
-    setFormData(addLead)
-  },[])
+  // useEffect(()=>{
+  //   let addLead=JSON.parse(localStorage.getItem("Lead"))
+  //   setFormData(addLead)
+  // },[])
 
 
   const handleChange = (e) => {
