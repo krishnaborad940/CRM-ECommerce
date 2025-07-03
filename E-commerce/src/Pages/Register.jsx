@@ -71,100 +71,75 @@ export default function Register() {
 
   return (
     <>
-      <h1>Register</h1>
-      <form onSubmit={handleRegister}>
-        <table border={1}>
-          <tbody>
-            <tr>
-              <td>Name:</td>
-              <td>
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Enter your Name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                />
-              </td>
-            </tr>
-            <tr>
-              <td>Email:</td>
-              <td>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Enter your Email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                />
-              </td>
-            </tr>
-            <tr>
-              <td>Password:</td>
-              <td>
-                <input
-                  type="password"
-                  name="password"
-                  placeholder="Enter your Password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                />
-              </td>
-            </tr>
-            <tr>
-              <td>Confirm Password:</td>
-              <td>
-                <input
-                  type="password"
-                  name="ConfirmPassword"
-                  placeholder="Confirm your Password"
-                  value={formData.ConfirmPassword}
-                  onChange={handleChange}
-                  required
-                />
-              </td>
-            </tr>
-            <tr>
-              <td>Image:</td>
-              <td>
-                <input
-                  type="file"
-                  name="Image"
-                  accept="image/*"
-                  onChange={handleChange}
-                  required
-                />
-              </td>
-            </tr>
-            <tr>
-              <td>Role:</td>
-              <td>
-                <select
-                  name="role"
-                  value={formData.role}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">--select--</option>
-                  <option value="Admin">Admin</option>
-                  <option value="teleCaller">TeleCaller</option>
-                  <option value="sales">Sales</option>
-                  <option value="Supporter">Supporter</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td></td>
-              <td>
-                <input type="submit" value="Register" />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </form>
+     <div className="register-container">
+  <div className="register-card">
+    <h2 className="register-heading">Create Your Account</h2>
+    <form onSubmit={handleRegister} className="register-form">
+      <input
+        type="text"
+        name="name"
+        placeholder="Full Name"
+        value={formData.name}
+        onChange={handleChange}
+        className="register-input"
+        required
+      />
+      <input
+        type="email"
+        name="email"
+        placeholder="Email Address"
+        value={formData.email}
+        onChange={handleChange}
+        className="register-input"
+        required
+      />
+      <input
+        type="password"
+        name="password"
+        placeholder="Password"
+        value={formData.password}
+        onChange={handleChange}
+        className="register-input"
+        required
+      />
+      <input
+        type="password"
+        name="ConfirmPassword"
+        placeholder="Confirm Password"
+        value={formData.ConfirmPassword}
+        onChange={handleChange}
+        className="register-input"
+        required
+      />
+      <input
+        type="file"
+        name="Image"
+        accept="image/*"
+        onChange={handleChange}
+        className="register-file"
+        required
+      />
+      <select
+        name="role"
+        value={formData.role}
+        onChange={handleChange}
+        className="register-select"
+        required
+      >
+        <option value="">-- Select Role --</option>
+        <option value="Admin">Admin</option>
+        <option value="teleCaller">TeleCaller</option>
+        <option value="sales">Sales</option>
+        <option value="Supporter">Supporter</option>
+      </select>
+      <button type="submit" className="register-button">
+        Register
+      </button>
+      <p>Have already an Account ?<a href="/Login">Login Here</a></p>
+    </form>
+  </div>
+</div>
+
     </>
   );
 }

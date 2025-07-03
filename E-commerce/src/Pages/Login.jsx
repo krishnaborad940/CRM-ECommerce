@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "../App.css";
 
 export default function Login() {
   const [isLogin, setIsLogin] = useState({
@@ -30,21 +31,24 @@ export default function Login() {
     })
       .then((res) => res.json())
       .then((data) => {
-         
-const allUsers=data.data;
-const matchUser=allUsers.find((user)=>user.email===isLogin.email &&user.password===isLogin.password)
-        if (matchUser) {
-           const userObj = {
-  userId: matchUser._id,
-  userName: matchUser.name,
-  userEmail: matchUser.email,
-  userRole: matchUser.role,
-  userImage: matchUser.Image,
-  assigner: matchUser.role,
-  password:matchUser.password
-};
-localStorage.setItem("user", JSON.stringify(userObj));
+        const allUsers = data.data;
+        const matchUser = allUsers.find(
+          (user) =>
+            user.email === isLogin.email &&
+            user.password === isLogin.password
+        );
 
+        if (matchUser) {
+          const userObj = {
+            userId: matchUser._id,
+            userName: matchUser.name,
+            userEmail: matchUser.email,
+            userRole: matchUser.role,
+            userImage: matchUser.Image,
+            assigner: matchUser.role,
+            password: matchUser.password,
+          };
+          localStorage.setItem("user", JSON.stringify(userObj));
           alert("Login Successfully");
           navigate("/");
         } else {
@@ -58,44 +62,34 @@ localStorage.setItem("user", JSON.stringify(userObj));
   };
 
   return (
-    <>
-      <h1>Login</h1>
-      <form onSubmit={handleLogin}>
-        <table border={1}>
-          <tbody>
-            <tr>
-              <td>Email:</td>
-              <td>
-                <input
-                  type="text"
-                  name="email"
-                  placeholder="Enter your Email"
-                  value={isLogin.email}
-                  onChange={handleChange}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td>Password:</td>
-              <td>
-                <input
-                  type="password"
-                  name="password"
-                  placeholder="Enter your Password"
-                  value={isLogin.password}
-                  onChange={handleChange}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td></td>
-              <td>
-                <input type="submit" value="Login" />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </form>
-    </>
+    <div className="login-container">
+      <div className="login-card">
+        <h2 className="login-heading">Login to Your CRM</h2>
+        <form onSubmit={handleLogin} className="login-form">
+          <input
+            type="text"
+            name="email"
+            placeholder="Enter your Email"
+            value={isLogin.email}
+            onChange={handleChange}
+            className="login-input"
+            required
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Enter your Password"
+            value={isLogin.password}
+            onChange={handleChange}
+            className="login-input"
+            required
+          />
+          <button type="submit" className="login-button">
+            Login
+          </button>
+          <p>Don't have an account ? <a href="/Register">SignIn</a></p>
+        </form>
+      </div>
+    </div>
   );
 }

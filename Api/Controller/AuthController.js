@@ -1,4 +1,4 @@
-// const Auth = require("../Model/AuthModel")
+
 const bcrypt=require("bcrypt")
 const jwt=require("jsonwebtoken");
 const Product = require("../Model/ProductModel");
@@ -110,7 +110,6 @@ module.exports.showProduct=async(req,res)=>{
         return res.status(200).json({msg:"Somthing Went Wrong"})
     }
 }
-
 module.exports.ProductDetails=async(req,res)=>{
     try{
             let findProduct=await Product.findById(req.params.id)
@@ -123,7 +122,6 @@ module.exports.ProductDetails=async(req,res)=>{
         return res.status(200).json({msg:'somthing went wrong',data:errss})
     }
 }
-
 module.exports.AddLead = async (req, res) => {
     try {
         const { name, role,email, phone,assigner, nextFollowup, productId, remark, status } = req.body;
@@ -210,7 +208,6 @@ module.exports.UpdateLead=async(req,res)=>{
         return res.status(500).json({ msg: "Something Went Wrong", error: err.message });
     }
 }
-
 module.exports.AddFollowup=async(req,res)=>{
     try{
         const {remark,nextFollowup,FollowUpType,status,assigner}=req.body
@@ -355,7 +352,6 @@ module.exports.AllCustomer=async(req,res)=>{
         return res.status(200).json({msg:"somthing went Wrong"})
     }
 }
-
 module.exports.editCustomer=async(req,res)=>{
     try{
       let findid=await Customer.findById(req.params.id).populate('product').exec()
@@ -566,7 +562,6 @@ module.exports.AddQuatation = async (req, res) => {
     return res.status(500).json({ msg: "Internal Server Error", error: err.message });
   }
 };
-
 module.exports.ViewQuotation=async(req,res)=>{
     try{
             let findQuotation=await Quotation.find().populate("items.product").populate("lead").populate("createdBy")
@@ -680,7 +675,6 @@ exports.AddPayment = async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 };
-
 module.exports.ViewPayments=async(req,res)=>{
     try{
         let findPayments=await Payment.find().populate("customerId").populate("saleId");
@@ -694,7 +688,6 @@ module.exports.ViewPayments=async(req,res)=>{
         return res.status(200).json({msg:"Somthing Went Wrong"})
     }
 }
-
 module.exports.UpdateProfile=async(req,res)=>{
     try{
         if(req.file){
@@ -732,7 +725,6 @@ module.exports.UpdateProfile=async(req,res)=>{
         return res.status(200).json({msg:'somthing went wrong',data:err})
     }
 }
-
 module.exports.AddCandidate=async(req,res)=>{
     try{
         req.body.resume = req.files.resume ? Candidate.ImgPath + '/' + req.files.resume[0].filename : '';
