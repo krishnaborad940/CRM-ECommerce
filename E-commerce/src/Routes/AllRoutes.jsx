@@ -29,41 +29,42 @@ import LeadDetails from "../Pages/LeadDetails";
 import CustomerDetails from "../Pages/CustomerDetails";
 import TicketDetails from "../Pages/TicketDetails";
 import SalesDetails from "../Pages/SalesDetails";
+import PrivateRoute from "./PrivateRoute";
 
 export default function AllRoutes() {
   return (
     <Routes>
       {/* <Route  path=""/> */}
-        <Route path="/" element={<DashPage />} />
+        <Route path="/" element={<PrivateRoute><DashPage /></PrivateRoute>} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/addProduct" element={<Product />} />
-        <Route path="/AddLead" element={<AddLead />} />
-        <Route path="/ViewLeads" element={<ViewLeads/>}/>
-        <Route path="/EditLead/:id" element={<EditLead/>}/>
-        <Route path="/LeadDetails/:id" element={<LeadDetails/>}/>
-        <Route path="/FollowUp/:id" element={<FollowUp/>}/>
-        <Route path="/ShowFollowUp" element={<ShowFollowUp/>}/>
-        <Route path="/Product" element={<AllProduct/>}/>
-        <Route path="/ProductDetails/:id" element={<ProductDetails/>}/>
-        <Route path="/Customer" element={<Customer/>}/>
-        <Route path="/EditCustomer/:id" element={<EditCustomer/>}/>
-        <Route path="/CustomerDetails/:id" element={<CustomerDetails/>}/>
-        <Route path="/Ticket/:id" element={<Ticket/>}/>
-        <Route path="/ViewTicket" element={<ViewTicket/>}/>
-        <Route path="/MyTickets/:userRole" element={<MyTickets />}/>
-        <Route path="/TicketDetails/:id" element={<TicketDetails/>}/>
-        <Route path="/NewFollowUp/:id" element={<NewFollowUp/>}/>
-        <Route path="/Quotation/:id" element={<Quotation/>}/>
-        <Route path="/ViewQuotation"element={<ViewQuotation/>}/>
-        <Route path="/QuotationDetails/:id"element={<QuotationDetails/>}/>
-        <Route path="/AddSales" element={<AddSales/>}/>
-        <Route path="/ViewSales" element={<ViewSales/>}/>
-        <Route path="/SalesDetails/:id" element={<SalesDetails/>} />
-        <Route path="/ViewPayment" element={<ViewPayment/>}/>
-        <Route path="/Profile" element={<Profile/>} />
-        <Route path="/Candidate" element={<Candidate/>} />
-        <Route path="/ViewCandidates" element={<ViewCandidates/>} />
+        <Route path="/addProduct" element={<PrivateRoute><Product /></PrivateRoute>} />
+        <Route path="/AddLead" element={<PrivateRoute><AddLead /></PrivateRoute>} />
+        <Route path="/ViewLeads" element={<PrivateRoute><ViewLeads/></PrivateRoute>}/>
+        <Route path="/EditLead/:id" element={<PrivateRoute><EditLead/></PrivateRoute>}/>
+        <Route path="/LeadDetails/:id" element={<PrivateRoute><LeadDetails/></PrivateRoute>}/>
+        <Route path="/FollowUp/:id" element={<PrivateRoute><FollowUp/></PrivateRoute>}/>
+        <Route path="/ShowFollowUp" element={<PrivateRoute><ShowFollowUp/></PrivateRoute>}/>
+        <Route path="/Product" element={<PrivateRoute><AllProduct/></PrivateRoute>}/>
+        <Route path="/ProductDetails/:id" element={<PrivateRoute><ProductDetails/></PrivateRoute>}/>
+        <Route path="/Customer" element={<PrivateRoute><Customer/></PrivateRoute>}/>
+        <Route path="/EditCustomer/:id" element={<PrivateRoute><EditCustomer/></PrivateRoute>}/>
+        <Route path="/CustomerDetails/:id" element={<PrivateRoute><CustomerDetails/></PrivateRoute>}/>
+        <Route path="/Ticket/:id" element={<PrivateRoute><Ticket/></PrivateRoute>}/>
+        <Route path="/ViewTicket" element={<PrivateRoute><ViewTicket/></PrivateRoute>}/>
+        <Route path="/MyTickets/:userRole" element={<PrivateRoute><MyTickets /></PrivateRoute>}/>
+        <Route path="/TicketDetails/:id" element={<PrivateRoute><TicketDetails/></PrivateRoute>}/>
+        <Route path="/NewFollowUp/:id" element={<PrivateRoute><NewFollowUp/></PrivateRoute>}/>
+        <Route path="/Quotation/:id" element={<PrivateRoute><Quotation/></PrivateRoute>}/>
+        <Route path="/ViewQuotation"element={<PrivateRoute><ViewQuotation/></PrivateRoute>}/>
+        <Route path="/QuotationDetails/:id"element={<PrivateRoute><QuotationDetails/></PrivateRoute>}/>
+        <Route path="/AddSales" element={<PrivateRoute><AddSales/></PrivateRoute>}/>
+        <Route path="/ViewSales" element={<PrivateRoute><ViewSales/></PrivateRoute>}/>
+        <Route path="/SalesDetails/:id" element={<PrivateRoute><SalesDetails/></PrivateRoute>} />
+        <Route path="/ViewPayment" element={<PrivateRoute><ViewPayment/></PrivateRoute>}/>
+        <Route path="/Profile" element={<PrivateRoute><Profile/></PrivateRoute>} />
+        <Route path="/Candidate" element={<PrivateRoute><Candidate/></PrivateRoute>} />
+        <Route path="/ViewCandidates" element={<PrivateRoute><ViewCandidates/></PrivateRoute>} />
     </Routes>
   );
 }

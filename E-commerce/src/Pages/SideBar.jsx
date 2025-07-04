@@ -47,8 +47,8 @@ export default function CRMLayout() {
             <li><Link to="/ViewSales" className="nav-link">💰 Sales</Link></li>
             <li><Link to="/ViewPayment" className="nav-link">💳 Payment</Link></li>
              <li><Link to="/ViewCandidates" className="nav-link">🤵 Candidate</Link></li>
+             <li style={{margin:"0",padding:"0"}}>
             {parsedUser && (
-              <li>
                 <button
                   onClick={() => {
                     localStorage.clear();
@@ -64,8 +64,8 @@ export default function CRMLayout() {
                 >
                   🚪 Logout
                 </button>
-              </li>
             )}
+            </li>
           </ul>
         </aside>
 

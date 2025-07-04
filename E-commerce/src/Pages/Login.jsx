@@ -26,39 +26,32 @@ export default function Login() {
       return;
     }
 
-    fetch("http://localhost:8007/api/AllUser", {
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        const allUsers = data.data;
-        const matchUser = allUsers.find(
-          (user) =>
-            user.email === isLogin.email &&
-            user.password === isLogin.password
-        );
+   fetch("http://localhost:8007/api/Login", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(isLogin),
+})
+  .then((res) => res.json())
+  .then((data) => {
+    if (data.token) {
+      const user = data.user;
+      const userObj = {
+        userId: user._id,
+        userName: user.name,
+        userEmail: user.email,
+        userRole: user.role,
+        userImage: user.Image,
+        assigner: user.role,
+      };
+      localStorage.setItem("user", JSON.stringify(userObj));
+      localStorage.setItem("token", data.token);
+      alert("Login Successful");
+      navigate("/");
+    } else {
+      alert("Invalid credentials");
+    }
+  });
 
-        if (matchUser) {
-          const userObj = {
-            userId: matchUser._id,
-            userName: matchUser.name,
-            userEmail: matchUser.email,
-            userRole: matchUser.role,
-            userImage: matchUser.Image,
-            assigner: matchUser.role,
-            password: matchUser.password,
-          };
-          localStorage.setItem("user", JSON.stringify(userObj));
-          alert("Login Successfully");
-          navigate("/");
-        } else {
-          alert("Invalid email or password");
-        }
-      })
-      .catch((error) => {
-        console.error("Login Error:", error);
-        alert("Something went wrong. Please try again.");
-      });
   };
 
   return (

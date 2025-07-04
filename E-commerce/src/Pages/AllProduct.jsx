@@ -33,15 +33,8 @@ export default function AllProduct() {
           }}
         >
           <h1 style={{ margin: 0 }}>🛍️ All Products</h1>
-          <Link to="/addProduct" className="addLeadBtn" style={{
-            backgroundColor: "#007bff",
-            color: "#fff",
-            padding: "10px 16px",
-            borderRadius: "6px",
-            textDecoration: "none",
-            fontWeight: "bold"
-          }}>
-            ➕ Add Product
+          <Link to="/addProduct" className="addLeadBtn1" >
+            ➕ Add 
           </Link>
         </div>
 
@@ -83,10 +76,10 @@ export default function AllProduct() {
                   <p><b>Category:</b> {v.category}</p>
                   <p><b>Price:</b> ₹{v.Price}</p>
                   <p><b>Stock:</b> {v.stock}</p>
-                  <p><b>Rating:</b> ⭐ {v.rate}</p>
+                  <p style={{marginBottom:"20px"}}><b>Rating:</b> ⭐ {v.rate}</p>
                    </Link>
                   <a  href="/AddLead"style={{
-                    marginTop: "10px",
+                    // marginTop: "100px",
                     backgroundColor: "skyblue",
                     border: "none",
                     padding: "8px 14px",

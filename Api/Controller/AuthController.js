@@ -51,7 +51,14 @@ module.exports.Login=async(req,res)=>{
             // if(await bcrypt.compare(req.body.password,checkEmail.password)){
                 let token=jwt.sign({userData:checkEmail},"Admin",{expiresIn:"1h"})
                 if(token){
-                    return res.status(200).json({msg:"login successfully",data:token})
+                    return res.status(200).json({msg:"login successfully",    token,
+      user: {
+        _id: checkEmail._id,
+        name: checkEmail.name,
+        email: checkEmail.email,
+        role: checkEmail.role,
+        Image: checkEmail.Image,
+      },})
                 // }
                     }else{
                         return res.status(200).json({msg:'somthing went Wrong'})
@@ -718,7 +725,7 @@ exports.AddPayment = async (req, res) => {
     // Populate customer and return
     const populatedPayment = await Payment.findById(payment._id).populate("customerId");
 
-    return res.status(200).json({ msg: "Payment Added",payment: populatedPaymentss});
+    return res.status(200).json({ msg: "Payment Added",payment: populatedPayment});
   } catch (err) {
     console.log(err)
     return res.status(500).json({ error: err.message });

@@ -63,8 +63,9 @@ export default function EditCustomer() {
   return (
     <div className="viewleads-container">
       <SideBar />
-      <div className="main-content">
-        <div className="edit-header">
+      <div className="main-content" style={{width:"700px"}}>
+       <div >
+         <div className="edit-header">
           <h2>Edit Customer</h2>
           <Link to="/Customer" className="back-btn">← View Customers</Link>
         </div>
@@ -128,6 +129,7 @@ export default function EditCustomer() {
           <button type="submit" className="submit-btn">Update Customer</button>
         </form>
       </div>
+       </div>
     </div>
   );
 }
