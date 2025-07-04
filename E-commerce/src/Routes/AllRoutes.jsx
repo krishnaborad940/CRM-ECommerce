@@ -30,6 +30,7 @@ import CustomerDetails from "../Pages/CustomerDetails";
 import TicketDetails from "../Pages/TicketDetails";
 import SalesDetails from "../Pages/SalesDetails";
 import PrivateRoute from "./PrivateRoute";
+import PaymentDetails from "../Pages/PaymentDetails";
 
 export default function AllRoutes() {
   return (
@@ -62,6 +63,7 @@ export default function AllRoutes() {
         <Route path="/ViewSales" element={<PrivateRoute><ViewSales/></PrivateRoute>}/>
         <Route path="/SalesDetails/:id" element={<PrivateRoute><SalesDetails/></PrivateRoute>} />
         <Route path="/ViewPayment" element={<PrivateRoute><ViewPayment/></PrivateRoute>}/>
+        <Route path="/PaymentDetails/:id" element={<PrivateRoute><PaymentDetails/></PrivateRoute>}/>
         <Route path="/Profile" element={<PrivateRoute><Profile/></PrivateRoute>} />
         <Route path="/Candidate" element={<PrivateRoute><Candidate/></PrivateRoute>} />
         <Route path="/ViewCandidates" element={<PrivateRoute><ViewCandidates/></PrivateRoute>} />

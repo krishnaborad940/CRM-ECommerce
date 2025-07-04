@@ -12,35 +12,34 @@ export default function Candidate() {
     resume: null, coverLetter: null, contract: null, profileImage: null
   });
 
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: files ? files[0] : value
-    }));
-  };
+      const handleChange = (e) => {
+        const { name, value, files } = e.target;
+        setFormData((prev) => ({
+          ...prev,
+          [name]: files ? files[0] : value
+        }));
+      };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const data = new FormData();
-    for (let key in formData) {
-      if (formData[key]) {
-        data.append(key, formData[key]);
-      }
-    }
+      const handleSubmit = async (e) => {
+          e.preventDefault();
+        const data = new FormData();
+          for (let key in formData) {
+            if (formData[key]) {
+              data.append(key, formData[key]);
+            }
+        }
 
     try {
-      const res = await fetch("http://localhost:8007/api/AddCandidate", {
-        method: "POST",
-        body: data,
-      });
-      const result = await res.json();
-      console.log("Server response:", result);
-      alert("Candidate created successfully!");
+        const res = await fetch("http://localhost:8007/api/AddCandidate", {
+          method: "POST",
+          body: data,
+        });
+        const result = await res.json();
+        console.log("Server response:", result);
+        alert("Candidate created successfully!");
     } catch (error) {
-      console.error("Error submitting form:", error);
-      alert("Something went wrong");
+        console.error("Error submitting form:", error);
+        alert("Something went wrong");
     }
   };
 

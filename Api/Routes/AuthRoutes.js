@@ -67,6 +67,7 @@ routes.get("/ViewSalesDetails/:id",AuthCtl.ViewSalesDetails)
 // payment
 routes.post("/AddPayment",AuthCtl.AddPayment)
 routes.get("/ViewPayments",AuthCtl.ViewPayments)
+routes.get("/ViewPaymentDetails/:id",AuthCtl.ViewPaymentDetails)
 
 // Candidate
 routes.post("/AddCandidate",Candidate.uploadeImageFile,AuthCtl.AddCandidate)

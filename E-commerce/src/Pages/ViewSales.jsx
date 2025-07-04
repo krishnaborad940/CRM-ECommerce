@@ -136,7 +136,7 @@ const totalPending = salesList
 
 
         <div className="quotation-container">
-          <table className="quotation-table">
+          <table className="lead-table">
             <thead>
               <tr>
                 <th>Date</th>
@@ -145,7 +145,8 @@ const totalPending = salesList
                 <th>Total (₹)</th>
                 <th>Payment</th>
                 <th>Created By</th>
-                <th>Action</th>
+                <th>Payment</th>
+                <th>Details</th>
               </tr>
             </thead>
             <tbody>
@@ -170,7 +171,7 @@ const totalPending = salesList
                     )}
                   </td>
                   <td>{sale.createBy?.name || "N/A"}</td>
-                  <td>
+                  <td style={{alignItems:"center",marginRight:"5px"}}>
                     {sale.PaymentStatus === "Paid" ? (
                       <span className="converted">✔️</span>
                     ) : (
@@ -181,8 +182,8 @@ const totalPending = salesList
                         ➕ Add Payment
                       </button>
                     )}
-                  </td>
-                  <td><Link to={`/SalesDetails/${sale._id}`}>View</Link></td>
+                 </td>
+                 <td> <Link to={`/SalesDetails/${sale._id}`}><button className="btn btn-edit" style={{fontSize:"18px",color:"green"}}><i class="ri-eye-fill"></i></button></Link></td>
                 </tr>
               ))}
             </tbody>

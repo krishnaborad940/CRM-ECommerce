@@ -217,7 +217,7 @@ module.exports.UpdateLead=async(req,res)=>{
 }
 module.exports.LeadDetails=async(req,res)=>{
     try{
-        let findLead=await Lead.findById(req.params.id).populate("product").populate("assigner")
+        let findLead=await Lead.findById(req.params.id).populate("product")
         if(findLead){
             return res.status(200).json({msg:"lead find",data:findLead})
         }else{
@@ -634,29 +634,28 @@ module.exports.ViewQuotationById=async(req,res)=>{
 module.exports.AddSales = async (req, res) => {
   try {
     const {totalAmount,PaymentStatus,saleDate,QuotationId,lead,product,createBy,customerId} = req.body;
-
-  const findCustomer=await Customer.findById(req.body.customerId).populate("product").populate('lead').populate("assigner")
-const quotation = await Quotation.findById(req.body.QuotationId);
+    const findCustomer=await Customer.findById(req.body.customerId).populate("product").populate('lead').populate("assigner")
+    const quotation = await Quotation.findById(req.body.QuotationId);
     // Create sales entry
     const sale = await Sales.create({
-        QuotationId:QuotationId,
+      QuotationId:QuotationId,
       customerId: customerId,
       lead: quotation?.lead._id ,
-       product: req.body.products.map((item) => ({
-    productId: item.productId,  // <- check karo ye exist karta hai ya nahi
-    quantity: item.quantity,
-    price: item.Price,
-  })),
+      product: req.body.products.map((item) => ({
+            productId: item.productId,  
+            quantity: item.quantity,
+            price: item.Price,
+            })),
       totalAmount: req.body.totalAmount,
       createBy: req.body.createBy,
       PaymentStatus: req.body.PaymentStatus || "Pending",
       saleDate: req.body.saleDate || Date.now(),
     });
-    if(sale){
-        return res.status(200).json({msg:'sale added sucessfuly',data:sale})
-    }else{
-            return res.status(200).json({msg: "Sales Added Successfully",data: sale });
-    }
+            if(sale){
+                return res.status(200).json({msg:'sale added sucessfuly',data:sale})
+            }else{
+                    return res.status(200).json({msg: "Sales Added Successfully",data: sale });
+            }
   } catch (err) {
     console.error("Sales Add Error:", err);
     return res.status(500).json({msg: "Something went wrong",error: err.message});
@@ -742,6 +741,18 @@ module.exports.ViewPayments=async(req,res)=>{
     }catch(err){
         console.log(err)
         return res.status(200).json({msg:"Somthing Went Wrong"})
+    }
+}
+module.exports.ViewPaymentDetails=async(req,res)=>{
+    try{
+        let findPayment=await Payment.findById(req.params.id).populate('customerId').populate('saleId');
+            if(findPayment){
+                return res.status(200).json({msg:'Payment details is here',data:findPayment})
+            }else{
+                return res.status(200).json({msg:'Payment is Not Found'})
+            }
+    }catch(err){
+        return res.status(200).json({msg:"somthing went wrong",data:err})
     }
 }
 module.exports.UpdateProfile=async(req,res)=>{

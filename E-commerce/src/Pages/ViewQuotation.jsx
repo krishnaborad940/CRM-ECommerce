@@ -75,7 +75,7 @@ export default function ViewQuotations() {
                 </span>
               </td>
               <td>{quote.createdBy?.name || "N/A"}</td>
-              <td><Link to={`/QuotationDetails/${quote._id}`}>View</Link></td>
+              <td><Link to={`/QuotationDetails/${quote._id}`}><button className="btn btn-edit" style={{fontSize:"18px",color:"green"}}><i class="ri-eye-fill"></i></button></Link></td>
                  <td>
                  
                       {quote.status === "Approved" ? (

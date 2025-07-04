@@ -10,7 +10,7 @@ const Strategy=require("./config/passport-jwt")
 const session=require("express-session")
 
 app.use(cors())
-app.use(express.json()); // ✅ JSON parsing
+app.use(express.json()); 
 app.use(express.urlencoded({ extended: true }));
 app.use("/Uploads/Auth",express.static(path.join(__dirname,'Uploads/Auth')))
 app.use("/Uploads/Product",express.static(path.join(__dirname,'Uploads/Product')))

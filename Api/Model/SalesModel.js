@@ -17,7 +17,8 @@ const SalesSchema=mongoose.Schema({
     {
         productId:{type:mongoose.Schema.Types.ObjectId,ref:"Product", required:true,},
             quantity:Number,
-            price:Number    
+            price:Number  ,
+            title:String  
             
    }],
    lead:{

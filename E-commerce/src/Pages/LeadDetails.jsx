@@ -3,8 +3,8 @@ import { Link, useParams } from "react-router-dom";
 import SideBar from "../Pages/SideBar";
 
 export default function LeadDetails() {
-  const [Lead, setLead] = useState(null); // Single product object
-  const { id } = useParams(); // UseParams should be called like a function
+  const [Lead, setLead] = useState(null);
+  const { id } = useParams(); 
 
   useEffect(() => {
     fetch(`http://localhost:8007/api/LeadDetails/${id}`)
@@ -57,7 +57,7 @@ export default function LeadDetails() {
             <p><strong>product:</strong> {Lead.product?.title}-₹{Lead.product?.Price}</p>
             <p><strong>Next-FollowUp:</strong> {Lead.nextFollowup}</p>
             <p><strong>Remark:</strong>  {Lead.remark}</p>
-            <p><strong>Status:</strong>  {Lead.status}</p>
+            <p><strong>Status:</strong> <span style={{color:"green"}}> {Lead.status}</span></p>
             <p><strong>Assigner:</strong>  {Lead.role}</p>
 
 

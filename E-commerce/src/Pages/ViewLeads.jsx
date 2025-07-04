@@ -77,18 +77,18 @@ export default function ViewLeads() {
                   <td>{v.remark}</td>
                   <td>{v.status}</td>
                   <td>{v.role}</td>
-                  <td><button className="btn btn-edit" onClick={() => navigate(`/EditLead/${v._id}`)}>✏️</button></td>
-                 <td><button className="btn btn-delete" onClick={() => handleDelete(v._id)}>🗑️</button></td>
-                 <td> <button className="btn btn-follow" onClick={() => navigate(`/FollowUp/${v._id}`)}>📞</button></td>
-                  <td>
+                  <td style={{display:"flex",alignItems:"center"}}><button className="btn btn-edit"style={{marginRight:"5px"}} onClick={() => navigate(`/EditLead/${v._id}`)}>✏️</button>
+                 <button className="btn btn-delete" style={{marginRight:"5px"}} onClick={() => handleDelete(v._id)}>🗑️</button>
+                  <button className="btn btn-follow" style={{marginRight:"5px"}} onClick={() => navigate(`/FollowUp/${v._id}`)}>📞</button>
+                  
                     {v.status === "Converted" ? (
-                      <span className="converted">✔️</span>
+                      <span className="converted"><button className="btn btn-edit">✔️</button></span>
                     ) : (
-                      <button className="btn btn-convert" onClick={() => handleConvert(v._id)}>Convert</button>
+                      <button className="btn btn-convert" style={{backgroundColor:"#aab7b8 "}} onClick={() => handleConvert(v._id)}>Convert</button>
                     )}
-                  </td>
-                  <td><Link to={`/Quotation/${v._id}`}>Add </Link></td>
-                  <td><Link to={`/LeadDetails/${v._id}`}>View </Link></td>
+                 </td>
+                  <td><Link to={`/Quotation/${v._id}`}><button className="btn btn-edit" style={{fontSize:"18px"}}><i class="ri-folder-add-fill"></i></button> </Link></td>
+                  <td><Link to={`/LeadDetails/${v._id}`}><button className="btn btn-edit" style={{fontSize:"18px"}}><i class="ri-eye-fill"></i></button> </Link></td>
                 </tr>
               ))}
             </tbody>

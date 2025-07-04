@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import SideBar from "./SideBar";
+import { Link } from "react-router-dom";
 
 
 export default function ViewPayment(){
@@ -34,7 +35,8 @@ export default function ViewPayment(){
                   <td>{payment.amount}
                   </td>
                   <td>{payment.method}</td>
-                   <td>{payment.saleId?.PaymentStatus}</td>
+                   <td style={{color:"green"}}>{payment.saleId?.PaymentStatus}</td>
+                   <td><Link to={`/PaymentDetails/${payment._id}`}><button className="btn btn-edit"><i class="ri-eye-fill"></i></button></Link></td>
                 </tr>
               ))}
             </tbody>
