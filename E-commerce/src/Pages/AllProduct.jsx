@@ -22,7 +22,7 @@ export default function AllProduct() {
       }, []);
 
       const filteredProducts = seeProduct.filter((product) => {
-        const matchesSearch = product.title.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesSearch = product.category.toLowerCase().includes(searchTerm.toLowerCase()) ||product.title.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesCategory = categoryFilter ? product.category === categoryFilter : true;
         return matchesSearch && matchesCategory;
       });
