@@ -1,2 +1,5 @@
-# Ignore node_modules everywhere
+# Ignore all node_modules folders
+node_modules/
+Api/node_modules/
+E-commerce/node_modules/
 **/node_modules/
