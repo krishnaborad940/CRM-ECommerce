@@ -14,13 +14,14 @@ export default function Profile() {
 
   useEffect(() => {
     const storeUser = localStorage.getItem("user");
+    console.log(storeUser)
     if (storeUser) {
       const parsedUser = JSON.parse(storeUser);
       setUser(parsedUser);
       setFormData({
         name: parsedUser.userName,
         email: parsedUser.userEmail,
-        password: parsedUser.password,
+        password: parsedUser.userPassword,
         Image: parsedUser.userImage,
         role: parsedUser.userRole,
       });
@@ -58,9 +59,11 @@ export default function Profile() {
           userName: formData.name,
           userEmail: formData.email,
           userRole: formData.role,
-          userImage: data?.data?.Image || user.userImage
+          userImage: data?.data?.Image || user.userImage,
+          userPassword:formData.password
         };
         localStorage.setItem("user", JSON.stringify(updatedUser));
+        // console.log(updatedUser)
         setUser(updatedUser);
         setEditMode(false);
       })
@@ -87,7 +90,7 @@ export default function Profile() {
                 <p><strong>Name:</strong> {user.userName}</p>
                 <p><strong>Email:</strong> {user.userEmail}</p>
                 <p><strong>Role:</strong> {user.userRole}</p>
-                <p><strong>Password:</strong> {user.password}</p>
+                {/* <p><strong>Password:</strong> {user.userPassword}</p> */}
                 <button onClick={() => setEditMode(true)}>✏️ Edit Profile</button>
               </div>
             </div>
@@ -104,7 +107,7 @@ export default function Profile() {
               <form onSubmit={handleUpdate}>
                 <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Name" required />
                 <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" required />
-                <input type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Password" />
+                {/* <input type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Password" /> */}
                 <input type="file" name="Image" accept="image/*" onChange={handleChange} />
             
                 <select name="role" value={formData.role} onChange={handleChange}>

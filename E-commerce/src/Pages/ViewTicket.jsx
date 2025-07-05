@@ -96,7 +96,7 @@ const handleClose = (_id) => {
           <button className="btn btn-convert" onClick={() => handleClose(v._id)}>🔁 Close</button>
         )}
       </td>
-      <td><Link to={`/TicketDetails/${v._id}`}>View</Link></td>
+      <td><Link to={`/TicketDetails/${v._id}`}><button className="btn btn-edit" style={{color:'green',fontSize:'18px'}}><i class="ri-eye-fill"></i></button></Link></td>
       
               </tr>
             ))}

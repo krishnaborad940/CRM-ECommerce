@@ -1,15 +1,30 @@
 import React, { useEffect, useState } from "react";
 import "../App.css";
 import SideBar from '../Pages/SideBar'
-
+import * as yup from 'yup';
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useNavigate } from "react-router-dom";
 export default function AddSales() {
   const [customers, setCustomers] = useState([]);
   const [products, setProducts] = useState([]);
-  const [selectedCustomer, setSelectedCustomer] = useState("");
+  // const [selectedCustomer, setSelectedCustomer] = useState("");
   const [productItems, setProductItems] = useState([
-    { productId: "", quantity: 1, Price: 0 },
+    { productId: "", quantity: 1, Price: 0 ,title:''},
   ]);
   const [totalAmount, setTotalAmount] = useState(0);
+
+  const navigate=useNavigate()
+  const schema=yup.object().shape({
+    customerId:yup.string().required("Please Select Customer"),
+    productId:yup.string().required("Please Fill Product Details")
+  })
+
+  const {
+    register,
+    handleSubmit,
+    formState:{errors}
+  }=useForm({resolver:yupResolver(schema)})
 
   let user=JSON.parse(localStorage.getItem("user"))?.userId
   let userId=user?.userId
@@ -50,10 +65,10 @@ export default function AddSales() {
         ]);
       };
 
-      const handleSubmit = async (e) => {
-        e.preventDefault();
+      const onsubmit = async (data) => {
+        // e.preventDefault();
         const payload = {
-          customerId: selectedCustomer,
+          customerId: data.customerId,
           products: productItems,
           totalAmount,
           createBy:userId
@@ -65,7 +80,8 @@ export default function AddSales() {
         });
         const result = await res.json();
             if (res.ok) {
-              alert("Sale added successfully!");
+              // alert("Sale added successfully!");
+              navigate("/ViewSales")
             } else {
               alert("Error: " + result.msg);
             }
@@ -76,9 +92,14 @@ export default function AddSales() {
          <div className="main-container">
               <div className="add-sales-container">
                   <h2>Add Sale</h2>
-                  <form className="add-sales-form" onSubmit={handleSubmit}>
+                  <form className="add-sales-form" onSubmit={handleSubmit(onsubmit)}>
                         <label>Customer:</label>
-                        <select value={selectedCustomer} onChange={(e) => setSelectedCustomer(e.target.value)} required >
+                        <select
+                        //  value={selectedCustomer}
+                          name="customerId" 
+                          {...register('customerId')}
+                          // onChange={(e) => setSelectedCustomer(e.target.value)} required
+                           >
                               <option value="">-- Select Customer --</option>
                                 {customers.map((c) => (
                                   <option key={c._id} value={c._id}>
@@ -86,16 +107,19 @@ export default function AddSales() {
                                   </option>
                                 ))}
                         </select>
+                        {errors.customerId && <p style={{color:'red'}}>{errors.customerId.message}</p>}
 
                         <h4>Products</h4>
                           {productItems.map((item, index) => (
                             <div className="product-item" key={index}>
                               <select
-                                value={item.productId}
+                              name="productId"
+                              {...register('productId')}
+                                // value={item.productId}
                                 onChange={(e) =>
                                   handleProductChange(index, "productId", e.target.value)
                                 }
-                                required
+                                // required
                               >
                                 <option value="">Select Product</option>
                                 {products.map((p) => (
@@ -104,7 +128,7 @@ export default function AddSales() {
                                   </option>
                                 ))}
                               </select>
-
+                                 
                               <input
                                 type="number"
                                 value={item.quantity}
@@ -128,6 +152,7 @@ export default function AddSales() {
                               />
                             </div>
                           ))}
+                          {errors.productId && <p style={{color:'red'}}>{errors.productId.message}</p>}
                           <button type="button" onClick={addProductItem} className="add-btn">+ Add Product </button>
                           <div className="total-amount">Total: ₹{totalAmount}</div>
                             <button type="submit" className="submit-btn">  Submit Sale</button>

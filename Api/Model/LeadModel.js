@@ -21,7 +21,6 @@ const LeadSchema=mongoose.Schema({
       status:{
         type:String,
         enum:["New","Follow-Up","Intrested","Converted","Closed"],
-        
         required:true
     },
     nextFollowup:{
