@@ -5,6 +5,9 @@ const AuthCtl=require('../Controller/AuthController');
 const Auth = require('../Model/AuthModel');
 const Product=require("../Model/ProductModel");
 const Candidate=require("../Model/CandidateModel")
+const Companies=require("../Model/CompaniesModel");
+const Lead = require('../Model/LeadModel');
+
 
 routes.post("/",Auth.uploadImageFile,AuthCtl.Register)
 routes.post("/Login",AuthCtl.Login)
@@ -18,11 +21,11 @@ routes.get("/showProduct",AuthCtl.showProduct)
 routes.get("/ProductDetails/:id",AuthCtl.ProductDetails)
 
 
-routes.post("/AddLead",AuthCtl.AddLead)
+routes.post("/AddLead",Lead.uploadImageFile,AuthCtl.AddLead)
 routes.get("/ViewLead",AuthCtl.ViewLead)
 routes.delete("/DeleteLead/:id",AuthCtl.DeleteLead)
 routes.get("/editLead/:id",AuthCtl.editLead)
-routes.put("/UpdateLead/:id",AuthCtl.UpdateLead)
+routes.put("/UpdateLead/:id",Lead.uploadImageFile,AuthCtl.UpdateLead)
 routes.get("/LeadDetails/:id",AuthCtl.LeadDetails)
 
 
@@ -35,6 +38,9 @@ routes.get("/ViewCustomerDetails/:id",AuthCtl.ViewCustomerDetails)
 // totalCount
 routes.get("/dashCount",AuthCtl.dashCount)
 routes.get("/ResentActivities",AuthCtl.ResentActivities)
+routes.get("/MonthlyLeadData",AuthCtl.MonthlyLeadData)
+routes.get("/MonthlySaleData",AuthCtl.MonthlySaleData)
+
 // allCustomer
 routes.get("/AllCustomer",AuthCtl.AllCustomer)
 routes.get("/editCustomer/:id",AuthCtl.editCustomer)
@@ -72,6 +78,15 @@ routes.get("/ViewPaymentDetails/:id",AuthCtl.ViewPaymentDetails)
 // Candidate
 routes.post("/AddCandidate",Candidate.uploadeImageFile,AuthCtl.AddCandidate)
 routes.get("/ViewCandidate",AuthCtl.ViewCandidate)
+
+
+routes.post("/AddCompanies",Companies.uploadImageFile,AuthCtl.AddCompanies)
+routes.get("/ViewCompanies",AuthCtl.ViewCompanies)
+routes.delete("/DeleteCompanies/:id",AuthCtl.DeleteCompanies)
+routes.get("/EditCompanies/:id",AuthCtl.EditCompanies)
+routes.put("/UpdateCompanies/:id",Companies.uploadImageFile,AuthCtl.UpdateCompanies)
+
+
 
 module.exports=routes
 

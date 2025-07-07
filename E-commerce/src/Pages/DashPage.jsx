@@ -29,8 +29,9 @@ export default function DashPage() {
     TotalSalesAmount: 0,
     QuotationCount:0
   }); 
-
+const [lineChartData, setLineChartData] = useState([]);
   const [recentActivities, setRecentActivities] = useState([]);
+  const [barChartData, setBarChartData] = useState([]);
 
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#aa00ff"];
 
@@ -42,19 +43,22 @@ export default function DashPage() {
     { name: "Sales", count: count.SalesCount },
   ];
 
-  const lineChartData = [
-    { month: "Jan", leads: 5 },
-    { month: "Feb", leads: 12 },
-    { month: "Mar", leads: 8 },
-    { month: "Apr", leads: 15 },
-  ];
+ useEffect(() => {
+  fetch("http://localhost:8007/api/MonthlyLeadData")
+    .then((res) => res.json())
+    .then((data) =>{
+      console.log("lead data:-",data) 
+      setLineChartData(data)});
 
-  const barChartData = [
-    { month: "Jan", sales: 2 },
-    { month: "Feb", sales: 4 },
-    { month: "Mar", sales: 6 },
-    { month: "Apr", sales: 5 },
-  ];
+  fetch("http://localhost:8007/api/MonthlySaleData")
+    .then((res) => res.json())
+    .then((data) =>{
+      console.log("sales data:-"+ data)
+      setBarChartData(data)
+    });
+}, []);
+
+ 
 
   useEffect(() => {
     fetch("http://localhost:8007/api/dashCount")
@@ -121,7 +125,7 @@ export default function DashPage() {
                   <div style={{ flex: 1, minWidth: 300, height: 300 }}>
                     <ResponsiveContainer>
                       <LineChart data={lineChartData}>
-                        <XAxis dataKey="month" />
+                        <XAxis dataKey="date" />
                         <YAxis />
                         <CartesianGrid strokeDasharray="3 3" />
                         <Tooltip />
@@ -134,7 +138,7 @@ export default function DashPage() {
                   <div style={{ flex: 1, minWidth: 300, height: 300 }}>
                     <ResponsiveContainer>
                       <BarChart data={barChartData}>
-                        <XAxis dataKey="month" />
+                        <XAxis dataKey="date" />
                         <YAxis />
                         <CartesianGrid strokeDasharray="3 3" />
                         <Tooltip />

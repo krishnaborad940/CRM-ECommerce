@@ -31,6 +31,8 @@ import TicketDetails from "../Pages/TicketDetails";
 import SalesDetails from "../Pages/SalesDetails";
 import PrivateRoute from "./PrivateRoute";
 import PaymentDetails from "../Pages/PaymentDetails";
+import AddCompanies from "../Pages/AddCompaines";
+import ViewCompanies from "../Pages/ViewCompanies";
 
 export default function AllRoutes() {
   return (
@@ -56,7 +58,9 @@ export default function AllRoutes() {
         <Route path="/MyTickets/:userRole" element={<PrivateRoute><MyTickets /></PrivateRoute>}/>
         <Route path="/TicketDetails/:id" element={<PrivateRoute><TicketDetails/></PrivateRoute>}/>
         <Route path="/NewFollowUp/:id" element={<PrivateRoute><NewFollowUp/></PrivateRoute>}/>
+        <Route path="/Quotation" element={<PrivateRoute><Quotation/></PrivateRoute>}/>
         <Route path="/Quotation/:id" element={<PrivateRoute><Quotation/></PrivateRoute>}/>
+
         <Route path="/ViewQuotation"element={<PrivateRoute><ViewQuotation/></PrivateRoute>}/>
         <Route path="/QuotationDetails/:id"element={<PrivateRoute><QuotationDetails/></PrivateRoute>}/>
         <Route path="/AddSales" element={<PrivateRoute><AddSales/></PrivateRoute>}/>
@@ -67,6 +71,9 @@ export default function AllRoutes() {
         <Route path="/Profile" element={<PrivateRoute><Profile/></PrivateRoute>} />
         <Route path="/Candidate" element={<PrivateRoute><Candidate/></PrivateRoute>} />
         <Route path="/ViewCandidates" element={<PrivateRoute><ViewCandidates/></PrivateRoute>} />
+        <Route path="/add-companies" element={<PrivateRoute><AddCompanies/></PrivateRoute>} />
+        <Route path="/add-companies/:id" element={<PrivateRoute><AddCompanies/></PrivateRoute>} />
+        <Route path="/view-Companies" element={<PrivateRoute><ViewCompanies/></PrivateRoute>}/>
     </Routes>
   );
 }

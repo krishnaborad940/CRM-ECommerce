@@ -17,6 +17,10 @@ export default function ViewPayment(){
  <div className="viewleads-container">
   <SideBar/>
   <div className="main-content">
+    <div className="header">
+       <h1 style={{ margin: 0 }}>All Payment</h1>
+        <Link to="/ViewSales" className="addLeadBtn"><i class="ri-arrow-left-fill"></i>Back to sale</Link>
+    </div>
          <table className="quotation-table">
             <thead>
               <tr>
@@ -25,6 +29,7 @@ export default function ViewPayment(){
               <th>Amount (₹)</th>
               <th>Method</th>
               <th>Status</th>
+              <th>Action</th>
               </tr>
             </thead>
             <tbody>

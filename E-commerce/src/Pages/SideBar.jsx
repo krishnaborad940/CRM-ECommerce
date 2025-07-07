@@ -39,6 +39,7 @@ export default function CRMLayout() {
           <ul className="nav-list">
             <li><Link to="/" className="nav-link">📊 Dashboard</Link></li>
             <li><Link to="/Product" className="nav-link">🛒 Product</Link></li>
+             <li><Link to="/view-Companies" className="nav-link"><i className="ri-community-line"></i> Companies</Link></li>
             <li><Link to="/viewLeads" className="nav-link">📋 Leads</Link></li>
             <li><Link to="/customer" className="nav-link">👤 Customers</Link></li>
             <li><Link to="/ViewTicket" className="nav-link">🎟️ Ticket</Link></li>

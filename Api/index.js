@@ -15,6 +15,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/Uploads/Auth",express.static(path.join(__dirname,'Uploads/Auth')))
 app.use("/Uploads/Product",express.static(path.join(__dirname,'Uploads/Product')))
 app.use("/Uploads/Candidate",express.static(path.join(__dirname,'Uploads/Candidate')))
+app.use("/Uploads/Companies",express.static(path.join(__dirname,'Uploads/Companies')))
+app.use("/Uploads/Lead",express.static(path.join(__dirname,'Uploads/Lead')))
 
 
 app.use(session({

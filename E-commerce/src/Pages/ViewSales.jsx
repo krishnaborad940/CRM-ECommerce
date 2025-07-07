@@ -144,7 +144,7 @@ const totalPending = salesList
                 <th>Products</th>
                 <th>Total (₹)</th>
                 <th>Payment</th>
-                <th>Created By</th>
+                {/* <th>Created By</th> */}
                 <th>Payment</th>
                 <th>Details</th>
               </tr>
@@ -170,7 +170,7 @@ const totalPending = salesList
                       <span className="status-badge-Pending">Pending</span>
                     )}
                   </td>
-                  <td>{sale.createBy?.name || "N/A"}</td>
+                  {/* <td>{sale.createBy?.name || "N/A"}</td> */}
                   <td style={{alignItems:"center",marginRight:"5px"}}>
                     {sale.PaymentStatus === "Paid" ? (
                       <span className="converted">✔️</span>

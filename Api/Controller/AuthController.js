@@ -13,6 +13,7 @@ const Quotation = require("../Model/QuotationModel");
 const Sales = require("../Model/SalesModel");
 const Payment=require('../Model/PaymentModel');
 const Candidate=require("../Model/CandidateModel");
+const Companies = require("../Model/CompaniesModel");
 module.exports.Register=async(req,res)=>{
     try{
         let checkEmail=await Auth.findOne({email:req.body.email});
@@ -131,8 +132,12 @@ module.exports.ProductDetails=async(req,res)=>{
 }
 module.exports.AddLead = async (req, res) => {
     try {
-        const { name, role,email, phone,assigner, nextFollowup, productId, remark, status } = req.body;
+        const { name, role,email, phone,assigner, nextFollowup, productId, remark, status,companies } = req.body;
         const product = await Product.findById(productId);
+        const company=await Companies.findById(companies)
+      
+   let newImg=await Lead.ImgPath+'/'+req.file.filename
+
         const createLead = await Lead.create({
             name,
             email,
@@ -142,6 +147,8 @@ module.exports.AddLead = async (req, res) => {
             remark,
             assigner,
             status,
+            companies:company._id,
+            Image:newImg
         });
         if(createLead){
             return res.status(200).json({ msg: "Lead Added Successfully", data: createLead });
@@ -155,7 +162,7 @@ module.exports.AddLead = async (req, res) => {
 };
 module.exports.ViewLead=async(req,res)=>{
     try{
-        let showLead=await Lead.find().populate('product').exec();
+        let showLead=await Lead.find().populate('companies').populate('product').exec();
         if(showLead){
             return res.status(200).json({ msg: "all leads", data: showLead })
         }else{
@@ -200,16 +207,27 @@ module.exports.editLead=async(req,res)=>{
 module.exports.UpdateLead=async(req,res)=>{
     try{
             let ceditDetails=await Lead.findById(req.params.id);
-            if(ceditDetails){
-                let updateDetails=await Lead.findByIdAndUpdate(req.params.id,req.body)
-                if(updateDetails){
-                    return res.status(200).json({msg:"Updated Successfully",data:updateDetails})
-                }else{
-                    return res.status(200).json({msg:"Updated failed"})
+            if(req.file){
+                try{
+                    let delpath=path.join(__dirname,'..',ceditDetails.Image)
+                    fs.unlinkSync(delpath)
+                }catch(err){
+                    return res.status(200).json({msg:'Image Error',data:'err'})
                 }
+                req.body.Image=await Lead.ImgPath+'/'+req.file.filename
+                let updateDetails=await Lead.findByIdAndUpdate(req.params.id,req.body)
+                return res.status(200).json({msg:"Updated Successfully",data:updateDetails})
             }else{
-                    return res.status(200).json({msg:"Data Not Found"})
+                req.body.Image=ceditDetails.Image;
+                 let updateDetails=await Lead.findByIdAndUpdate(req.params.id,req.body)
+                return res.status(200).json({msg:"Updated Successfully",data:updateDetails})
             }
+            
+                // if(updateDetails){
+                // }else{
+                //     return res.status(200).json({msg:"Updated failed"})
+                // }
+            
     }catch(err){
         console.log(err)
         return res.status(500).json({ msg: "Something Went Wrong", error: err.message });
@@ -301,6 +319,7 @@ module.exports.dashCount = async (req, res) => {
     const TicketCount = await Ticket.countDocuments();
     const FollowupCount = await FollowUp.countDocuments();
     const SalesCount = await Sales.countDocuments();
+    const QuotationCount=await Quotation.countDocuments()
     const todays = new Date().setHours(0, 0, 0, 0);
 const tomorrow = new Date(todays);
 tomorrow.setDate(tomorrow.getDate() + 1);
@@ -370,6 +389,90 @@ module.exports.ResentActivities=async(req,res)=>{
         return res.status(200).json({msg:"somthing went wrong",data:err})
     }
 }
+
+module.exports.MonthlyLeadData = async (req, res) => {
+  try {
+    const fromDate = new Date();
+    fromDate.setDate(fromDate.getDate() - 4); // last 5 days including today
+
+    const data = await Lead.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: fromDate }
+        }
+      },
+      {
+        $group: {
+          _id: {
+            $dateToString: { format: "%Y-%m-%d", date: "$createdAt" }
+          },
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $sort: { _id: 1 }
+      }
+    ]);
+
+    // Ensure all 5 days present
+    const result = [];
+    for (let i = 4; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      const key = date.toISOString().split("T")[0];
+
+      const match = data.find((d) => d._id === key);
+      result.push({ date: key, leads: match ? match.count : 0 });
+    }
+
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: "Error getting lead stats" });
+  }
+};
+
+module.exports.MonthlySaleData = async (req, res) => {
+  try {
+    const fromDate = new Date();
+    fromDate.setDate(fromDate.getDate() - 4);
+
+    const data = await Sales.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: fromDate }
+        }
+      },
+      {
+        $group: {
+          _id: {
+            $dateToString: { format: "%Y-%m-%d", date: "$createdAt" }
+          },
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $sort: { _id: 1 }
+      }
+    ]);
+
+    const result = [];
+    for (let i = 4; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      const key = date.toISOString().split("T")[0];
+
+      const match = data.find((d) => d._id === key);
+      result.push({ date: key, sales: match ? match.count : 0 });
+    }
+
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: "Error getting sales stats" });
+  }
+};
+
 module.exports.AllCustomer=async(req,res)=>{
     try{
         let findCustomer=await Customer.find().populate("product").exec()
@@ -525,17 +628,38 @@ module.exports.ViewTicketDetails=async(req,res)=>{
 }
 module.exports.MyTickets = async (req, res) => {
   try {
-    const findTicket = await Ticket.find({ assigner: req.params.userId }).populate("Lead").populate("customer");
-    if(findTicket){
-        return res.status(200).json({ msg:'ticket find successfully',data: findTicket });
-    }else{
-            return res.status(200).json({msg:"ticket not find"})
+    const userId = req.params.userId;
+    const user = await Auth.findById(userId);
+    let findTicket;
+    if (user.role === "sales") {
+      const allSalesUsers = await Auth.find({ role: "sales" }, "_id");
+      const salesUserIds = allSalesUsers.map((u) => u._id);
+      findTicket = await Ticket.find({ assigner: { $in: salesUserIds } })
+        .populate("Lead")
+        .populate("customer");
+    } else if(user.role ==='teleCaller'){
+ const allTeleCallerUsers = await Auth.find({ role: "teleCaller" }, "_id");
+      const tlecallerUserId = allTeleCallerUsers.map((u) => u._id);
+      findTicket = await Ticket.find({ assigner: { $in: tlecallerUserId } })
+        .populate("Lead")
+        .populate("customer");
     }
+    else  {
+      findTicket = await Ticket.find({ assigner: userId })
+        .populate("Lead")
+        .populate("customer");
+    }
+
+    return res.status(200).json({
+      msg: findTicket.length ? "Tickets found successfully" : "No tickets found",
+      data: findTicket,
+    });
   } catch (err) {
-    console.log(err);
-    return res.status(200).json({ msg: "something went wrong" });
+    console.log(" Error in MyTickets:", err);
+    return res.status(500).json({ msg: "Something went wrong" });
   }
 };
+
 module.exports.AddNewFollowUp = async (req, res) => {
   try {
     const { remark, nextFollowup, FollowUpType, status,assigner } = req.body;
@@ -820,5 +944,78 @@ module.exports.ViewCandidate=async(req,res)=>{
             }
     }catch(err){
         return res.status(200).json({msg:'Somthing Went Wrong',data:err})
+    }
+}
+module.exports.AddCompanies=async(req,res)=>{
+    try{
+        let newImg='';
+        if(req.file){
+            newImg=await Companies.ImgPath+'/'+req.file.filename
+        }
+        req.body.Image=newImg;
+        let createCompanies=await Companies.create(req.body);
+        return res.status(200).json({msg:'Added Successfully',data:createCompanies})
+    }catch(err){
+        return res.status(200).json({msg:'somthing went wrong',data:err})
+    }
+}
+module.exports.ViewCompanies=async(req,res)=>{
+    try{
+        let findCompanies=await Companies.find();
+        return res.status(200).json({msg:'All Companies',data:findCompanies})
+    }catch(err){
+       return res.status(200).json({msg:'somthing went wrong',data:err})
+    }
+}
+module.exports.DeleteCompanies=async(req,res)=>{
+    try{
+        let findCompanies=await Companies.findById(req.params.id);
+        if(findCompanies){
+           try{
+             let delPath=path.join(__dirname,'..',findCompanies.Image)
+            fs.unlinkSync(delPath)
+           }catch(err){
+            return res.status(200).json({msg:'Image Error',data:err})
+           }
+           let deleteData=await Companies.findByIdAndDelete(findCompanies._id)
+           return res.status(200).json({msg:'All Companies',data:deleteData})
+        }
+    }catch(err){
+       return res.status(200).json({msg:'somthing went wrong',data:err})
+    }
+}
+module.exports.EditCompanies=async(req,res)=>{
+    try{
+        let findCompanies=await Companies.findById(req.params.id);
+        return res.status(200).json({msg:'All Companies',data:findCompanies})
+    }catch(err){
+       return res.status(200).json({msg:'somthing went wrong',data:err})
+    }
+}
+module.exports.UpdateCompanies=async(req,res)=>{
+    try{
+        if(req.file){
+            let findCompanies=await Companies.findById(req.params.id);
+            if(findCompanies){
+                try{
+                    let delpath=path.join(__dirname,'..',findCompanies.Image)
+                fs.unlinkSync(delpath)
+                }catch(err){
+                    return res.status(200).json({msg:'Image Erorr',data:err})
+                }
+                req.body.Image=await Companies.ImgPath+'/'+req.file.filename
+                let updatedata=await Companies.findByIdAndUpdate(req.params.id,req.body)
+                return res.status(200).json({msg:'update Companies',data:updatedata})
+            }
+
+        }else{
+            let findCompanies=await Companies.findById(req.params.id);
+            req.body.image=findCompanies.Image;
+             let updatedata=await Companies.findByIdAndUpdate(req.params.id,req.body)
+                return res.status(200).json({msg:'update Companies',data:updatedata})
+
+        }
+    }catch(err){
+       return res.status(200).json({msg:'somthing went wrong',data:err})
     }
 }

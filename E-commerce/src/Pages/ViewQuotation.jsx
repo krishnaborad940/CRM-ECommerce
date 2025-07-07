@@ -51,7 +51,7 @@ export default function ViewQuotations() {
             <th>Products</th>
             <th>Total (₹)</th>
             <th>Status</th>
-            <th>Created By</th>
+            {/* <th>Created By</th> */}
             <th>Details</th>
             <th>Sale</th>
           </tr>
@@ -74,7 +74,7 @@ export default function ViewQuotations() {
                   {quote.status}
                 </span>
               </td>
-              <td>{quote.createdBy?.name || "N/A"}</td>
+              {/* <td>{quote.createdBy?.name || "N/A"}</td> */}
               <td><Link to={`/QuotationDetails/${quote._id}`}><button className="btn btn-edit" style={{fontSize:"18px",color:"green"}}><i class="ri-eye-fill"></i></button></Link></td>
                  <td>
                  

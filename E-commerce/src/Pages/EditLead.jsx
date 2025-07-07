@@ -16,7 +16,15 @@ export default function EditLead() {
     remark: "",
     status: "",
     role: "",
+    companies:"",
+    Image:null
   });
+   const [companiesList, setCompaniesList] = useState([]);
+  useEffect(() => {
+    fetch("http://localhost:8007/api/ViewCompanies")
+      .then((res) => res.json())
+      .then((data) => setCompaniesList(data.data || []));
+  }, []);
 
   useEffect(() => {
     fetch("http://localhost:8007/api/showproduct")
@@ -36,28 +44,47 @@ export default function EditLead() {
           remark: lead.remark,
           status: lead.status,
           role: lead.role || "",
+          companies:lead.companies || "",
+          Image:lead.Image || null
         });
       });
   }, [id]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+const handleChange = (e) => {
+  const { name, value, files } = e.target;
+  if (name === "Image") {
+    setFormData((prev) => ({ ...prev, Image: files[0] })); // Store the File object
+  } else {
     setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  }
+};
 
-  const handleUpdate = (e) => {
-    e.preventDefault();
-    fetch(`http://localhost:8007/api/UpdateLead/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    })
-      .then((res) => res.json())
-      .then(() => {
-        alert("Lead updated successfully!");
-        navigate("/ViewLeads");
-      });
-  };
+const handleUpdate = (e) => {
+  e.preventDefault();
+
+  const form = new FormData();
+  form.append("name", formData.name);
+  form.append("email", formData.email);
+  form.append("phone", formData.phone);
+  form.append("productId", formData.productId);
+  form.append("nextFollowup", formData.nextFollowup);
+  form.append("remark", formData.remark);
+  form.append("status", formData.status);
+  form.append("role", formData.role);
+  form.append("companies", formData.companies);
+  form.append("Image", formData.Image); // file
+
+  fetch(`http://localhost:8007/api/UpdateLead/${id}`, {
+    method: "PUT",
+    body: form,
+  })
+    .then((res) => res.json())
+    .then(() => {
+      alert("Lead updated successfully!");
+      navigate("/ViewLeads");
+    });
+};
+
 
   return (
     <div className="viewleads-container">
@@ -103,7 +130,7 @@ export default function EditLead() {
               <option value="">-- Select --</option>
               <option value="New">New</option>
               <option value="Follow-Up">Follow-Up</option>
-              <option value="Interested">Interested</option>
+              <option value="Intrested">Intrested</option>
               <option value="Converted">Converted</option>
               <option value="Closed">Closed</option>
             </select>
@@ -117,7 +144,23 @@ export default function EditLead() {
               <option value="Supporter">Supporter</option>
             </select>
           </label>
+          <label>Company</label>
+          <select name="companies" value={formData.companies} onChange={handleChange} id="">
+            <option value="">--select--</option>
+            {companiesList.map((v)=>(
+              <option value={v._id}>{v.name}</option>
+            ))}
+          </select>
 
+              <label htmlFor="">Image</label>
+              <input type="file" name="Image" onChange={handleChange} />
+              {formData.Image && (
+  <img
+    src={typeof formData.Image === "string" ? `http://localhost:8007${formData.Image}` : URL.createObjectURL(formData.Image)}
+    alt="Preview"
+    style={{ width: "80px", height: "80px", borderRadius: "8px", marginBottom: "10px" }}
+  />
+)}
           <button type="submit" className="submit-btn">Update Lead</button>
         </form>
       </div>

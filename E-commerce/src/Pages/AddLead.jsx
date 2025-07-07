@@ -18,7 +18,12 @@ export default function AddLead() {
   //       assigner:"",
   //       role:"teleCaller",
   //     });
-
+  const [companiesList, setCompaniesList] = useState([]);
+useEffect(() => {
+  fetch("http://localhost:8007/api/ViewCompanies")
+    .then((res) => res.json())
+    .then((data) => setCompaniesList(data.data || []));
+}, []);
       const navigate = useNavigate();
               useEffect(() => {
                 const userId = localStorage.getItem("userId");
@@ -35,6 +40,8 @@ export default function AddLead() {
       nextFollowup:yup.date().required("Please Select Next FollowUp Date"),
       remark:yup.string().required("Remark Is Required"),
       role:yup.string().required("Please Select Assigner"),
+      companies:yup.string().required('Please Slect Companie'),
+      // Image:yup.string().required('Image is required'),
     })
     const {
       register,
@@ -52,20 +59,40 @@ export default function AddLead() {
       //   setFormData((prev) => ({ ...prev, [name]: value }));
       // };
       const onsubmit = async (data) => {
-            // e.preventDefault();
-            const res = await fetch("http://localhost:8007/api/AddLead", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(data),
-        });
-        const data1 = await res.json();
-            if (res.status === 200) {
-              // alert("Lead added successfully");
-              navigate("/viewLeads");
-            } else {
-              alert("Error: " + data1.msg);
-            }
-        };
+  const fileInput = document.querySelector('input[name="Image"]');
+  if (!fileInput || fileInput.files.length === 0) {
+    alert("Please upload an image.");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("name", data.name);
+  formData.append("email", data.email);
+  formData.append("phone", data.phone);
+  formData.append("productId", data.productId);
+  formData.append("nextFollowup", data.nextFollowup);
+  formData.append("remark", data.remark);
+  formData.append("status", data.status);
+  formData.append("role", data.role);
+  formData.append("companies", data.companies);
+  formData.append("assigner", localStorage.getItem("userId"));
+
+  // ✅ Append file
+  formData.append("Image", fileInput.files[0]);
+
+  const res = await fetch("http://localhost:8007/api/AddLead", {
+    method: "POST",
+    body: formData,
+  });
+
+  const result = await res.json();
+  if (res.status === 200) {
+    navigate("/viewLeads");
+  } else {
+    alert("Error: " + result.msg);
+  }
+};
+
   return (
     <div className="addlead-container">
          <SideBar/>
@@ -135,6 +162,18 @@ export default function AddLead() {
                         </select>
                         {errors.role && <p style={{color:'red'}}>{errors.role.message}</p>}
                       </label>
+
+                      <label >Company</label>
+                      <select name="companies" {...register("companies")} id="">
+                        <option value="">--select--</option>
+                          {companiesList.map((c) => (
+                            <option key={c._id} value={c._id}>
+                              {c.name}
+                            </option>
+                          ))}
+                      </select>
+                      <label htmlFor="">Image</label>
+                      <input type="file" name="Image"  />
 
                       <button type="submit" className="submit-btn">Add Lead</button>
                 </form>

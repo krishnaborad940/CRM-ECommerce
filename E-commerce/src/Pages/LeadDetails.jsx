@@ -1,11 +1,21 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import SideBar from "../Pages/SideBar";
 
 export default function LeadDetails() {
   const [Lead, setLead] = useState(null);
   const { id } = useParams(); 
+  const navigate=useNavigate()
 
+   const handleDelete = (_id) => {
+      fetch(`http://localhost:8007/api/DeleteLead/${_id}`, {
+        method: "DELETE",
+      })
+        .then((res) => res.json())
+        .then(() => {
+          setLead((pre) => pre.filter((lead) => lead._id !== _id));
+        });
+    };
   useEffect(() => {
     fetch(`http://localhost:8007/api/LeadDetails/${id}`)
       .then((res) => res.json())
@@ -15,6 +25,20 @@ export default function LeadDetails() {
       })
       .catch((err) => console.log("Error:", err));
   }, [id]);
+   const handleConvert = (_id) => {
+      fetch(`http://localhost:8007/api/AddConvert/${_id}`, {
+        method: "POST",
+      })
+        .then((res) => res.json())
+        .then(() => {
+          alert("Converted Successfully");
+          setLead((pre) =>
+            pre.map((lead) =>
+              lead._id === _id ? { ...lead, status: "Converted" } : lead
+            )
+          );
+        });
+    };
 
   if (!Lead) return <p>Loading...</p>;
 
@@ -59,7 +83,17 @@ export default function LeadDetails() {
             <p><strong>Remark:</strong>  {Lead.remark}</p>
             <p><strong>Status:</strong> <span style={{color:"green"}}> {Lead.status}</span></p>
             <p><strong>Assigner:</strong>  {Lead.role}</p>
-
+ <td style={{display:"flex",alignItems:"center"}}><button className="btn btn-edit"style={{marginRight:"5px"}} onClick={() => navigate(`/EditLead/${Lead._id}`)}>✏️</button>
+                 <button className="btn btn-delete" style={{marginRight:"5px"}} onClick={() => handleDelete(Lead._id)}>🗑️</button>
+                  <button className="btn btn-follow" style={{marginRight:"5px"}} onClick={() => navigate(`/FollowUp/${Lead._id}`)}>📞</button>
+                  
+                    {Lead.status === "Converted" ? (
+                      <span className="converted"><button className="btn btn-edit">✔️</button></span>
+                    ) : (
+                      <button className="btn btn-convert" style={{backgroundColor:"#aab7b8 "}} onClick={() => handleConvert(Lead._id)}>Convert</button>
+                    )}
+                 </td>
+                  <td><Link to={`/Quotation/${Lead._id}`}><button className="btn btn-edit" style={{fontSize:"18px"}}><i class="ri-folder-add-fill"></i></button> </Link></td>
 
           </div>
 
