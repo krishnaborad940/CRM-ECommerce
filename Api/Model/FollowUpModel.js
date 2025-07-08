@@ -11,7 +11,7 @@ const FollowUpSchema=mongoose.Schema({
         type:String,
         required:true
     },
-     Lead:{
+     lead:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"Lead",
         required:true

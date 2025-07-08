@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import SideBar from "./SideBar";
-import "../App.css";
 
 export default function Quotation() {
-  const { id } = useParams(); // Lead ID from URL
   const navigate = useNavigate();
 
+  const [leads, setLeads] = useState([]);
+  const [leadId, setLeadId] = useState(""); // ✅ selected lead
   const [status, setStatus] = useState("Pending");
   const [products, setProducts] = useState([]);
   const [items, setItems] = useState([
@@ -19,6 +19,10 @@ export default function Quotation() {
     fetch("http://localhost:8007/api/showproduct")
       .then((res) => res.json())
       .then((data) => setProducts(data.data));
+
+    fetch("http://localhost:8007/api/ViewLead")
+      .then((res) => res.json())
+      .then((data) => setLeads(data.data));
   }, []);
 
   const handleItemChange = (index, field, value) => {
@@ -44,10 +48,7 @@ export default function Quotation() {
   };
 
   const addNewRow = () => {
-    setItems([
-      ...items,
-      { product: "", title: "", quantity: 1, price: 0, total: 0 },
-    ]);
+    setItems([...items, { product: "", title: "", quantity: 1, price: 0, total: 0 }]);
   };
 
   const removeRow = (index) => {
@@ -67,15 +68,15 @@ export default function Quotation() {
     const totalAmount = calculateTotalAmount();
 
     const payload = {
+      leadId, // ✅ send leadId in body
       quotationDate,
       items,
       totalAmount,
       notes,
       status,
-      // customerId
     };
 
-    const res = await fetch(`http://localhost:8007/api/AddQuatation/${id}`, {
+    const res = await fetch(`http://localhost:8007/api/AddQuotation`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -96,6 +97,21 @@ export default function Quotation() {
         <div className="quotation-form">
           <h2 className="form-heading">📄 Create Quotation</h2>
           <form onSubmit={handleSubmit}>
+            {/* ✅ Lead Selection Dropdown */}
+            <label>Select Lead</label>
+            <select
+              value={leadId}
+              onChange={(e) => setLeadId(e.target.value)}
+              required
+            >
+              <option value="">-- Select Lead --</option>
+              {leads.map((lead) => (
+                <option key={lead._id} value={lead._id}>
+                  {lead.name}
+                </option>
+              ))}
+            </select>
+
             <label>Quotation Date</label>
             <input
               type="date"
@@ -139,11 +155,7 @@ export default function Quotation() {
                 <input type="number" value={item.total} readOnly />
 
                 {items.length > 1 && (
-                  <button
-                    type="button"
-                    className="remove-btn"
-                    onClick={() => removeRow(index)}
-                  >
+                  <button type="button" className="remove-btn" onClick={() => removeRow(index)}>
                     ❌ Remove
                   </button>
                 )}
@@ -155,11 +167,7 @@ export default function Quotation() {
             </button>
 
             <label>Status</label>
-            <select
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-              required
-            >
+            <select value={status} onChange={(e) => setStatus(e.target.value)} required>
               <option value="">--select--</option>
               <option value="Pending">Pending</option>
               <option value="Approved">Approved</option>
@@ -167,10 +175,7 @@ export default function Quotation() {
             </select>
 
             <label>Notes</label>
-            <textarea
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-            ></textarea>
+            <textarea value={notes} onChange={(e) => setNotes(e.target.value)}></textarea>
 
             <h4>Total Amount: ₹{calculateTotalAmount()}</h4>
 

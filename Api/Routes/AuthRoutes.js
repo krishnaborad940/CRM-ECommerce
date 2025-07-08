@@ -34,6 +34,8 @@ routes.post("/AddFollowup/:id",AuthCtl.AddFollowup)
 // lead=>customer
 routes.post("/AddConvert/:id",AuthCtl.AddConvert)
 routes.get("/ViewCustomerDetails/:id",AuthCtl.ViewCustomerDetails)
+routes.delete("/DeleteCustomer/:id", AuthCtl.DeleteCustomer);
+
 
 // totalCount
 routes.get("/dashCount",AuthCtl.dashCount)
@@ -57,12 +59,13 @@ routes.get("/AllFollowUp",AuthCtl.AllFollowUp)
 routes.post("/AddClosed/:id",AuthCtl.AddClosed)
 
 // ticket-assigne
-routes.get("/MyTickets/:userId",AuthCtl.MyTickets);
+routes.get("/MyTickets/:id",AuthCtl.MyTickets);
 routes.post("/AddNewFollowUp/:id",AuthCtl.AddNewFollowUp)
 routes.get("/EditLead/:id",AuthCtl.EditLead)
 
 // Quatation
-routes.post("/AddQuatation/:id",AuthCtl.AddQuatation)
+// routes.post("/AddQuatation", AuthCtl.AddQuatation); // ✅ add this
+routes.post("/AddQuatation", AuthCtl.AddQuatation);
 routes.get("/ViewQuotation",AuthCtl.ViewQuotation)
 routes.get("/ViewQuotationById/:id",AuthCtl.ViewQuotationById)
 
@@ -70,6 +73,7 @@ routes.get("/ViewQuotationById/:id",AuthCtl.ViewQuotationById)
 routes.post("/AddSales",AuthCtl.AddSales)
 routes.get("/ViewSales",AuthCtl.ViewSales)
 routes.get("/ViewSalesDetails/:id",AuthCtl.ViewSalesDetails)
+routes.post("/convertSlaes/:id",AuthCtl.convertSlaes)
 // payment
 routes.post("/AddPayment",AuthCtl.AddPayment)
 routes.get("/ViewPayments",AuthCtl.ViewPayments)
@@ -78,6 +82,8 @@ routes.get("/ViewPaymentDetails/:id",AuthCtl.ViewPaymentDetails)
 // Candidate
 routes.post("/AddCandidate",Candidate.uploadeImageFile,AuthCtl.AddCandidate)
 routes.get("/ViewCandidate",AuthCtl.ViewCandidate)
+routes.get("/CandidateDetails/:id",AuthCtl.CandidateDetails)
+
 
 
 routes.post("/AddCompanies",Companies.uploadImageFile,AuthCtl.AddCompanies)

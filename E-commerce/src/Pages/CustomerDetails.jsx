@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import SideBar from "../Pages/SideBar";
 
 export default function CustomerDetails() {
   const [Customer, setCustomer] = useState(null);
   const { id } = useParams(); 
+  const navigate=useNavigate()
 
   useEffect(() => {
     fetch(`http://localhost:8007/api/ViewCustomerDetails/${id}`)
@@ -59,7 +60,7 @@ export default function CustomerDetails() {
                             <p><strong>Remark:</strong>  {Customer?.remark}</p>
                             <p><strong>Status:</strong>  {Customer?.status}</p>
                             <p><strong>Assigner:</strong>  {Customer?.role}</p>
-
+                            <p><button className="btn btn-follow" onClick={() => navigate(`/Ticket/${Customer._id}`)}>🎟️</button></p>
 
                           </div>
 

@@ -39,10 +39,11 @@ const LeadSchema=mongoose.Schema({
         enum:["teleCaller","sales","Supporter"],
         required:true
     },
-    // assigner:{
-    //     type:mongoose.Schema.Types.ObjectId,
-    //     ref:"Auth"
-    // },
+   assigner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Auth",
+    required: true
+},
     Image:{
         type:String,
         required:true

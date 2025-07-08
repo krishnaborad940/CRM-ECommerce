@@ -9,13 +9,31 @@ export default function ViewTicket() {
       InProgress:0,
 closed:0
   })
+  const [open,setOpen]=useState(null)
   const [showLeads, setShowLeads] = useState([]);
   // const navigate = useNavigate();
+
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      const isInsideMenu = e.target.closest(".menu-wrapper");
+      if (!isInsideMenu) {
+        setOpen(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const toggleMenu = (id) => {
+    setOpen(open === id ? null : id);
+  };
 
   useEffect(() => {
     fetch("http://localhost:8007/api/ShowTicket")
       .then((res) => res.json())
       .then((data) => {
+        console.log(data.data)
         const allTickets=data.data
         setShowLeads(allTickets);
               const open = allTickets.filter(t => t.status === "Open").length;
@@ -63,12 +81,12 @@ const handleClose = (_id) => {
          <div className="header">
           <h1 style={{ margin: 0 }}>All Products</h1>
         </div>
-        <table className="lead-table">
+        <table >
           <thead>
             <tr>
+              <th>Customer Name</th>
               <th>subject</th>
               <th>Message</th>
-              <th>Customer Name</th>
               <th>Category</th>
               <th>Status</th>
               <th>Assigner</th>
@@ -77,29 +95,69 @@ const handleClose = (_id) => {
             </tr>
           </thead>
           <tbody>
-            {showLeads.map((v) => (
+            {showLeads.map((v) => {
+              const ImageUrl=v.customer?.lead?.Image.startsWith('http')
+              ?v.customer?.lead?.Image
+              :`http://localhost:8007${v.customer?.lead?.Image}`;
+               const ImageUrl2=v.assigner?.Image.startsWith('http')
+              ?v.assigner?.Image
+              :`http://localhost:8007${v.assigner?.Image}`
+              return (
               <tr key={v._id}>
+                <td><span style={{display:'flex',alignItems:'center',justifyContent:'center'}}><img src={ImageUrl} style={{width:'35px',height:'35px',borderRadius:'50%',marginRight:'10px'}} alt="" />{v.customer?.name} </span></td>
                 <td>{v.subject}</td>
                 <td>{v.message}</td>
-                <td>{v.customer?.name} </td>
                 <td>{v.category}</td>
-                <td>{v.status}</td>
-                <td>{v.role}</td>
-              
-      <td>
-        <button className="btn btn-delete" onClick={() => handleDelete(v._id)}>🗑️</button>
-      </td>
-      <td>
-        {v.status === "Closed" ? (
-          <span className="converted">✔️</span>
-        ) : (
-          <button className="btn btn-convert" onClick={() => handleClose(v._id)}>🔁 Close</button>
-        )}
-      </td>
-      <td><Link to={`/TicketDetails/${v._id}`}><button className="btn btn-edit" style={{color:'green',fontSize:'18px'}}><i class="ri-eye-fill"></i></button></Link></td>
-      
+                <td>  <span className={`status-badge status-${v.status?.toLowerCase().replace("-", "")}`}>
+                    {v.status}
+                  </span></td>
+                <td><span style={{display:'flex',alignItems:'center',justifyContent:'center'}}><img src={ImageUrl2} style={{width:'35px',height:'35px',borderRadius:'50%',marginRight:'10px'}} alt="" />{v.assigner?.name} </span></td>
+                 <td style={{ position: "relative" }} className="menu-wrapper">
+                  <i
+                    className="ri-more-2-line"
+                    onClick={() => toggleMenu(v._id)}
+                    style={{ cursor: "pointer" }}
+                  ></i>
+
+                  {open === v._id && (
+                    <div className="Menu">
+                      <div className="menuBtn">
+                        <Link to={`/TicketDetails/${v._id}`}>
+                          <span><i className="ri-eye-fill"></i> View</span>
+                        </Link>
+                      </div>
+                      <div className="menuBtn">
+                            <span style={{ color: 'grey' }}>
+                            {v.status === "Closed" ? (
+                              <span style={{  fontWeight: 'bold' }}>
+                                <i className="ri-checkbox-circle-fill" style={{ marginRight: '5px' }}></i>
+                                Closed
+                              </span>
+                            ) : (
+                              <span
+                                onClick={() => handleClose(v._id)}
+                                style={{
+                                  
+                                  color: '#444'
+                                }}
+                              >
+                                <i className="ri-close-circle-line" style={{ marginRight: '5px' }}></i>
+                                Close
+                              </span>
+                            )}
+                          </span>
+                      </div>
+                      <div className="menuBtn">
+                        <span onClick={() => handleDelete(v._id)} style={{color:"grey"}}>
+                          <i className="ri-delete-bin-6-line"></i> Delete
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </td>
               </tr>
-            ))}
+              )
+})}
           </tbody>
         </table>
 

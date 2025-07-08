@@ -15,7 +15,13 @@ let user=JSON.parse(localStorage.getItem("user"))
   const [assigner, setAssigner] = useState("");
   const [lead, setLead] = useState("");
   const [customer, setCustomer] = useState(null);
+  const [users, setUsers] = useState([]);
 
+  useEffect(() => {
+  fetch("http://localhost:8007/api/AllUser")
+    .then((res) => res.json())
+    .then((data) => setUsers(data.data || []));
+}, []);const filteredUsers = users.filter((u) => u.role === role);
   useEffect(() => {
     fetch(`http://localhost:8007/api/editCustomer/${id}`)
       .then((res) => res.json())
@@ -51,7 +57,7 @@ let user=JSON.parse(localStorage.getItem("user"))
         role,
         customer: id,
         category,
-        Lead: lead?._id,
+        lead: customer?.lead?._id || lead?._id,
         
       }),
     })
@@ -123,15 +129,30 @@ let user=JSON.parse(localStorage.getItem("user"))
             </select>
           </label>
 
-          <label>
-            Assign Role:
-            <select value={role} onChange={(e) => setRole(e.target.value)} required>
-              <option value="">--select--</option>
-              <option value="teleCaller">TeleCaller</option>
-              <option value="sales">Sales</option>
-              <option value="Supporter">Supporter</option>
-            </select>
-          </label>
+         <label>
+  Assign Role:
+  <select value={role} onChange={(e) => setRole(e.target.value)} required>
+    <option value="">--select--</option>
+    <option value="teleCaller">TeleCaller</option>
+    <option value="sales">Sales</option>
+    <option value="Supporter">Supporter</option>
+  </select>
+</label>
+
+{role && (
+  <label>
+    Assign To:
+    <select value={assigner} onChange={(e) => setAssigner(e.target.value)} required>
+      <option value="">--select--</option>
+      {filteredUsers.map((user) => (
+        <option key={user._id} value={user._id}>
+          {user.name} ({user.email})
+        </option>
+      ))}
+    </select>
+  </label>
+)}
+
 
           <label>
             Category:

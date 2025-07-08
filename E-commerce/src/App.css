@@ -7,7 +7,7 @@
 
 body {
   font-family: Arial, sans-serif;
-  background-color: #f4f6f8;
+  background-color: grey;
 }
 
 a {
@@ -24,10 +24,11 @@ a {
 }
 
 /* Sidebar */
+/* Sidebar */
 .sidebar {
   width: 270px;
-  background-color: #343a40;
-  color: white;
+  background-color: #5A189A; /* deep purple */
+  color: #E0BBE4; /* soft lavender text */
   padding: 20px;
   position: sticky;
   top: 0;
@@ -38,6 +39,7 @@ a {
 .sidebar .logo {
   font-size: 22px;
   margin-bottom: 30px;
+  color: #ffffff; /* heading text white */
 }
 
 .nav-list,
@@ -49,24 +51,73 @@ a {
 .nav-list li,
 .sidebar ul li {
   margin-bottom: 15px;
-  padding-top: 10px ;
+  padding-top: 10px;
 }
 
 .nav-link,
 .sidebar ul li a {
-  color: white;
+  color: #E0BBE4; /* lavender text */
   text-decoration: none;
   font-size: 16px;
   font-weight: bold;
   display: block;
-}
-.nav-list li:hover{
-  background-color: rgba(128, 128, 128, 0.39);
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+.nav-list li:hover,
 .sidebar ul li a:hover {
-  color: #3498db;
+  background-color: #7B2CBF; /* lighter purple on hover */
+  color: #ffffff;
 }
+
+/* Header */
+.crm-header {
+  background-color: #6A0DAD; /* dark purple */
+  color: #ffffff;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Main body: sidebar + page content */
+.crm-main {
+  display: flex;
+  flex: 1;
+  margin-top: 60px;
+  height: calc(100vh - 60px);
+}
+
+/* Sidebar section */
+.crm-sidebar {
+  width: 220px;
+  background-color: #5A189A;
+  padding: 20px;
+  border-right: 1px solid #ccc;
+  overflow-y: auto;
+  position: fixed;
+  height: 100vh;
+  color: #E0BBE4;
+}
+
+/* Page content */
+.crm-content {
+  flex: 1;
+  padding: 30px;
+  overflow-y: auto;
+  background-color: #f8f9fc;
+  margin-left: 270px;
+}
+
 
 /* Main Content */
 .main-content,
@@ -396,8 +447,8 @@ desc {
 
 /* Header bar at top */
 .crm-header {
-  background-color: #2c3e50;
-  color: white;
+  background-color: white;
+  color: #A05AFF;
   padding: 10px 20px;
   display: flex;
   justify-content: space-between;
@@ -421,7 +472,7 @@ desc {
 /* Sidebar section */
 .crm-sidebar {
   width: 220px;
-  background-color: #2c3e50;
+  background-color:white;
   padding: 20px;
   border-right: 1px solid #ccc;
   overflow-y: auto;
@@ -436,6 +487,7 @@ desc {
   padding: 30px;
   overflow-y: auto;
   background-color: #f8fafc;
+   
   margin-left: 250px;
   /* margin-top: -650px; */
   /* margin-top: 10px; */

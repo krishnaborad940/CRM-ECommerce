@@ -1,4 +1,5 @@
 const mongoose=require('mongoose');
+const Lead=require("./LeadModel")
 
 const CustomerSchema=mongoose.Schema({
     name:{

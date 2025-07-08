@@ -26,6 +26,10 @@ const SalesSchema=mongoose.Schema({
                 ref:"Lead",
                 // required:true
    },
+    customerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Customer", // ✅ Add this line
+  },
    totalAmount:{
     type:Number
    },

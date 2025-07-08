@@ -62,7 +62,7 @@ export default function ViewLeads() {
               <th><i className="ri-arrow-up-down-line"></i> Phone</th>
               <th><i className="ri-arrow-up-down-line"></i> Product</th>
               <th><i className="ri-arrow-up-down-line"></i> Status</th>
-              <th><i className="ri-arrow-up-down-line"></i> Assigner</th>
+              <th><i className="ri-arrow-up-down-line"></i> Lead Owner</th>
               <th><i className="ri-arrow-up-down-line"></i> Actions</th>
             </tr>
           </thead>
@@ -74,6 +74,9 @@ export default function ViewLeads() {
                const imageUrls=v.Image?.startsWith('http')
               ?v.Image
               :`http://localhost:8007${v.Image}`
+                 const imageUrls2=v.assigner?.Image?.startsWith('http')
+              ?v.assigner?.Image
+              :`http://localhost:8007${v.assigner?.Image}`
               return (
               <tr key={v._id}>
                 <td><span style={{display:"flex",alignItems:"center",justifyContent:'center'}}><img src={imageUrls} alt="" style={{width:"35px",height:'35px',borderRadius:'50%',alignItems:'center',marginRight:"10px"}}/>{v.name}</span></td>
@@ -85,7 +88,7 @@ export default function ViewLeads() {
                     {v.status}
                   </span>
                 </td>
-                <td>{v.role}</td>
+                <td><span style={{display:'flex',alignItems:'center',justifyContent:'center'}}><img src={imageUrls2} style={{width:'35px',height:'35px',borderRadius:'35px',marginRight:'10px'}} alt="" />{v.assigner?.name}</span></td>
                 <td style={{ position: "relative" }} className="menu-wrapper">
                   <i
                     className="ri-more-2-line"

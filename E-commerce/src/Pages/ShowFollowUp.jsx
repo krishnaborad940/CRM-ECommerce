@@ -57,11 +57,11 @@ export default function ShowFollowUp() {
           <h1 style={{ margin: 0 }}>All Products</h1>
           <Link to="/ViewLeads"  className="addLeadBtn">Back Lead</Link>
         </div>
-        <table className="lead-table">
+        <table >
           <thead>
             <tr>
               <th>Name</th>
-              <th>Email</th>
+              {/* <th>Email</th> */}
               <th>Product</th>
               <th>Next Follow-up</th>
               <th>Remark</th>
@@ -71,15 +71,25 @@ export default function ShowFollowUp() {
             </tr>
           </thead>
           <tbody>
-            {showLeads.map((v) => (
+            {showLeads.map((v) => {
+               const imageUrls=v.lead?.Image.startsWith('http')
+              ?v.lead?.Image
+              :`http://localhost:8007${v.lead?.Image}`
+              const imageUrls2=v.assigner?.Image.startsWith('http')
+              ?v.assigner?.Image
+              :`http://localhost:8007${v.assigner?.Image}`
+              return (
               <tr key={v._id}>
-                <td>{v.Lead?.name}</td>
-                <td>{v.Lead?.email}</td>
+                 <td><span style={{display:'flex',alignItems:'center',justifyContent:'center'}}><img src={imageUrls} style={{width:'35px',height:'35px',borderRadius:'35px',marginRight:'10px'}} alt="" />{v.lead?.name}</span></td>
+                {/* <td>{v.lead?.email}</td> */}
                 <td>{v.product?.title} - ₹{v.product?.Price}</td>
                 <td>{new Date(v.nextFollowup).toLocaleDateString()}</td>
                 <td>{v.remark}</td>
-                <td>{v.status}</td>
-                <td>{v.Lead?.role}</td>
+                <td> <span className={`status-badge status-${v.status}`}>
+    {v.status}
+  </span></td>
+                  <td><span style={{display:'flex',alignItems:'center',justifyContent:'center'}}><img src={imageUrls2} style={{width:'35px',height:'35px',borderRadius:'35px',marginRight:'10px'}} alt="" />{v.lead?.assigner?.name}</span></td>
+              
                 <td><button className="btn btn-follow" onClick={() => navigate(`/FollowUp/${v?.Lead._id}`)}>📞</button></td>
                 <td>
                   {v.status === "Closed" ? (
@@ -89,7 +99,8 @@ export default function ShowFollowUp() {
                   )}
                 </td>
               </tr>
-            ))}
+            )
+})}
           </tbody>
         </table>
       </main>

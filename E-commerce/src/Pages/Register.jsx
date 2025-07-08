@@ -130,7 +130,6 @@ export default function Register() {
             <option value="Admin">Admin</option>
             <option value="teleCaller">TeleCaller</option>
             <option value="sales">Sales</option>
-            <option value="Supporter">Supporter</option>
           </select>
           {errors.role && (
             <p style={{ color: "red" }}>{errors.role.message}</p>

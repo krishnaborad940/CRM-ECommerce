@@ -135,8 +135,8 @@ const totalPending = salesList
 
 
 
-        <div className="quotation-container">
-          <table className="lead-table">
+        <div >
+          <table >
             <thead>
               <tr>
                 <th>Date</th>
@@ -165,7 +165,7 @@ const totalPending = salesList
                   <td>{sale.totalAmount}</td>
                   <td>
                     {sale.PaymentStatus === "Paid" ? (
-                      <span className="status-badge-Paid">Paid</span>
+                      <span className="status-badge-Paid1">Paid</span>
                     ) : (
                       <span className="status-badge-Pending">Pending</span>
                     )}
@@ -173,13 +173,13 @@ const totalPending = salesList
                   {/* <td>{sale.createBy?.name || "N/A"}</td> */}
                   <td style={{alignItems:"center",marginRight:"5px"}}>
                     {sale.PaymentStatus === "Paid" ? (
-                      <span className="converted">✔️</span>
+                      <span className="converted"><i class="ri-wechat-pay-fill" style={{fontSize:"20px"}}></i></span>
                     ) : (
                       <button
                         className="add-sale-btn"
                         onClick={() => openPaymentModal(sale._id)}
                       >
-                        ➕ Add Payment
+                       <i class="ri-money-rupee-circle-fill" style={{marginRight:'10px'}}></i>Pay
                       </button>
                     )}
                  </td>
@@ -191,14 +191,40 @@ const totalPending = salesList
 
        
 </div>
-   <div style={{ marginBottom: "20px", display: "flex", gap: "40px" }}>
-  <div style={{ background: "#e6ffed", padding: "10px 20px", borderRadius: "8px", color: "#2e7d32" }}>
-    <strong>✅ Total Paid: ₹{totalPaid}</strong>
+  <div style={{
+  margin: "20px 0",
+  display: "flex",
+  gap: "20px",
+  justifyContent: "flex-start",
+  flexWrap: "wrap"
+}}>
+  {/* Total Paid Box */}
+  <div style={{
+    width: "250px",
+    background: "#c8e6c9",  // ✅ slightly darker green
+    padding: "20px",
+    borderRadius: "12px",
+    color: "#1b5e20",
+    boxShadow: "0 2px 6px rgba(0,0,0,0.1)",marginLeft:'300px'
+  }}>
+    <h3 style={{ margin: "0", fontSize: "26px", textAlign: "center" }}>₹{totalPaid}</h3>
+    <p style={{ textAlign: "center", marginTop: "10px", fontWeight: "bold" }}>✅ Total Paid</p>
   </div>
-  <div style={{ background: "#fff3e0", padding: "10px 20px", borderRadius: "8px", color: "#e65100" }}>
-    <strong>⏳ Total Pending: ₹{totalPending}</strong>
+
+  {/* Total Pending Box */}
+  <div style={{
+    width: "250px",
+    background: "#ffe0b2",  // ✅ slightly darker orange
+    padding: "20px",
+    borderRadius: "12px",
+    color: "#e65100",
+    boxShadow: "0 2px 6px rgba(0,0,0,0.1)"
+  }}>
+    <h3 style={{ margin: "0", fontSize: "26px", textAlign: "center" }}>₹{totalPending}</h3>
+    <p style={{ textAlign: "center", marginTop: "10px", fontWeight: "bold" }}>⏳ Total Pending</p>
   </div>
-        </div>
+</div>
+
       </div>
     </div>
   );

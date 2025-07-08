@@ -28,7 +28,7 @@ const TicketSchema=mongoose.Schema({
       type:mongoose.Schema.Types.ObjectId,
       ref:"Auth"
     },
-      Lead:{
+      lead:{
       type:mongoose.Schema.Types.ObjectId,
       ref:"Lead"
     },
