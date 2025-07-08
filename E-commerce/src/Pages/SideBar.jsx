@@ -21,7 +21,7 @@ export default function CRMLayout() {
                     height="35"
                     style={{ borderRadius: "50%" }}
                   />
-                  {parsedUser.userName}
+                 <span style={{color:'#5A189A'}}> {parsedUser.userName}</span>
                 </div>
               </Link>
             </>
