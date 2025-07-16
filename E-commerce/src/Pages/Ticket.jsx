@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import SideBar from "./SideBar";
+import Header from "./Header";
 
 export default function Ticket() {
   const { id } = useParams();
@@ -65,7 +66,7 @@ let user=JSON.parse(localStorage.getItem("user"))
       .then((data) => {
         console.log(data)
         alert("Ticket Added Successfully");
-        navigate("/Customer");
+        navigate("/view-customer");
       })
       .catch((err) => {
         console.error("Ticket Error:", err);
@@ -74,19 +75,27 @@ let user=JSON.parse(localStorage.getItem("user"))
   };
 
   return (
-    <div className="viewleads-container">
+    <div className="container-scroller">
+      <Header/>
+      <div  className="container-fluid page-body-wrapper">
+       
       <SideBar />
-      <div className="main-content">
-        <h2 className="form-heading">Add Support Ticket</h2>
+      <div className="main-panel" style={{marginLeft:'250px',marginTop:'40px'}}>
+        <div className="content-wrapper">
+           <div class="page-header" >
+              <h3 class="page-title" style={{marginLeft:'60px'}}>➕ Add Support Ticket</h3>
+            </div>
+  {/* <h2 className="form-heading">Add Support Ticket</h2> */}
 
-        {customer && (
+       
+
+        <form onSubmit={handleSubmit} className="lead-form">
+           {customer && (
           <div className="lead-info">
             <p><b>Name:</b> {customer.name}</p>
             <p><b>Product:</b> {customer.product?.title} - ₹{customer.product?.Price}</p>
           </div>
         )}
-
-        <form onSubmit={handleSubmit} className="ticket-form">
           <label>
             Subject:
             <select value={subject} onChange={(e) => setSubject(e.target.value)} required>
@@ -114,7 +123,7 @@ let user=JSON.parse(localStorage.getItem("user"))
             <select value={status} onChange={(e) => setStatus(e.target.value)} required>
               <option value="">--select--</option>
               <option value="Open">Open</option>
-              <option value="In-Progress">In-Progress</option>
+              <option value="InProgress">In-Progress</option>
               <option value="Closed">Closed</option>
             </select>
           </label>
@@ -165,8 +174,12 @@ let user=JSON.parse(localStorage.getItem("user"))
             </select>
           </label>
 
-          <button type="submit" className="submit-btn">Add Ticket</button>
+          <button type="submit" className="btn btn-gradient-primary">Add Ticket</button>
         </form>
+        </div>
+      
+      </div>
+    
       </div>
     </div>
   );

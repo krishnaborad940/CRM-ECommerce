@@ -13,6 +13,7 @@ const QuotationSchema=mongoose.Schema({
                   quantity: Number,
                   price: Number,
                   total: Number,
+                  Image:String
                 },
             ],
      lead:{
@@ -20,6 +21,10 @@ const QuotationSchema=mongoose.Schema({
               ref:"Lead",
               required:true
     },
+    companies: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "Company"
+},
      quotationDate: {
               type: Date,
               default: Date.now

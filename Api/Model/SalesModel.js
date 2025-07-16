@@ -13,23 +13,21 @@ const SalesSchema=mongoose.Schema({
                 ref:"Customer",
                 // required:true
    },
-   product: [
-    {
-        productId:{type:mongoose.Schema.Types.ObjectId,ref:"Product", required:true,},
-            quantity:Number,
-            price:Number  ,
-            title:String  
-            
-   }],
+product: [
+  {
+    productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
+    quantity: { type: Number, required: true },
+    price: { type: Number, required: true },
+    title: String,
+    image: String, // ✅ must exist here
+    stock: Number
+  }
+],
    lead:{
         type:mongoose.Schema.Types.ObjectId,
                 ref:"Lead",
                 // required:true
    },
-    customerId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Customer", // ✅ Add this line
-  },
    totalAmount:{
     type:Number
    },

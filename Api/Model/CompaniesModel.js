@@ -13,6 +13,10 @@ const CompainesSchema=mongoose.Schema({
         type:String,
         required:true
     },
+    address:{
+        type:String,
+        required:true
+    },
     AccountUrl:{
         type:String,
         required:true

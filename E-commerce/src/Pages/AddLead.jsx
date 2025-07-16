@@ -5,6 +5,7 @@ import SideBar from "./SideBar";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import Header from "./Header";
 
 export default function AddLead() {
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ export default function AddLead() {
   const {
     register,
     handleSubmit,
-    setValue,
+    
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
 
@@ -85,24 +86,34 @@ export default function AddLead() {
 
     const result = await res.json();
     if (res.status === 200) {
-      navigate("/viewLeads");
+      navigate("/view-leads");
     } else {
       alert("Error: " + result.msg);
     }
   };
 
   return (
-    <div className="addlead-container">
-      <SideBar />
-      <main className="main-section">
-        <div className="form-header">
-          <h2>➕ Add New Lead</h2>
-          <Link to="/viewLeads" className="view-link">
+    <div className="container-scroller">
+      <Header />
+       <div className="container-fluid page-body-wrapper">
+        <SideBar/>
+      <div className="main-panel" style={{marginLeft:'250px',marginTop:'40px'}}>
+        <div className="content-wrapper">
+    
+          <div class="page-header" >
+              <h3 class="page-title" style={{marginLeft:'60px'}}>➕ Add New Lead </h3>
+              
+                <a class="btn-gradient-primary p-2 rounded "  style={{textDecoration:'none'}}>
+                   <Link to="/view-leads" style={{color:'white',textDecoration:'none'}}>
             📄 View All Leads
           </Link>
-        </div>
-
-        <form className="lead-form" onSubmit={handleSubmit(onSubmit)}>
+                </a>
+            </div>
+         <div >
+          <div>
+           {/* <h2></h2> */}
+        
+             <form className="lead-form" onSubmit={handleSubmit(onSubmit)}>
           <label>Name
             <input type="text" {...register("name")} />
             {errors.name && <p style={{ color: "red" }}>{errors.name.message}</p>}
@@ -192,9 +203,16 @@ export default function AddLead() {
             <input type="file" name="Image" />
           </label>
 
-          <button type="submit" className="submit-btn">Add Lead</button>
+          <button type="submit" className="submit-btn btn-gradient-primary ">Add Lead</button>
         </form>
-      </main>
+         </div>
+         </div>
+        </div>
+
+     
+      </div>
+</div>
     </div>
+
   );
 }

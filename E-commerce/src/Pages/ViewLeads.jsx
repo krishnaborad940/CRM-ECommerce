@@ -3,17 +3,20 @@ import { Link, useNavigate } from "react-router-dom";
 import "../App.css";
 import "../Style/Lead.css";
 import SideBar from "./SideBar";
+import Header from "./Header";
 
 export default function ViewLeads() {
   const [showLeads, setShowLeads] = useState([]);
   const [open, setOpen] = useState(null);
+    const [planFilter, setPlanFilter] = useState("") 
   const navigate = useNavigate();
+  const [searchTerm,setSearchTerm]=useState('')
 
   useEffect(() => {
     fetch("http://localhost:8007/api/ViewLead")
       .then((res) => res.json())
       .then((data) => {
-        console.log(data.data)
+        console.log(data.data);
         setShowLeads(data.data);
         localStorage.setItem("Lead", JSON.stringify(data.data));
       });
@@ -33,6 +36,20 @@ export default function ViewLeads() {
   const toggleMenu = (id) => {
     setOpen(open === id ? null : id);
   };
+  const filteredLeads=showLeads.filter((Lead)=>{
+      const matchLead=planFilter ? Lead.status === planFilter :true
+      const name=Lead?.name?.toLowerCase() || ''
+      const companyName=Lead?.companies?.name?.toLowerCase() || ''
+
+      const serach=searchTerm?.toLowerCase() || ''
+      const matchSearch=name.includes(serach) || companyName.includes(serach)
+      return matchLead && matchSearch
+      
+  })
+
+  //  const filteredLeads = showLeads.filter((Lead) => {
+  //   return planFilter ? Lead.status === planFilter : true
+  // })
 
   const handleDelete = (_id) => {
     fetch(`http://localhost:8007/api/DeleteLead/${_id}`, {
@@ -46,82 +63,170 @@ export default function ViewLeads() {
   };
 
   return (
-    <div className="viewleads-container">
-      <SideBar />
-      <main className="main-content">
-        <div className="header">
-          <h1 style={{ margin: 0 }}>All Leads</h1>
-          <Link to="/AddLead" className="addLeadBtn">➕ Add Lead</Link>
-        </div>
+    <div className="container-scroller">
+      <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+      <div className="container-fluid page-body-wrapper">
+        <SideBar />
+        <div className="main-panel" style={{marginLeft:'250px',marginTop:'40px'}}>
+          <div className="content-wrapper">
+             <div className="d-flex justify-content-end align-items-center mb-4 gap-3">
+                {/* Add Product Button */}
+               <div style={{marginRight:'700px',fontSize:'18px'}}>  All Leads</div>
+              <Link to="/add-lead" className="btn btn-primary " style={{padding:'10px 12px'}}>
+                        ➕ Add Lead
+                      </Link>
+              <select
+                    value={planFilter}
+                    onChange={(e) => setPlanFilter(e.target.value)}
+                    className="form-select text-dark  p-2"
+                    style={{ width: "180px" }}
+                  >
+                     <option value="" >⏳Filter</option>
+                      <option value="New">New</option>
+                      <option value="Follow-Up">Follow-Up</option>
+                      <option value="Intrested">Intrested</option>
+                      <option value="Converted">Converted</option>
+                      <option value="Closed">Closed</option>
+                  </select>
+              
+              </div>
+            
 
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th><i className="ri-arrow-up-down-line"></i> Company</th>
-              <th><i className="ri-arrow-up-down-line"></i> Phone</th>
-              <th><i className="ri-arrow-up-down-line"></i> Product</th>
-              <th><i className="ri-arrow-up-down-line"></i> Status</th>
-              <th><i className="ri-arrow-up-down-line"></i> Lead Owner</th>
-              <th><i className="ri-arrow-up-down-line"></i> Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {showLeads.map((v) => {
-              const imageUrl=v.companies?.Image?.startsWith('http')
-              ?v.companies?.Image
-              :`http://localhost:8007${v.companies?.Image}`;
-               const imageUrls=v.Image?.startsWith('http')
-              ?v.Image
-              :`http://localhost:8007${v.Image}`
-                 const imageUrls2=v.assigner?.Image?.startsWith('http')
-              ?v.assigner?.Image
-              :`http://localhost:8007${v.assigner?.Image}`
-              return (
-              <tr key={v._id}>
-                <td><span style={{display:"flex",alignItems:"center",justifyContent:'center'}}><img src={imageUrls} alt="" style={{width:"35px",height:'35px',borderRadius:'50%',alignItems:'center',marginRight:"10px"}}/>{v.name}</span></td>
-                <td style={{display:"flex",alignItems:'center',justifyContent:'center'}}><img src={imageUrl} alt={v.companies?.name}style={{width:"35px",height:"35px",borderRadius:"50%",marginRight:"10px"}} />{v.companies?.name}</td>
-                <td>+91{v.phone}</td>
-                <td>{v.product?.title} - ₹{v.product?.Price}</td>
-                <td className="status-ceil">
-                  <span className={`status-badge ${v.status?.toLowerCase().replace(/\s/g, '-')}`}>
-                    {v.status}
-                  </span>
-                </td>
-                <td><span style={{display:'flex',alignItems:'center',justifyContent:'center'}}><img src={imageUrls2} style={{width:'35px',height:'35px',borderRadius:'35px',marginRight:'10px'}} alt="" />{v.assigner?.name}</span></td>
-                <td style={{ position: "relative" }} className="menu-wrapper">
-                  <i
-                    className="ri-more-2-line"
-                    onClick={() => toggleMenu(v._id)}
-                    style={{ cursor: "pointer" }}
-                  ></i>
-
-                  {open === v._id && (
-                    <div className="Menu">
-                      <div className="menuBtn">
-                        <Link to={`/LeadDetails/${v._id}`}>
-                          <span><i className="ri-eye-fill"></i> View</span>
-                        </Link>
-                      </div>
-                      <div className="menuBtn">
-                        <span onClick={() => navigate(`/EditLead/${v._id}`)}>
-                          <i className="ri-edit-line"></i> Edit
-                        </span>
-                      </div>
-                      <div className="menuBtn">
-                        <span onClick={() => handleDelete(v._id)}>
-                          <i className="ri-delete-bin-6-line"></i> Delete
-                        </span>
-                      </div>
+            <div className="row">
+              <div className="col-lg-12 grid-margin stretch-card">
+                <div className="card2 p-2 w-100">
+                  <div className="card-body2 mb-2">
+                    <div className="header d-flex justify-content-between align-items-center mb-3">
+                      {/* <h4 className="card-title m-0">Leads Table</h4> */}
+                      
                     </div>
-                  )}
-                </td>
-              </tr>
-              )
-})}
-          </tbody>
-        </table>
-      </main>
+
+                    <table className="table table-bordered table-hover">
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Company</th>
+                          <th>Phone</th>
+                          <th>Product</th>
+                          <th>Status</th>
+                          <th>Lead Owner</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                       {filteredLeads.length ===0 ?(
+<tr>
+                            <td colSpan="7" style={{ textAlign: 'center', padding: '20px', color: 'gray' }}>
+                              Data Not Found
+                            </td>
+                          </tr>
+                       ):( filteredLeads.map((v) => {
+                          const companyImg = v.companies?.Image?.startsWith("http")
+                            ? v.companies.Image
+                            : `http://localhost:8007${v.companies?.Image}`;
+                          const leadImg = v.Image?.startsWith("http")
+                            ? v.Image
+                            : `http://localhost:8007${v.Image}`;
+                          const assignerImg = v.assigner?.Image?.startsWith("http")
+                            ? v.assigner.Image
+                            : `http://localhost:8007${v.assigner?.Image}`;
+
+                          return (
+                            <tr key={v._id}>
+                              <td>
+                                <div className="d-flex align-items-center">
+                                  <img
+                                    src={leadImg}
+                                    alt=""
+                                    className="rounded-circle"
+                                    style={{
+                                      width: "35px",
+                                      height: "35px",
+                                      marginRight: "10px",
+                                    }}
+                                  />
+                                  {v.name}
+                                </div>
+                              </td>
+                              <td>
+                                <div className="d-flex align-items-center">
+                                  <img
+                                    src={companyImg}
+                                    alt={v.companies?.name}
+                                    className="rounded-circle"
+                                    style={{
+                                      width: "35px",
+                                      height: "35px",
+                                      marginRight: "10px",
+                                    }}
+                                  />
+                                  {v.companies?.name}
+                                </div>
+                              </td>
+                              <td>+91{v.phone}</td>
+                              <td>
+                                {v.product?.title} - ₹{v.product?.Price}
+                              </td>
+                            <td className="status-ceil badge ">
+                                  <span className={`status-badge ${v.status?.toLowerCase().replace(/\s/g, '-')}`}>
+                               {v.status}
+                             </span>
+                          </td>
+                              <td>
+                                <div className="d-flex align-items-center">
+                                  <img
+                                    src={assignerImg}
+                                    alt=""
+                                    className="rounded-circle"
+                                    style={{
+                                      width: "35px",
+                                      height: "35px",
+                                      marginRight: "10px",
+                                    }}
+                                  />
+                                  {v.assigner?.name}
+                                </div>
+                              </td>
+                              <td className="menu-wrapper" style={{ position: "relative" }}>
+                                <i
+                                  className="ri-more-2-line"
+                                  onClick={() => toggleMenu(v._id)}
+                                  style={{ cursor: "pointer" }}
+                                ></i>
+
+                                {open === v._id && (
+                                  <div className="Menu position-absolute bg-white shadow p-2 rounded">
+                                    <div className="menuBtn mb-1">
+                                      <Link to={`/lead-details/${v._id}`} style={{color:'grey',textDecoration:'none'}}>
+                                        <i className="ri-eye-fill"></i> View
+                                      </Link>
+                                    </div>
+                                    <div
+                                      className="menuBtn mb-1" style={{color:'grey',textDecoration:'none'}}
+                                      onClick={() => navigate(`/edit-lead/${v._id}`)}
+                                    >
+                                      <i className="ri-edit-line"></i> Edit
+                                    </div>
+                                    <div className="menuBtn text-danger d-flex" onClick={() => handleDelete(v._id)}>
+                                      <i className="ri-delete-bin-6-line me-1"></i> Delete
+                                    </div>
+                                  </div>
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })
+                       )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

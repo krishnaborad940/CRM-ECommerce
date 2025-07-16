@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import SideBar from "../Pages/SideBar";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import "../Style/Lead.css";
+import Header from "./Header";
 
 export default function CandidateDetails() {
   const [candidate, setCandidate] = useState(null);
@@ -39,10 +40,25 @@ export default function CandidateDetails() {
   if (!candidate) return <div>Loading...</div>;
 
   return (
-    <div className="viewleads-container">
+    <div className="container-scroller">
+      <Header/>
+      <div className="container-fluid page-body-wrapper">
       <SideBar />
-      <div className="main-content candidate-details-container">
-        <h2 className="section-heading">👤 Candidate Full Details</h2>
+      <div className="main-panel" style={{marginTop:'40px',marginLeft:'250px'}}>
+        <div className="content-wrapper">
+          <div className="page-header">
+                    <h3 className="page-title" style={{marginLeft:"50px"}}>All Candidate</h3>
+                     <nav aria-label="breadcrumb">
+                <ul class="breadcrumb">
+                  <li class="breadcrumb-item active" aria-current="page">
+                    <span></span><a href="/ViewCandidates">View-Candidate</a>/CandidateDetails
+                  </li>
+                </ul>
+              </nav>
+           </div> <div className="row" style={{marginTop:'-20px'}}>
+            <div className="col-lg-12 grid-margin stretch-card">
+              <div className="card">
+                <div className=" card-body">
 
         <div style={{ display: "flex", gap: "30px", marginBottom: "20px" }}>
           <img
@@ -98,6 +114,47 @@ export default function CandidateDetails() {
             </div>
           )}
         </div>
+{/* 🎓 Education Info */}
+<div className={`section ${openSection === "educationInfo" ? "open" : ""}`}>
+  <div className="section-header" onClick={() => toggleSection("educationInfo")}>🎓 Education Info</div>
+  {openSection === "educationInfo" && (
+    <div className="section-body">
+      {candidate.educationInfo && candidate.educationInfo.length > 0 ? (
+        candidate.educationInfo.map((edu, index) => (
+          <div  key={index}>
+           
+              <div className="detail-row"><strong>Degree:</strong> {edu.degree}</div>
+              <div className="detail-row"><strong>Institute:</strong>  {edu.institute}</div>
+              <div className="detail-row"><strong>Year:</strong> {edu.year}</div>
+          </div>
+        ))
+      ) : (
+        <div>No Education Info Available</div>
+      )}
+    </div>
+  )}
+</div>
+
+{/* 🏢 Work Experience */}
+<div className={`section ${openSection === "workExperience" ? "open" : ""}`}>
+  <div className="section-header" onClick={() => toggleSection("workExperience")}>🏢 Work Experience</div>
+  {openSection === "workExperience" && (
+    <div className="section-body">
+      {candidate.workExperience && candidate.workExperience.length > 0 ? (
+        candidate.workExperience.map((work, index) => (
+          <div  key={index} style={{textAlign:'left'}}>
+            <strong>Company:</strong> {work.company}<br/>
+            <strong>Role:</strong> {work.role} <br />
+            <strong>Duration:</strong> {work.duration}<br/>
+           
+          </div>
+        ))
+      ) : (
+        <div>No Work Experience Available</div>
+      )}
+    </div>
+  )}
+</div>
 
         {/* 📎 Attachments */}
         <div className={`section ${openSection === "documents" ? "open" : ""}`}>
@@ -156,6 +213,13 @@ export default function CandidateDetails() {
         </div>
       )}
       </div>
+              </div>
+            </div>
+           </div>
+        </div>
+      </div>
+      </div>
+     
     </div>
   );
 }

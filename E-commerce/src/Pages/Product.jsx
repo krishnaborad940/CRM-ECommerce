@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SideBar from "./SideBar";
 import "../App.css"; 
+import Header from "./Header";
+import { Link } from "react-router-dom";
 
 export default function Product() {
   const [formData, setFormData] = useState({
@@ -11,7 +13,8 @@ export default function Product() {
     Image: null,
     category: "",
     stock: "",
-    rate: ""
+    rate: "",
+    IntialStock:''
   });
 
   const navigate = useNavigate();
@@ -35,6 +38,7 @@ export default function Product() {
     data.append("Image", formData.Image);
     data.append("stock", formData.stock);
     data.append("rate", formData.rate);
+    data.append("IntialStock",formData.IntialStock)
 
     fetch("http://localhost:8007/api/Product", {
       method: "POST",
@@ -44,16 +48,29 @@ export default function Product() {
       .then((data) => {
         console.log(data)
         alert("Product added successfully!");
-        navigate("/");
+        navigate("/all-product");
       })
       .catch((err) => console.log("Error:", err));
   };
 
   return (
-    <div className="viewleads-container">
-      <SideBar />
-      <div className="main-content">
-        <h2 className="form-title">➕ Add New Product</h2>
+  
+<div className="container-scroller">
+  <Header/>
+  <div className="container-fluid page-body-wrapper">
+    <SideBar/>
+    <div className="main-panel" style={{marginLeft:'250px',marginTop:'40px'}}>
+      <div className="content-wrapper">
+          <div className="page-header" >
+              <h3 className="page-title" style={{marginLeft:'60px'}}>➕ Add New Product </h3>
+              
+               
+                   <Link to="/all-product" className="text-light bg-gradient-primary p-2 rounded" style={{color:'white',textDecoration:'none'}}>
+           <i className="text-primary"> 📄</i> View All Producr
+          </Link>
+              
+            </div>
+        {/* <h2 className="form-title">➕ Add New Product</h2> */}
         <form onSubmit={handleProduct} className="product-form">
           <label>
             Title:
@@ -72,7 +89,7 @@ export default function Product() {
 
           <label>
             Stock:
-            <input type="number" name="stock" value={formData.stock} onChange={handleChange} required />
+            <input type="number" name="IntialStock" value={formData.IntialStock} onChange={handleChange} required />
           </label>
 
           <label>
@@ -100,5 +117,8 @@ export default function Product() {
         </form>
       </div>
     </div>
+      </div>
+    </div>
+ 
   );
 }

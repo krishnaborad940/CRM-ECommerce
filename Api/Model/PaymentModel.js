@@ -6,6 +6,10 @@ const PaymentSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Sales",
     required: true
+  },customerId:{
+      type:mongoose.Schema.Types.ObjectId,
+      ref:"Customer",
+      required:true
   },
   amount: {
     type: Number,
@@ -20,11 +24,7 @@ const PaymentSchema = mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  customerId:{
-      type:mongoose.Schema.Types.ObjectId,
-      ref:"Customer",
-      required:true
-  },status:{
+  status:{
     type:String,
     enum:["Paid","Partial"],
     default:"Paid"

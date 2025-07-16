@@ -1,18 +1,16 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import SideBar from "../Pages/SideBar";
+import Header from "./Header";
 
 export default function ProductDetails() {
-  const [product, setProduct] = useState(null); // Single product object
-  const { id } = useParams(); // UseParams should be called like a function
+  const [product, setProduct] = useState(null);
+  const { id } = useParams();
 
   useEffect(() => {
     fetch(`http://localhost:8007/api/ProductDetails/${id}`)
       .then((res) => res.json())
-      .then((data) => {
-        console.log(data.data);
-        setProduct(data.data);
-      })
+      .then((data) => setProduct(data.data))
       .catch((err) => console.log("Error:", err));
   }, [id]);
 
@@ -23,60 +21,91 @@ export default function ProductDetails() {
     : `http://localhost:8007${product.Image || ""}`;
 
   return (
-    <div className="viewleads-container" style={{ display: "flex", minHeight: "100vh" }}>
-      <SideBar />
-      <div className="main-content" style={{ flex: 1, padding: "30px" }}>
-        <div
-          className="product-details"
-          style={{
-            background: "#fff",
-            padding: "30px",
-            borderRadius: "12px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-            maxWidth: "800px",
-            margin: "0 auto",
-          }}
-        >
-          <Link to="/Product" style={{ textDecoration: "none", color: "#007bff" }}>
-            ⬅ Back to Products
-          </Link>
+    <div className="container-scroller" style={{ display: "flex" }}>
+      <Header />
+      <div className="container-fluid page-body-wrapper">
+        <SideBar />
+        <div className="main-panel" style={{ marginLeft: '250px', marginTop: '40px' }}>
+          <div className="content-wrapper d-flex justify-content-center">
+            <div className="card shadow-sm p-4 w-100" style={{ maxWidth: "1000px", borderRadius: "16px" }}>
+              {/* Header Row */}
+              <div className="d-flex align-items-center mb-3">
+                <h4 className="fw-bold m-0">Product Details</h4>
+                <Link to="/all-product" className="btn btn-outline-primary btn-sm" style={{ marginLeft: 'auto' }}>⬅ Back</Link>
+              </div>
 
-          <h2 style={{ marginTop: "20px", marginBottom: "10px", color: "#333" }}>
-            🛍️ {product.title}
-          </h2>
+              <div className="row">
+                {/* LEFT TEXT SIDE */}
+                <div className="col-lg-8">
+                  <div className="table-responsive">
+                    <table className="table table-bordered table-hover" style={{ textAlign: 'left' }}>
+                      <tbody>
+                        <tr>
+                          <th style={{ width: "180px" }}>Product Title:</th>
+                          <td style={{textAlign:'left'}}>{product.title}</td>
+                        </tr>
+                        <tr>
+                          <th>Category:</th>
+                          <td style={{textAlign:'left'}}>{product.category}</td>
+                        </tr>
+                        <tr>
+                          <th>Description:</th>
+                          <td style={{ textAlign: 'left', whiteSpace: 'normal', wordBreak: 'break-word',lineHeight:'20px' }}>
+  {product.description}
+</td>
+                        </tr>
+                        <tr>
+                          <th>Price:</th>
+                          <td style={{textAlign:'left'}}>₹{product.Price}</td>
+                        </tr>
+                        <tr>
+  <th>Stock:</th>
+  <td style={{ textAlign: 'left' }}>
+    <span className="badge  text-danger" style={{fontWeight:'600',fontSize:'13px'}}>
+      {product.stock} left out of {product.IntialStock}
+    </span>
+  </td>
+</tr>
+                        <tr>
+                          <th>Rating:</th>
+                          <td style={{textAlign:'left'}}>⭐ {product.rate}</td>
+                        </tr>
+                        <tr>
+                          <td></td>
+                          <td style={{marginLeft:'-200px'}}> <Link to="/add-lead">
+                    <button
+                     className="btn btn-gradient-primary "
+                    >
+                      ➕ Add Lead
+                    </button>
+                  </Link></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                 
+                </div>
 
-          <img
-            src={imageUrl}
-            alt={product.title}
-            style={{ width: "100%", maxHeight: "300px",objectFit:'contain', borderRadius: "10px" }}
-          />
-
-          <div style={{ marginTop: "20px", lineHeight: "1.8", fontSize: "16px" }}>
-            <p><strong>Category:</strong> {product.category}</p>
-            <p><strong>Description:</strong> {product.description}</p>
-            <p><strong>Price:</strong> ₹{product.Price}</p>
-            <p><strong>Stock:</strong> {product.stock}</p>
-            <p><strong>Rating:</strong> ⭐ {product.rate}</p>
+                {/* RIGHT IMAGE SIDE */}
+                <div className="col-lg-4 d-flex justify-content-center align-items-start mt-3 mt-lg-0">
+                  <img
+                    src={imageUrl}
+                    alt={product.title}
+                    className="img-fluid"
+                    style={{
+                      borderRadius: "12px",
+                      width: "100%",
+                      maxWidth: "280px",
+                      objectFit: "cover",
+                      boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
-
-         <a href="/AddLead">
-             <button 
-            style={{
-              marginTop: "20px",
-              backgroundColor: "#00bcd4",
-              border: "none",
-              color: "#fff",
-              padding: "10px 18px",
-              borderRadius: "6px",
-              cursor: "pointer",
-              fontWeight: "bold",
-            }}
-          >
-            ➕ Add Lead
-          </button>
-         </a>
         </div>
-      </div>
+      </div>  
     </div>
   );
 }

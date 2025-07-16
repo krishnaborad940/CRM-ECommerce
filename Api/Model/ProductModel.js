@@ -27,7 +27,13 @@ const ProductSchema=mongoose.Schema({
     },
      stock:{
         type:Number,
-        required:true
+        // required:true,
+        default:0
+    },
+    IntialStock:{
+        type:Number,
+        required:true,
+        default:0
     },
      Image:{
         type:String,

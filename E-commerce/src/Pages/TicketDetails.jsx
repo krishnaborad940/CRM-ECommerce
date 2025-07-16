@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import SideBar from "../Pages/SideBar";
+import Header from "./Header";
 
 export default function TicketDetails() {
-  const [Ticket, setTicket] = useState(null); // Single product object
-  const { id } = useParams(); // UseParams should be called like a function
+  const [Ticket, setTicket] = useState(null);
+  const { id } = useParams();
 
   useEffect(() => {
     fetch(`http://localhost:8007/api/ViewTicketDetails/${id}`)
@@ -18,52 +19,117 @@ export default function TicketDetails() {
 
   if (!Ticket) return <p>Loading...</p>;
 
-//   const imageUrl = Ticket.customer?.product?.Image?.startsWith("http")
-//     ? Ticket.customer?.product?.Image
-//     : `http://localhost:8007${Ticket.customer?.product?.Image || ""}`;
+  const customer = Ticket.customer;
+  const assigner = Ticket.assigner;
+
+  const assignerImage = assigner?.Image?.startsWith("http")
+    ? assigner.Image
+    : `http://localhost:8007${assigner?.Image || ""}`;
+      const customerImage = customer?.lead?.Image.startsWith("http")
+    ? customer?.lead?.Image
+    : `http://localhost:8007${customer?.lead?.Image || ""}`;
 
   return (
-    <div className="viewTickets-container" style={{ display: "flex", minHeight: "100vh" }}>
-      <SideBar />
-      <div className="main-content" style={{ flex: 1, padding: "30px" }}>
+    <div className="container-scroller" style={{ display: "flex" }}>
+      <Header />
+      <div className="container-fluid page-body-wrapper">
+        <SideBar />
         <div
-          className="product-details"
-          style={{
-            background: "#fff",
-            padding: "30px",
-            borderRadius: "12px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-            maxWidth: "800px",
-            margin: "0 auto",
-          }}
+          className="main-panel"
+          style={{ marginLeft: "250px", marginTop: "40px" }}
         >
-          <Link to="/ViewTicket" style={{ textDecoration: "none", color: "#007bff" }}>
-            ⬅ Back to Ticket
-          </Link>
+          <div className="content-wrapper d-flex justify-content-center">
+            <div
+              className="card shadow-sm p-4 w-100"
+              style={{ maxWidth: "1000px", borderRadius: "16px" }}
+            >
+              <div className="d-flex align-items-center mb-3">
+                <h4 className="fw-bold m-0">Ticket Details</h4>
+                <Link
+                  to="/view-ticket"
+                  className="btn btn-outline-primary btn-sm"
+                  style={{ marginLeft: "auto" }}
+                >
+                  ⬅ Back
+                </Link>
+              </div>
 
-          <h2 style={{ marginTop: "20px", marginBottom: "10px", color: "#333" }}>
-            🛍️ {Ticket?.name}
-          </h2>
+              <div className="row">
+                {/* LEFT Table */}
+                <div className="col-lg-8">
+                  <div className="table-responsive">
+                    <table
+                      className="table table-bordered table-hover"
+                      style={{ textAlign: "left" }}
+                    >
+                      <tbody>
+                        <tr>
+                          <th>Ticket Subject</th>
+                          <td>{Ticket?.subject}</td>
+                        </tr>
+                        <tr>
+                          <th>Message</th>
+                          <td>{Ticket?.message}</td>
+                        </tr>
+                        <tr>
+                          <th>Customer Name</th>
+                          <td> {customer?.name}</td>
+                        </tr>
+                        <tr>
+                          <th>Customer Email</th>
+                          <td>{customer?.email}</td>
+                        </tr>
+                        <tr>
+                          <th>Customer Phone</th>
+                          <td>{customer?.phone}</td>
+                        </tr>
+                        <tr>
+                          <th>Category</th>
+                          <td>{Ticket?.category}</td>
+                        </tr>
+                        <tr>
+                          <th>Priority</th>
+                          <td> <span className={`priority-${Ticket.priority.toLowerCase()}`}>
+    {Ticket.priority}
+  </span></td>
+                        </tr>
+                        <tr>
+                          <th>Status</th>
+                          <td ><span style={{ color: Ticket.status !== 'Closed' ? '#155724' : '#a71d2a',backgroundColor:Ticket.status!=='Closed'?'#d4edda':'#f5c6cb',padding:'5px',borderRadius:'10px' }}>{Ticket.status}</span></td>
+                        </tr>
+                        <tr>
+                          <th>Assigner</th>
+                          <td><img src={assignerImage} alt="" className="me-2"/> {assigner?.name} ({assigner?.role})</td>
+                        </tr>
+                        <tr>
+                          <th>Assigner Email</th>
+                          <td>{assigner?.email}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
 
-          {/* <img
-            src={imageUrl}
-            alt={Ticket.customer?.product?.name}
-            style={{ width: "50%", maxHeight: "300px",objectFit:'contain', borderRadius: "10px" }}
-          /> */}
-
-          <div style={{ marginTop: "20px", lineHeight: "1.8", fontSize: "16px" }}>
-            <p><strong>Subject:</strong> {Ticket?.subject}</p>
-            <p><strong>Message:</strong> {Ticket?.message}</p>
-            <p><strong>Customer Name:</strong> {Ticket?.customer?.name}</p>
-            {/* <p><strong>Next-FollowUp:</strong> {Ticket?.nextFollowup}</p> */}
-            <p><strong>Category:</strong>  {Ticket?.category}</p>
-            <p><strong>Status:</strong>  {Ticket?.status}</p>
-            <p><strong>Assigner:</strong>  {Ticket?.role}</p>
-
-
+                {/* RIGHT: Assigner Image */}
+                <div className="col-lg-4 d-flex justify-content-center align-items-start mt-3 mt-lg-0">
+                  {assigner?.Image && (
+                    <img
+                      src={customerImage}
+                      alt="Assigner"
+                      className="img-fluid"
+                      style={{
+                        borderRadius: "12px",
+                        width: "100%",
+                        maxWidth: "280px",
+                        objectFit: "cover",
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                      }}
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
-
-       
         </div>
       </div>
     </div>

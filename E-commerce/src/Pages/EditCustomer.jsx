@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import SideBar from "./SideBar";
 import "../App.css"; 
+import Header from "./Header";
 
 export default function EditCustomer() {
   const { id } = useParams();
@@ -61,13 +62,15 @@ export default function EditCustomer() {
   };
 
   return (
-    <div className="viewleads-container">
-      <SideBar />
-      <div className="main-content" style={{width:"700px"}}>
-       <div >
-         <div className="edit-header">
+    <div className="container-scroller">
+      <Header/>
+      <div className="container-fluid page-body-wrapper">
+           <SideBar />
+ <div className="main-panel" style={{marginLeft:'250px',marginTop:'40px'}}>
+       <div className="content-wrapper" >
+         <div className="page-header">
           <h2>Edit Customer</h2>
-          <Link to="/Customer" className="back-btn">← View Customers</Link>
+          <Link to="/view-customer" className="btn btn-gradient-primary p-2">← View Customers</Link>
         </div>
         <form onSubmit={handleUpdate} className="edit-form">
           <label>
@@ -130,6 +133,9 @@ export default function EditCustomer() {
         </form>
       </div>
        </div>
+      </div>
+   
+     
     </div>
   );
 }

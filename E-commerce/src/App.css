@@ -7,13 +7,15 @@
 
 body {
   font-family: Arial, sans-serif;
-  background-color: grey;
+  background-color: #f6f6f6;
 }
 
 a {
   text-decoration: none;
 }
-
+.btn-convert:hover{
+  color: white;
+}
 /* Layout Containers */
 .dashboard-container,
 .viewleads-container,
@@ -25,52 +27,10 @@ a {
 
 /* Sidebar */
 /* Sidebar */
-.sidebar {
-  width: 270px;
-  background-color: #5A189A; /* deep purple */
-  color: #E0BBE4; /* soft lavender text */
-  padding: 20px;
-  position: sticky;
-  top: 0;
-  height: 100vh;
-}
 
-.sidebar h2,
-.sidebar .logo {
-  font-size: 22px;
-  margin-bottom: 30px;
-  color: #ffffff; /* heading text white */
-}
 
-.nav-list,
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-}
 
-.nav-list li,
-.sidebar ul li {
-  margin-bottom: 15px;
-  padding-top: 10px;
-}
 
-.nav-link,
-.sidebar ul li a {
-  color: #E0BBE4; /* lavender text */
-  text-decoration: none;
-  font-size: 16px;
-  font-weight: bold;
-  display: block;
-  padding: 8px 12px;
-  border-radius: 6px;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.nav-list li:hover,
-.sidebar ul li a:hover {
-  background-color: #7B2CBF; /* lighter purple on hover */
-  color: #ffffff;
-}
 
 /* Header */
 .crm-header {
@@ -99,11 +59,11 @@ a {
 
 /* Sidebar section */
 .crm-sidebar {
-  width: 220px;
-  background-color: #5A189A;
+  width: 250px;
+  background-color: white;
   padding: 20px;
   border-right: 1px solid #ccc;
-  overflow-y: auto;
+  /* overflow-y: auto; */
   position: fixed;
   height: 100vh;
   color: #E0BBE4;
@@ -115,7 +75,8 @@ a {
   padding: 30px;
   overflow-y: auto;
   background-color: #f8f9fc;
-  margin-left: 270px;
+  margin-left: 200px;
+  /* margin-top: 20px; */
 }
 
 
@@ -126,8 +87,8 @@ a {
   flex: 1;
   padding: 40px;
   background-color: #f4f6f8;
-  margin-top: 30px;
-  margin-left: -100px;
+  margin-top: 50px;
+  /* margin-left: 50px; */
   
 }
 .main-content h1{
@@ -217,7 +178,7 @@ margin-top: 30px;
   transition: background-color 0.3s ease;
 }
 .submit-btn,.add-btn{
-   background-color: #28a745;
+   background-color: #4f5ece !important;
   color: white;
   font-weight: bold;
   border: none;
@@ -470,28 +431,7 @@ desc {
 }
 
 /* Sidebar section */
-.crm-sidebar {
-  width: 220px;
-  background-color:white;
-  padding: 20px;
-  border-right: 1px solid #ccc;
-  overflow-y: auto;
-  /* margin-top: 50px; */
-  position: fixed;
-  height: 100vh;
-}
 
-/* Page content area */
-.crm-content {
-  flex: 1;
-  padding: 30px;
-  overflow-y: auto;
-  background-color: #f8fafc;
-   
-  margin-left: 250px;
-  /* margin-top: -650px; */
-  /* margin-top: 10px; */
-}
 /* view-lead */
 
 

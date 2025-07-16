@@ -1,0 +1,1054 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import "../App.css";
+import SideBar from "./SideBar";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  BarChart,
+  Bar,
+} from "recharts";
+import ViewLeads from "./E-commerce/src/Pages/ViewLeads";
+
+export default function DashPage() {
+  const [count, setCount] = useState({
+    leadCount: 0,
+    CustomerCount: 0,
+    TicketCount: 0,
+    FollowupCount: 0,
+    todayFollowups: 0,
+    SalesCount: 0,
+    TotalSalesAmount: 0,
+    QuotationCount:0
+  }); 
+const [lineChartData, setLineChartData] = useState([]);
+  const [recentActivities, setRecentActivities] = useState([]);
+  const [barChartData, setBarChartData] = useState([]);
+
+  const COLORS = ["#0d6efd", "#6610f2", "#6f42c1", "#d63384", "#dc3545"];
+
+  const pieChartData = [
+    { name: "Leads", count: count.leadCount },
+    { name: "Customers", count: count.CustomerCount },
+    { name: "Tickets", count: count.TicketCount },
+    { name: "FollowUps", count: count.FollowupCount },
+    { name: "Sales", count: count.SalesCount },
+  ];
+
+ useEffect(() => {
+  fetch("http://localhost:8007/api/MonthlyLeadData")
+    .then((res) => res.json())
+    .then((data) =>{
+      console.log("lead data:-",data) 
+      setLineChartData(data)});
+
+  fetch("http://localhost:8007/api/MonthlySaleData")
+    .then((res) => res.json())
+    .then((data) =>{
+      console.log("sales data:-"+ data)
+      setBarChartData(data)
+    });
+}, []);
+
+ 
+
+  useEffect(() => {
+    fetch("http://localhost:8007/api/dashCount")
+      .then((res) => res.json())
+      .then((data) => {
+        setCount({
+          leadCount: data.leadCount,
+          CustomerCount: data.CustomerCount,
+          TicketCount: data.TicketCount,
+          FollowupCount: data.FollowupCount,
+          SalesCount: data.SalesCount,
+          todayFollowups: data.todayFollowups,
+          TotalSalesAmount: data.TotalSalesAmount,
+          QuotationCount: data.QuotationCount,
+        });
+      });
+  }, []);
+
+  useEffect(()=>{
+    fetch("http://localhost:8007/api/ResentActivities")
+    .then(res=>res.json())
+    .then((data)=>{
+      console.log(data.data)
+      setRecentActivities(data.data)
+    })
+  },[])
+
+
+  return (
+    <div className="container-scroller">
+          <SideBar />
+
+          <div className="main-panel col-md-9">
+            <div className="content-wrapper" >
+            {/* <h1>📊 Dashboard</h1> */}
+
+            <div className="stats-container" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "20px", marginBottom: "40px" }}>
+              <CardLink count={count.leadCount} label="Total Leads" color="#007bff" link="/ViewLeads" />
+              <CardLink count={count.CustomerCount} label="Total Customers" color="#28a745" link="/Customer" />
+              <CardLink count={count.TicketCount} label="Total Tickets" color="#17a2b8" link="/ViewTicket" />
+              <CardLink count={count.FollowupCount} label="Total FollowUps" color="#6610f2" link="/ShowFollowUp" />
+              <CardLink count={count.SalesCount} label="Total Sales" color="#ffc107" link="/ViewSales" />
+              <CardLink count={count.todayFollowups} label="Today's FollowUps" color="#fd7e14" link="/ShowFollowUp" />
+              <CardLink count={`₹${count.TotalSalesAmount}`} label="Total Sales Amount" color="#dc3545" link="/ViewSales"/>
+            <CardLink count={`${count.QuotationCount}`} label="Total Quotation" color="blue" link="/ViewQuotation"/>
+            </div>
+
+            {/* Charts */}
+                <h2>📈 CRM Overview</h2>
+                <div style={{ display: "flex", gap: "30px", flexWrap: "wrap", marginBottom: "40px" }}>
+                  <div style={{ flex: 1, minWidth: 300, height: 300 }}>
+                    <ResponsiveContainer>
+                      <PieChart>
+                        <Pie data={pieChartData} dataKey="count" nameKey="name" cx="50%" cy="50%" outerRadius={80} fill="#8884d8" label>
+                          {pieChartData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <Tooltip />
+                        <Legend />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+
+
+{/* lead-chart */}
+                  <div style={{ flex: 1, minWidth: 300, height: 300 }}>
+                    <ResponsiveContainer>
+                      <LineChart data={lineChartData}>
+                        <XAxis dataKey="date" />
+                        <YAxis />
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <Tooltip />
+                        <Legend />
+                        <Line type="monotone" dataKey="leads" stroke="#8884d8" />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+{/* sale-chart */}
+                  <div style={{ flex: 1, minWidth: 300, height: 300 }}>
+                    <ResponsiveContainer>
+                      <BarChart data={barChartData}>
+                        <XAxis dataKey="date" />
+                        <YAxis />
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <Tooltip />
+                        <Legend />
+                        <Bar dataKey="sales" fill="#82ca9d" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                {/* Activity + Reminders + Quick Buttons */}
+              <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
+      {/* 📝 Recent Activities */}
+      <div style={{
+        flex: 1,
+        minWidth: 300,
+        background: "#fff",
+        padding: "20px",
+        borderRadius: "12px",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+      }}>
+        <h3 style={{ marginBottom: "15px", color: "#007bff" }}>📝 Recent Activities</h3>
+        <ul style={{ paddingLeft: "20px" }}>
+          {recentActivities.map((activity, index) => (
+            <li key={index} style={{ marginBottom: "10px", lineHeight: "1.4" }}>
+              {activity.text}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* 📅 Reminders */}
+      <div style={{
+        flex: 1,
+        minWidth: 300,
+        background: "#fff",
+        padding: "20px",
+        borderRadius: "12px",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+      }}>
+        <h3 style={{ marginBottom: "15px", color: "#28a745" }}>📅 Reminders</h3>
+        <ul style={{ paddingLeft: "20px" }}>
+          <li style={{ marginBottom: "10px" }}>
+            🔔 <strong>{count.todayFollowups}</strong> Follow-Up(s) Due Today
+          </li>
+          <li>
+            📄 <strong>{count.QuotationCount}</strong> Quotation(s) Expire Today
+          </li>
+        </ul>
+      </div>
+
+      {/* ✅ Quick Actions */}
+      <div style={{
+        flex: 1,
+        minWidth: 300,
+        background: "#fff",
+        padding: "20px",
+        borderRadius: "12px",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+      }}>
+        <h3 style={{ marginBottom: "15px", color: "#dc3545" }}>✅ Quick Actions</h3>
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+          <Link to="/AddLead">
+            <button style={quickBtnStyle}>➕ Add Lead</button>
+          </Link>
+          <Link to="/AddSales">
+            <button style={quickBtnStyle}>➕ Add Sale</button>
+          </Link>
+          <Link to="/ShowFollowUp">
+            <button style={quickBtnStyle}>➕ Add FollowUp</button>
+          </Link>
+        </div>
+      </div>
+              </div>
+
+          </div>
+          </div>
+          
+    </div>
+  );
+}
+
+function CardLink({ count, label, color, link }) {
+  return (
+    <Link to={link} style={{ textDecoration: "none" }}>
+      <div
+        style={{
+          backgroundColor: "#f8f9fa",
+          padding: "20px",
+          borderRadius: "12px",
+          boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+          textAlign: "center",
+        }}
+      >
+        <h2 style={{ color }}>{count}</h2>
+        <p style={{ color: "#000", fontWeight: "500" }}>{label}</p>
+      </div>
+    </Link>
+  );
+  
+}
+const quickBtnStyle = {
+  width: "100%",
+  padding: "10px",
+  backgroundColor: "#007bff",
+  color: "white",
+  border: "none",
+  borderRadius: "8px",
+  fontWeight: "bold",
+  cursor: "pointer",
+  transition: "0.3s ease",
+};
+
+
+
+// SideBar
+
+ // <div className="layout-container">
+    //   {/* Header */}
+    //   <header className="crm-header">
+    //     <h1>📋 CRM Panel</h1>
+    //     <div className="user-info" style={{display:"flex",alignItems:'center',justifyContent:"center"}}>
+    //       {parsedUser ? (
+    //         <>
+    //           <Link to="/Profile">
+    //             <div style={{ display: "flex", alignItems: "center", gap: "10px" ,color:"white"}}>
+    //               <img
+    //                 src={`http://localhost:8007${parsedUser.userImage}`}
+    //                 alt="User"
+    //                 width="35"
+    //                 height="35"
+    //                 style={{ borderRadius: "50%" }}
+    //               />
+    //              <span style={{color:'#5A189A'}}> {parsedUser.userName}</span>
+    //             </div>
+    //           </Link>
+    //         </>
+    //       ) : (
+    //         <>
+    //           <button onClick={() => window.location.href = "/login"} className="btnLogin">Login</button>
+    //         </>
+    //       )}
+    //         <li className="nav-link" style={{marginTop:"-10px",padding:"0"}}>
+    //         {parsedUser && (
+    //             <a
+    //               onClick={() => {
+    //                 localStorage.clear();
+    //                 window.location.href = "/login";
+    //               }}
+    //               className="nav-link"
+    //               style={{
+    //                 background:"#A05AFF",
+    //                 color:"white",
+    //                 border: "none",
+    //                 cursor: "pointer",
+    //                 padding: "5px 10px",
+    //                 marginLeft:"10px",
+    //                 marginTop:'5px'
+    //               }}
+    //             >
+    //               <i className="ri-logout-box-line"></i> Logout
+    //             </a>
+    //         )}
+    //         </li>
+    //     </div>
+    //   </header>
+
+    //   {/* Main Section */}
+    //   <div className="crm-main">
+    //     <aside className="crm-sidebar">
+    //       <ul className="nav-list">
+    //         <li><Link to="/" className="nav-link  active">📊 Dashboard</Link></li>
+    //         <li><Link to="/Product" className="nav-link">🛒 Product</Link></li>
+    //          <li><Link to="/view-Companies" className="nav-link"><i className="ri-community-line"></i> Companies</Link></li>
+    //         <li><Link to="/viewLeads" className="nav-link">📋 Leads</Link></li>
+    //         <li><Link to="/customer" className="nav-link">👤 Customers</Link></li>
+    //         <li><Link to="/ViewTicket" className="nav-link">🎟️ Ticket</Link></li>
+    //         <li><Link to={`/MyTickets/${JSON.parse(localStorage.getItem("user"))?.userId}`} className="nav-link">🎟️ My Ticket</Link></li>
+    //        {/* <li><Link to="/MyTickets" className="nav-link">🎟️ My Ticket</Link></li> */}
+    //         <li><Link to="/ViewQuotation" className="nav-link">📄 Quotation</Link></li>
+    //         <li><Link to="/ViewSales" className="nav-link">💰 Sales</Link></li>
+    //         <li><Link to="/ViewPayment" className="nav-link">💳 Payment</Link></li>
+    //          <li><Link to="/ViewCandidates" className="nav-link">🤵 Candidate</Link></li>
+    //        <li></li>
+    //       </ul>
+    //     </aside>
+
+    //     <section className="crm-content">
+    //       {/* {children} */}
+    //     </section>
+    //   </div>
+    // </div>
+
+
+
+    // ViewLeads
+    <div className="container-scroller">
+    //       <Header />
+    //      <div className="container-fluid page-body-wrapper ">
+    //       <SideBar/>
+    //        <div className="main-panel" style={{marginTop:'100px'}}>
+    //        <div className="content-wrapper">
+    //       <div className="row">
+    //         <div className=".col-lg-12 grid-margin stretch-card">
+    //           <div className="card">
+    //             <div className="card-body">
+    //                <div className="header">
+    //           <h1 style={{ margin: 0 }}>All Leads</h1>
+    //           <Link to="/AddLead" className="addLeadBtn">➕ Add Lead</Link>
+    //         </div>
+    
+    //           <table className="table table-bordered table-hover">
+    //           <thead>
+    //             <tr>
+    //               <th>Name</th>
+    //               <th><i className="ri-arrow-up-down-line"></i> Company</th>
+    //               <th><i className="ri-arrow-up-down-line"></i> Phone</th>
+    //               <th><i className="ri-arrow-up-down-line"></i> Product</th>
+    //               <th><i className="ri-arrow-up-down-line"></i> Status</th>
+    //               <th><i className="ri-arrow-up-down-line"></i> Lead Owner</th>
+    //               <th><i className="ri-arrow-up-down-line"></i> Actions</th>
+    //             </tr>
+    //           </thead>
+    //           <tbody>
+    //             {showLeads.map((v) => {
+    //               const imageUrl=v.companies?.Image?.startsWith('http')
+    //               ?v.companies?.Image
+    //               :`http://localhost:8007${v.companies?.Image}`;
+    //                const imageUrls=v.Image?.startsWith('http')
+    //               ?v.Image
+    //               :`http://localhost:8007${v.Image}`
+    //                  const imageUrls2=v.assigner?.Image?.startsWith('http')
+    //               ?v.assigner?.Image
+    //               :`http://localhost:8007${v.assigner?.Image}`
+    //               return (
+    //               <tr key={v._id}>
+    //                 <td><span style={{display:"flex",alignItems:"center",justifyContent:'center'}}><img src={imageUrls} alt="" style={{width:"35px",height:'35px',borderRadius:'50%',alignItems:'center',marginRight:"10px"}}/>{v.name}</span></td>
+    //                 <td style={{display:"flex",alignItems:'center',justifyContent:'center'}}><img src={imageUrl} alt={v.companies?.name}style={{width:"35px",height:"35px",borderRadius:"50%",marginRight:"10px"}} />{v.companies?.name}</td>
+    //                 <td>+91{v.phone}</td>
+    //                 <td>{v.product?.title} - ₹{v.product?.Price}</td>
+    //                 <td className="status-ceil">
+    //                   <span className={`status-badge ${v.status?.toLowerCase().replace(/\s/g, '-')}`}>
+    //                     {v.status}
+    //                   </span>
+    //                 </td>
+    //                 <td><span style={{display:'flex',alignItems:'center',justifyContent:'center'}}><img src={imageUrls2} style={{width:'35px',height:'35px',borderRadius:'35px',marginRight:'10px'}} alt="" />{v.assigner?.name}</span></td>
+    //                 <td style={{ position: "relative" }} className="menu-wrapper">
+    //                   <i
+    //                     className="ri-more-2-line"
+    //                     onClick={() => toggleMenu(v._id)}
+    //                     style={{ cursor: "pointer" }}
+    //                   ></i>
+    
+    //                   {open === v._id && (
+    //                     <div className="Menu">
+    //                       <div className="menuBtn">
+    //                         <Link to={`/LeadDetails/${v._id}`}>
+    //                           <span><i className="ri-eye-fill"></i> View</span>
+    //                         </Link>
+    //                       </div>
+    //                       <div className="menuBtn">
+    //                         <span onClick={() => navigate(`/EditLead/${v._id}`)}>
+    //                           <i className="ri-edit-line"></i> Edit
+    //                         </span>
+    //                       </div>
+    //                       <div className="menuBtn">
+    //                         <span onClick={() => handleDelete(v._id)}>
+    //                           <i className="ri-delete-bin-6-line"></i> Delete
+    //                         </span>
+    //                       </div>
+    //                     </div>
+    //                   )}
+    //                 </td>
+    //               </tr>
+    //               )
+    // })}
+    //           </tbody>
+    //         </table>
+    //             </div>
+    //           </div>
+    //         </div>
+            
+    //       </div>
+    
+    //         {/* basic table */}
+            
+    //        </div>
+    
+    //       </div>
+    //      </div>
+    //     </div>
+
+
+    // SideBar
+    import { Link, Outlet } from "react-router-dom";
+    import '../../public/assets/css/style.css';
+    
+    export default function SideBar() {
+      return (
+        <div style={{ position: 'fixed', width: '100%' }}>
+          {/* Top Navbar */}
+          <nav className="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+            <div className="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
+              <Link className="navbar-brand brand-logo" to="/">
+                <img src="/assets/images/logo.svg" alt="logo" />
+              </Link>
+              <Link className="navbar-brand brand-logo-mini" to="/">
+                <img src="/assets/images/logo-mini.svg" alt="logo" />
+              </Link>
+            </div>
+    
+            <div className="navbar-menu-wrapper d-flex align-items-stretch">
+              <button className="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+                <span className="mdi mdi-menu"></span>
+              </button>
+    
+              <ul className="navbar-nav navbar-nav-right">
+                <li className="nav-item nav-profile dropdown">
+                  <a className="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                    <div className="nav-profile-img">
+                      <img src="/assets/images/faces/face1.jpg" alt="profile" />
+                    </div>
+                    <div className="nav-profile-text">
+                      <p className="mb-1 text-black">David Greymaax</p>
+                    </div>
+                  </a>
+                  <div className="dropdown-menu navbar-dropdown">
+                    <Link className="dropdown-item" to="#">
+                      <i className="mdi mdi-cached me-2 text-success"></i> Activity Log
+                    </Link>
+                    <div className="dropdown-divider"></div>
+                    <Link className="dropdown-item" to="#">
+                      <i className="mdi mdi-logout me-2 text-primary"></i> Signout
+                    </Link>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </nav>
+    
+          {/* Sidebar */}
+          <div className="container-fluid page-body-wrapper">
+            <nav className="sidebar sidebar-offcanvas" id="sidebar" style={{ overflowY: 'auto', paddingTop: '70px' }}>
+              <ul className="nav" style={{ padding: '0 10px' }}>
+                {[
+                  { to: "/", label: "Dashboard", icon: "mdi mdi-home" },
+                  { to: "/Product", label: "Product", icon: "fa fa-cubes" },
+                  { to: "/view-Companies", label: "Companies", icon: "ri-community-line" },
+                  { to: "/ViewLeads", label: "Leads", icon: "mdi mdi-account-multiple" },
+                  { to: "/Customer", label: "Customers", icon: "mdi mdi-account-check" },
+                  { to: "/ViewQuotation", label: "Quotation", icon: "fa fa-file-text" },
+                  { to: "/ShowFollowUp", label: "FollowUps", icon: "mdi mdi-calendar-clock" },
+                  { to: "/ViewSales", label: "Sales", icon: "mdi mdi-cash" },
+                  { to: "/ViewPayment", label: "Payment", icon: "ri-money-dollar-circle-line" },
+                  { to: "/ViewCandidates", label: "Candidate", icon: "ri-group-fill" },
+                ].map(({ to, label, icon }) => (
+                  <li key={to} className="nav-item" style={{ margin: '6px 0' }}>
+                    <Link className="nav-link d-flex align-items-center gap-2" to={to}>
+                      <i className={`menu-icon ${icon}`}></i>
+                      <span className="menu-title">{label}</span>
+                    </Link>
+                  </li>
+                ))}
+    
+                {/* Ticket Dropdown */}
+                <li className="nav-item" style={{ margin: '6px 0' }}>
+                  <div
+                    className="nav-link d-flex align-items-center gap-2"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#ticketDropdown"
+                    aria-expanded="false"
+                    aria-controls="ticketDropdown"
+                    style={{ cursor: "pointer" }}
+                  >
+                    <i className="menu-icon mdi mdi-ticket"></i>
+                    <span className="menu-title">Tickets</span>
+                    <i className="mdi mdi-chevron-down ms-auto"></i>
+                  </div>
+                  <ul className="nav flex-column collapse" id="ticketDropdown">
+                    <li className="nav-item">
+                      <Link to="/ViewTicket" className="nav-link d-flex align-items-center gap-2 ps-4">
+                        <i className="ri-ticket-2-line"></i>
+                        <span className="menu-title">All Tickets</span>
+                      </Link>
+                    </li>
+                    <li className="nav-item">
+                      <Link to={`/MyTickets/${JSON.parse(localStorage.getItem("user"))?.userId}`} className="nav-link d-flex align-items-center gap-2 ps-4">
+                        <i className="ri-user-voice-line"></i>
+                        <span className="menu-title">My Tickets</span>
+                      </Link>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </nav>
+    
+            {/* Main Content */}
+            <div className="main-panel" style={{ marginLeft: '250px', width: 'calc(100% - 250px)' }}>
+              <div className="content-wrapper" style={{ paddingTop: '90px' }}>
+                <Outlet />
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    
+
+
+        <div className="col-md-6 grid-margin stretch-card">
+                <div className="card">
+                  <div className="card-body">
+                    <h4 className="card-title">Monthly Leads</h4>
+                    <div style={{ width: "100%", height: 300 }}>
+                      <ResponsiveContainer>
+                        <LineChart data={lineChartData}>
+                          <XAxis dataKey="date" />
+                          <YAxis />
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <Tooltip />
+                          <Legend />
+                          <Line type="monotone" dataKey="leads" stroke="#8884d8" />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+                </div>
+              </div>  is doughnt chat me convert kare    import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import "../App.css";
+import SideBar from "./SideBar";
+import Header from "./Header";
+
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  BarChart,
+  Bar,
+} from "recharts";
+
+export default function DashPage() {
+  const [count, setCount] = useState({
+    leadCount: 0,
+    CustomerCount: 0,
+    TicketCount: 0,
+    FollowupCount: 0,
+    todayFollowups: 0,
+    SalesCount: 0,
+    TotalSalesAmount: 0,
+    QuotationCount: 0,
+  });
+
+  // ✅ Notification States
+  const [allNotifications, setAllNotifications] = useState([]);
+  // const [currentNotification, setCurrentNotification] = useState("");
+
+  // ✅ Notification Logic
+useEffect(() => {
+  fetch("http://localhost:8007/api/notification")
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data)
+      let notify = [];
+      if (data.followups && data.followups.length > 0) {
+        notify.push(`You have ${data.followups.length} follow-up(s) today`);
+      }
+      if (data.expiring && data.expiring.length > 0) {
+        notify.push(`${data.expiring.length} quotation(s) expiring today`);
+      }
+     if (data.lowStock && data.lowStock.length > 0) {
+    data.lowStock.forEach(product => {
+      notify.push(` ${product.title} stock is low (only ${product.stock} left)`);
+    });
+  }
+   if (data.outStock && data.outStock.length > 0) {
+            data.outStock.forEach(product => {
+              notify.push(` ${product.title} (Out Of Stock)`);
+            });
+        }
+      if (notify.length > 0) {
+        setAllNotifications(notify);
+      }
+    })
+    .catch((err) => console.error("Notification Fetch Error:", err));
+}, []);
+
+  // ✅ Clear notifications after 5 sec
+useEffect(() => {
+  if (allNotifications.length > 0) {
+    const interval = setInterval(() => {
+      setAllNotifications((prev) => prev.slice(1)); // Remove first notification
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }
+}, [allNotifications]);
+
+
+
+  const [lineChartData, setLineChartData] = useState([]);
+  const [barChartData, setBarChartData] = useState([]);
+  const [recentActivities, setRecentActivities] = useState([]);
+
+  const COLORS = ["#0d6efd", "#6610f2", "#6f42c1", "#d63384", "#dc3545"];
+
+  const pieChartData = [
+    { name: "Leads", count: count.leadCount },
+    { name: "Customers", count: count.CustomerCount },
+    { name: "Tickets", count: count.TicketCount },
+    { name: "FollowUps", count: count.FollowupCount },
+    { name: "Sales", count: count.SalesCount },
+  ];
+
+  // ✅ Monthly Leads
+  useEffect(() => {
+    fetch("http://localhost:8007/api/MonthlyLeadData")
+      .then((res) => res.json())
+      .then((data) => setLineChartData(data));
+  }, []);
+
+  // ✅ Monthly Sales
+  useEffect(() => {
+    fetch("http://localhost:8007/api/MonthlySaleData")
+      .then((res) => res.json())
+      .then((data) => setBarChartData(data));
+  }, []);
+
+  // ✅ Dashboard Count
+  useEffect(() => {
+    fetch("http://localhost:8007/api/dashCount")
+      .then((res) => res.json())
+      .then((data) => {
+        setCount({
+          leadCount: data.leadCount,
+          CustomerCount: data.CustomerCount,
+          TicketCount: data.TicketCount,
+          FollowupCount: data.FollowupCount,
+          SalesCount: data.SalesCount,
+          todayFollowups: data.todayFollowups,
+          TotalSalesAmount: data.TotalSalesAmount,
+          QuotationCount: data.QuotationCount,
+        });
+      });
+  }, []);
+
+  // ✅ Recent Activities
+  useEffect(() => {
+    fetch("http://localhost:8007/api/ResentActivities")
+      .then((res) => res.json())
+      .then((data) => setRecentActivities(data.data));
+  }, []);
+
+  return (
+    <div className="container-scroller">
+      <Header />
+      <div className="container-fluid page-body-wrapper">
+        <SideBar />
+        <div className="main-panel" style={{ marginTop: "40px", marginLeft: "260px" }}>
+          <div className="content-wrapper">
+            <div className="page-header">
+              <h3 className="page-title ms-5 fs-5">
+                <i className="mdi mdi-home bg-gradient-primary text-white me-2"></i> Dashboard
+              </h3>
+            </div>
+
+            {/* ✅ Notification Popup */}
+            <div className="row" style={{marginTop:'-30px'}}>
+      {/* ✅ Notification Popup (Stack Style) */}
+<div className="notification-container">
+  {allNotifications.slice(0, 2).map((msg, index) => (
+    <div key={index} className={`notification-popup ${index === 0 ? 'first' : 'second'}`}>
+      {msg}
+    </div>
+  ))}
+</div>
+  {/* Total Lead */}
+           <div className="col-md-3 stretch-card grid-margin">
+  <div className="card bg-gradient-danger card-img-holder text-white " style={{height:"160px"}}>
+    <div className="card-body">
+      <img src="assets/images/dashboard/circle.svg" className="card-img-absolute" alt="circle" />
+      <h2 className="">{count.leadCount}</h2>
+      <h6 className="card-text">Total Lead</h6>
+    </div>
+  </div>
+</div>
+  {/* Total Customer */}
+  <div className="col-md-3 stretch-card grid-margin">
+    <div className="card bg-gradient-success card-img-holder text-white" style={{ height: "160px" }}>
+      <div className="card-body">
+        <img src="assets/images/dashboard/circle.svg" className="card-img-absolute" alt="circle" />
+        <h2 className=" fw-bold fs-2">{count.CustomerCount}</h2>
+        <h5 className="card-text fw-semibold">Total Customer</h5>
+      </div>
+    </div>
+  </div>
+
+  {/* Total Ticket */}
+  <div className="col-md-3 stretch-card grid-margin">
+    <div className="card bg-gradient-info card-img-holder text-white" style={{ height: "160px" }}>
+      <div className="card-body">
+        <img src="assets/images/dashboard/circle.svg" className="card-img-absolute" alt="circle" />
+        <h2 className=" fw-bold fs-2">{count.TicketCount}</h2>
+        <h5 className="card-text fw-semibold">Total Ticket</h5>
+      </div>
+    </div>
+  </div>
+
+  {/* Total FollowUp */}
+  <div className="col-md-3 stretch-card grid-margin">
+    <div className="card bg-gradient-primary card-img-holder text-dark" style={{ height: "160px" }}>
+      <div className="card-body">
+        <img src="assets/images/dashboard/circle.svg" className="card-img-absolute" alt="circle" />
+        <h2 className=" fw-bold fs-2">{count.FollowupCount}</h2>
+        <h5 className="card-text fw-semibold">Total FollowUp</h5>
+      </div>
+    </div>
+  </div>
+
+  {/* Total Sales */}
+  <div className="col-md-3 stretch-card grid-margin">
+    <div className="card bg-gradient-primary card-img-holder text-white" style={{ height: "160px" }}>
+      <div className="card-body">
+        <img src="assets/images/dashboard/circle.svg" className="card-img-absolute" alt="circle" />
+        <h2 className=" fw-bold fs-2">{count.SalesCount}</h2>
+        <h5 className="card-text fw-semibold">Total Sales</h5>
+      </div>
+    </div>
+  </div>
+
+  {/* Today's FollowUp */}
+  <div className="col-md-3 stretch-card grid-margin">
+    <div className="card bg-gradient-info card-img-holder text-white" style={{ height: "160px" }}>
+      <div className="card-body">
+        <img src="assets/images/dashboard/circle.svg" className="card-img-absolute" alt="circle" />
+        <h2 className=" fw-bold fs-2">{count.todayFollowups}</h2>
+        <h5 className="card-text fw-semibold">Today's FollowUp</h5>
+      </div>
+    </div>
+  </div>
+
+  {/* Total Sales Amount */}
+  <div className="col-md-3 stretch-card grid-margin">
+    <div className="card bg-gradient-dark card-img-holder text-white" style={{ height: "160px" }}>
+      <div className="card-body">
+        <img src="assets/images/dashboard/circle.svg" className="card-img-absolute" alt="circle" />
+        <h2 className=" fw-bold fs-2">₹{count.TotalSalesAmount}</h2>
+        <h5 className="card-text fw-semibold">Total Sales Amount</h5>
+      </div>
+    </div>
+  </div>
+
+  {/* Total Quotation */}
+  <div className="col-md-3 stretch-card grid-margin">
+    <div className="card bg-gradient-danger card-img-holder text-dark" style={{ height: "160px" }}>
+      <div className="card-body">
+        <img src="assets/images/dashboard/circle.svg" className="card-img-absolute" alt="circle" />
+        <h2 className=" fw-bold fs-2">{count.QuotationCount}</h2>
+        <h5 className="card-text fw-semibold">Total Quotation</h5>
+      </div>
+    </div>
+  </div>
+  </div>
+
+
+            {/* Pie Chart */}
+            <div className="row">
+              <div className="col-md-6 grid-margin stretch-card">
+                <div className="card">
+                  <div className="card-body">
+                    <h4 className="card-title">Visit And Sales Statistics</h4>
+                    <div style={{ width: "100%", height: 300 }}>
+                      <ResponsiveContainer>
+                        <PieChart>
+                          <Pie
+                            data={pieChartData}
+                            dataKey="count"
+                            nameKey="name"
+                            cx="50%"
+                            cy="50%"
+                            outerRadius={80}
+                            label
+                          >
+                            {pieChartData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                            ))}
+                          </Pie>
+                          <Tooltip />
+                          <Legend />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Line Chart */}
+              <div className="col-md-6 grid-margin stretch-card">
+                <div className="card">
+                  <div className="card-body">
+                    <h4 className="card-title">Monthly Leads</h4>
+                    <div style={{ width: "100%", height: 300 }}>
+                      <ResponsiveContainer>
+                        <LineChart data={lineChartData}>
+                          <XAxis dataKey="date" />
+                          <YAxis />
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <Tooltip />
+                          <Legend />
+                          <Line type="monotone" dataKey="leads" stroke="#8884d8" />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bar Chart */}
+            <div className="row">
+              <div className="col-md-6 grid-margin stretch-card">
+                <div className="card">
+                  <div className="card-body">
+                    <h4 className="card-title">Monthly Sales</h4>
+                    <div style={{ width: "100%", height: 300 }}>
+                      <ResponsiveContainer>
+                        <BarChart data={barChartData}>
+                          <XAxis dataKey="date" />
+                          <YAxis />
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <Tooltip />
+                          <Legend />
+                          <Bar dataKey="sales" fill="#82ca9d" />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/* recent Activities */}
+                <div className="col-md-6 grid-margin stretch-card">
+    <div className="card shadow-sm border-0 w-100">
+  <div className="card-body">
+    <div
+      style={{
+        background: "#f9f9f9",
+        // padding: "25px",
+        borderRadius: "12px",
+        width: "100%", // ensures full width
+      }}
+    >
+      <h5
+        style={{
+          marginBottom: "20px",
+          color: "#007bff",
+          fontWeight: "600",
+          borderBottom: "1px solid #ddd",
+          paddingBottom: "10px",
+        }}
+      >
+        📝 Recent Activities
+      </h5>
+
+      {recentActivities.length > 0 ? (
+        <ul style={{ listStyle: "none", paddingLeft: 0, marginBottom: 0 }}>
+          {recentActivities.map((activity, index) => (
+            <li
+              key={index}
+              style={{
+                marginBottom: "12px",
+                padding: "12px 15px",
+                borderRadius: "8px",
+                backgroundColor: "#fff",
+                boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+                fontSize: "15px",
+                color: "#333",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <i
+                className="mdi mdi-check-circle-outline text-success me-2"
+                style={{ fontSize: "18px", marginRight: "8px" }}
+              ></i>
+              <span>{activity.text}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p style={{ color: "#888" }}>No recent activity.</p>
+      )}
+    </div>
+  </div>
+</div>
+
+
+                              </div>
+            </div>
+{/* --- */}
+                <div className="row">
+                  {/* Reminders */}
+                            <div className="col-md-6 grid-margin stretch-card">
+                                <div className="card">
+                   <div className="card2 shadow-sm">
+  <div className="card-body2 shadow-sm p-4 rounded" style={{ backgroundColor: "#f9f9f9" }}>
+  <h5 className="fw-bold mb-4 text-dark">📅 Today's Reminders</h5>
+
+  <div className="table-responsive">
+    <table className="table align-middle table-hover">
+      <thead className="table-light">
+        <tr className="text-secondary">
+          <th>Reminder</th>
+          <th className="text-center">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr className="bg-white">
+          <td className="d-flex align-items-center">
+            <i className="mdi mdi-bell-ring-outline me-2 text-warning fs-5"></i>
+            <span className="fw-semibold">Follow-Ups Due Today</span>
+          </td>
+          <td className="text-center">
+            <span className="badge rounded-pill bg-success px-3 py-2 fs-6">
+              {count.todayFollowups || 0}
+            </span>
+          </td>
+        </tr>
+
+        <tr className="bg-white">
+          <td className="d-flex align-items-center">
+            <i className="mdi mdi-file-document-outline me-2 text-primary fs-5"></i>
+            <span className="fw-semibold">Quotations Expiring Today</span>
+          </td>
+          <td className="text-center">
+            <span className="badge rounded-pill bg-danger px-3 py-2 fs-6">
+              {count.QuotationCount || 0}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</div>
+
+                                </div>
+                              </div>
+{/* button */}
+                                <div className="col-md-6 grid-margin stretch-card">
+                                <div className="card">
+                                  <div className="card-body2">
+                                    {/* <h4 className="card-title">Monthly Sales</h4> */}
+                              {/* ✅ Quick Actions */}
+                                  <div style={{
+                                    flex: 1,
+                                    // minWidth: 300,
+                                    background: "#fff",
+                                    padding: "20px",
+                                    borderRadius: "12px",
+                                    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                                  }}>
+                                    <h3 style={{ marginBottom: "5px", color: "#dc3545" }}>✅ Quick Actions</h3>
+                                    <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                                      <Link to="/add-lead">
+                                        <button >➕ Add Lead</button>
+                                      </Link>
+                                      <Link to="/add-sale">
+                                        <button >➕ Add Sale</button>
+                                      </Link>
+                                      <Link to="/show-followup">
+                                        <button >➕ Add FollowUp</button>
+                                      </Link>
+                                    </div>
+                                  </div>
+                                  </div>
+                                </div>
+                              </div>   
+                </div>
+
+          </div>
+      
+          {/* Footer */}
+          <footer className="footer">
+            <div className="d-sm-flex justify-content-center justify-content-sm-between">
+              <span className="text-muted text-center text-sm-left d-block d-sm-inline-block">
+                Copyright © 2023{" "}
+                <a href="https://www.bootstrapdash.com/" target="_blank" rel="noreferrer">
+                  BootstrapDash
+                </a>. All rights reserved.
+              </span>
+              <span className="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">
+                Hand-crafted & made with <i className="mdi mdi-heart text-danger"></i>
+              </span>
+            </div>
+          </footer>
+        </div>
+      </div>
+    </div>
+  );
+}

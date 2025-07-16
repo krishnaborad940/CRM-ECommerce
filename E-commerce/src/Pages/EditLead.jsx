@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import SideBar from "./SideBar";
 import "../App.css"; // CSS file import
+import Header from "./Header";
 
 export default function EditLead() {
   const { id } = useParams();
@@ -11,7 +12,7 @@ export default function EditLead() {
     name: "",
     email: "",
     phone: "",
-    productId: "",
+    product: "",
     nextFollowup: "",
     remark: "",
     status: "",
@@ -39,7 +40,7 @@ export default function EditLead() {
           name: lead.name,
           email: lead.email,
           phone: lead.phone,
-          productId: lead.product?._id || "",
+          product: lead.product?._id || "",
           nextFollowup: lead.nextFollowup?.slice(0, 10),
           remark: lead.remark,
           status: lead.status,
@@ -66,7 +67,7 @@ const handleUpdate = (e) => {
   form.append("name", formData.name);
   form.append("email", formData.email);
   form.append("phone", formData.phone);
-  form.append("productId", formData.productId);
+  form.append("product", formData.product);
   form.append("nextFollowup", formData.nextFollowup);
   form.append("remark", formData.remark);
   form.append("status", formData.status);
@@ -81,89 +82,102 @@ const handleUpdate = (e) => {
     .then((res) => res.json())
     .then(() => {
       alert("Lead updated successfully!");
-      navigate("/ViewLeads");
+      navigate("/view-leads");
     });
 };
 
 
   return (
-    <div className="viewleads-container">
-      <SideBar />
-      <div className="main-content">
-        <div className="edit-header">
-          <h2>Edit Lead</h2>
-          <Link to="/ViewLeads" className="back-btn">← View Leads</Link>
-        </div>
+    <div className="container-scroller">
+      <Header />
+      <div className="container-fluid page-body-wrapper">
+        <SideBar/>
+            <div className="main-panel" style={{marginLeft:'250px',marginTop:'40px'}}>
+              <div className="content-wrapper">
 
-        <form onSubmit={handleUpdate} className="edit-form">
-          <label>Name:
-            <input name="name" value={formData.name} onChange={handleChange} required />
-          </label>
+          <div class="page-header" >
+              <h3 class="page-title" style={{marginLeft:'60px'}}>➕ Edit Lead </h3>
+              
+                <a class="btn-gradient-primary p-2 rounded " style={{textDecoration:'none'}} >
+                   <Link to="/view-leads" style={{color:'white',textDecoration:'none'}}>
+            ← View Leads
+          </Link>
+                </a>
+            </div>
+                 
 
-          <label>Email:
-            <input name="email" value={formData.email} onChange={handleChange} required />
-          </label>
+                  <form onSubmit={handleUpdate} className="edit-form">
+                    <label>Name:
+                      <input name="name" value={formData.name} onChange={handleChange} required />
+                    </label>
 
-          <label>Phone:
-            <input name="phone" value={formData.phone} onChange={handleChange} required />
-          </label>
+                    <label>Email:
+                      <input name="email" value={formData.email} onChange={handleChange} required />
+                    </label>
 
-          <label>Product:
-            <select name="productId" value={formData.productId} onChange={handleChange} required>
-              <option value="">-- Select Product --</option>
-              {products.map((p) => (
-                <option key={p._id} value={p._id}>{p.title} ₹{p.Price}</option>
-              ))}
-            </select>
-          </label>
+                    <label>Phone:
+                      <input name="phone" value={formData.phone} onChange={handleChange} required />
+                    </label>
 
-          <label>Next Follow-Up:
-            <input type="date" name="nextFollowup" value={formData.nextFollowup} onChange={handleChange} />
-          </label>
+                    <label>Product:
+                      <select name="product" value={formData.product} onChange={handleChange} required>
+                        <option value="">-- Select Product --</option>
+                        {products.map((p) => (
+                          <option key={p._id} value={p._id}>{p.title} ₹{p.Price}</option>
+                        ))}
+                      </select>
+                    </label>
 
-          <label>Remark:
-            <input name="remark" value={formData.remark} onChange={handleChange} />
-          </label>
+                    <label>Next Follow-Up:
+                      <input type="date" name="nextFollowup" value={formData.nextFollowup} onChange={handleChange} />
+                    </label>
 
-          <label>Status:
-            <select name="status" value={formData.status} onChange={handleChange} required>
-              <option value="">-- Select --</option>
-              <option value="New">New</option>
-              <option value="Follow-Up">Follow-Up</option>
-              <option value="Intrested">Intrested</option>
-              <option value="Converted">Converted</option>
-              <option value="Closed">Closed</option>
-            </select>
-          </label>
+                    <label>Remark:
+                      <input name="remark" value={formData.remark} onChange={handleChange} />
+                    </label>
 
-          <label>Assign To:
-            <select name="role" value={formData.role} onChange={handleChange}>
-              <option value="">-- Select --</option>
-              <option value="teleCaller">TeleCaller</option>
-              <option value="sales">Sales</option>
-              <option value="Supporter">Supporter</option>
-            </select>
-          </label>
-          <label>Company</label>
-          <select name="companies" value={formData.companies} onChange={handleChange} id="">
-            <option value="">--select--</option>
-            {companiesList.map((v)=>(
-              <option value={v._id}>{v.name}</option>
-            ))}
-          </select>
+                    <label>Status:
+                      <select name="status" value={formData.status} onChange={handleChange} required>
+                        <option value="">-- Select --</option>
+                        <option value="New">New</option>
+                        <option value="Follow-Up">Follow-Up</option>
+                        <option value="Intrested">Intrested</option>
+                        <option value="Converted">Converted</option>
+                        <option value="Closed">Closed</option>
+                      </select>
+                    </label>
 
-              <label htmlFor="">Image</label>
-              <input type="file" name="Image" onChange={handleChange} />
-              {formData.Image && (
-  <img
-    src={typeof formData.Image === "string" ? `http://localhost:8007${formData.Image}` : URL.createObjectURL(formData.Image)}
-    alt="Preview"
-    style={{ width: "80px", height: "80px", borderRadius: "8px", marginBottom: "10px" }}
-  />
-)}
-          <button type="submit" className="submit-btn">Update Lead</button>
-        </form>
+                    <label>Assign To:
+                      <select name="role" value={formData.role} onChange={handleChange}>
+                        <option value="">-- Select --</option>
+                        <option value="teleCaller">TeleCaller</option>
+                        <option value="sales">Sales</option>
+                        <option value="Supporter">Supporter</option>
+                      </select>
+                    </label>
+                    <label>Company</label>
+                    <select name="companies" value={formData.companies} onChange={handleChange} id="">
+                      <option value="">--select--</option>
+                      {companiesList.map((v)=>(
+                        <option value={v._id}>{v.name}</option>
+                      ))}
+                    </select>
+
+                        <label htmlFor="">Image</label>
+                        <input type="file" name="Image" onChange={handleChange} />
+                        {formData.Image && (
+            <img
+              src={typeof formData.Image === "string" ? `http://localhost:8007${formData.Image}` : URL.createObjectURL(formData.Image)}
+              alt="Preview"
+              style={{ width: "80px", height: "80px", borderRadius: "8px", marginBottom: "10px" }}
+            />
+          )}
+                    <button type="submit" className="submit-btn btn-gradient-primary">Update Lead</button>
+                  </form>
+              </div>
+                </div>
       </div>
+    
     </div>
   );
 }

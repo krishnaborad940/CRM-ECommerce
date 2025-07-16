@@ -1,132 +1,218 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import '../App.css';
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import "../App.css";
 import SideBar from "./SideBar";
+import Header from "./Header";
 
 export default function AllProduct() {
   const [seeProduct, setSeeProduct] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 4;
-
+  const itemsPerPage = 8;
+  const navigate=useNavigate()
+  const [open,setOpen]=useState(null)
+    const location = useLocation();
+  
       useEffect(() => {
-        fetch("http://localhost:8007/api/showProduct")
-          .then((res) => res.json())
-          .then((data) => {
-            setSeeProduct(data.data || []);
-          })
-          .catch((err) => {
-            console.error("Error fetching products:", err);
-          });
-      }, []);
+    const params = new URLSearchParams(location.search);
+    const search = params.get("search");
+    if (search) setSearchTerm(search);
+  }, [location]);
 
-      const filteredProducts = seeProduct.filter((product) => {
-        const matchesSearch = product.category.toLowerCase().includes(searchTerm.toLowerCase()) ||product.title.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesCategory = categoryFilter ? product.category === categoryFilter : true;
-        return matchesSearch && matchesCategory;
-      });
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      const isInsideMenu = e.target.closest(".menu-wrapper");
+      if (!isInsideMenu) {
+        setOpen(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-      const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-      const startIndex = (currentPage - 1) * itemsPerPage;
-      const displayedProducts = filteredProducts.slice(startIndex, startIndex + itemsPerPage);
+  const toggleMenu = (id) => {
+    setOpen(open === id ? null : id);
+  };
+
+  useEffect(() => {
+    fetch("http://localhost:8007/api/showProduct")
+      .then((res) => res.json())
+      .then((data) => setSeeProduct(data.data || []))
+      .catch((err) => console.error("Error fetching products:", err));
+  }, []);
+
+  const filteredProducts = seeProduct.filter((product) => {
+    const matchesSearch =
+      product.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = categoryFilter
+      ? product.category === categoryFilter
+      : true;
+    return matchesSearch && matchesCategory;
+  });
+
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const displayedProducts = filteredProducts.slice(startIndex, startIndex + itemsPerPage);
+
+const handleDelete=(_id)=>{
+  fetch(`http://localhost:8007/api/DeleteProduct/${_id}`,{
+    method:'DELETE'
+  })
+  .then(res=>res.json())
+  .then((data)=>{
+    console.log(data);
+    setSeeProduct((prev) => prev.filter(product => product._id !== _id));
+  })
+}
+
 
   return (
-    <div style={{ display: "flex", fontFamily: "sans-serif", minHeight: "100vh" }}>
-             <SideBar />
-      {/* Main content */}
-            <div className="main" style={{ flex: 1, padding: "30px",marginTop:"50px" }}>
-              <div className="header" style={{  display: "flex",justifyContent: "space-between",alignItems: "center", marginBottom: "20px",}} >
-                    <h1 style={{ margin: 0 }}>🛍️ All Products</h1>
-                    <Link to="/addProduct" className="addLeadBtn1" style={{backgroundColor:'green',color:'white',padding:'5px 20px',borderRadius:"10px"}}> ➕ Add </Link>
-              </div>
+    <div className="container-scroller">
+      <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm}  />
+      <div className="container-fluid page-body-wrapper">
+        <SideBar />
+        <div className="main-panel" style={{ marginLeft: "250px", marginTop: "40px" }}>
+          <div className="content-wrapper px-4 py-5">
 
-              {/* Filters */}
-              <div style={{ display: "flex", gap: "20px", marginBottom: "20px" }}>
-                      <input  type="text" placeholder="Search by title..." value={searchTerm}onChange={(e) => setSearchTerm(e.target.value)} style={{ padding: "10px", borderRadius: "6px", border: "1px solid #ccc", flex: 1 }}/>
-                      <select
-                        value={categoryFilter}
-                        onChange={(e) => setCategoryFilter(e.target.value)}
-                        style={{ padding: "10px", borderRadius: "6px", border: "1px solid #ccc" }} >
-                              <option value="">All Categories</option>
-                              {[...new Set(seeProduct.map(p => p.category))].map((cat, i) => (
-                                <option key={i} value={cat}>{cat}</option>
-                              ))}
-                      </select>
-              </div>
+            {/* Top Bar */}
+      <div className="d-flex justify-content-end align-items-center mb-4 gap-3">
+  {/* Add Product Button */}
+ <div style={{marginRight:'700px',fontSize:'20px'}}>  all product</div>
+  <Link
+    to="/add-product"
+    className="btn btn-primary pe-3 ps-3 rounded-2"
+  >
+    ➕ Add Product
+  </Link>
 
-              {/* Product Grid */}
-              <div className="grid" style={{ display: "grid",gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",gap: "20px" }}>
-                {displayedProducts.map((v) => {
-                  const imageUrl = v.Image?.startsWith("http")
-                    ? v.Image
-                    : `http://localhost:8007${v.Image || ""}`;
+  {/* Category Filter Dropdown */}
+  <select
+    value={categoryFilter}
+    onChange={(e) => setCategoryFilter(e.target.value)}
+    className="form-select"
+    style={{ width: "220px" }}
+  >
+    <option value="" className="text-dark">⏳Filter</option>
+    <option value="">All</option>
+    {[...new Set(seeProduct.map((p) => p.category))].map((cat, i) => (
+      <option key={i} value={cat}>{cat}</option>
+    ))}
+  </select>
+</div>
 
-                  return (
-                    <div
-                      key={v._id}
-                      className="card"
-                      style={{
-                        background: "#fff",
-                        borderRadius: "10px",
-                        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                        padding: "20px",
-                        textAlign: "center",
-                        transition: "0.3s",
-                        cursor: "pointer"
-                      }}
-                    >
-                      <Link to={`/ProductDetails/${v._id}`} style={{ textDecoration: "none", color: "inherit" }}>
-                        <img
-                          src={imageUrl}
-                          alt={v.title}
-                          style={{ width: "100%", height: "180px", objectFit: "cover", borderRadius: "8px" }}
-                        />
-                        <h3 style={{ marginTop: "15px", color: "#333" }}>{v.title}</h3>
-                        <p style={{ fontSize: "14px", color: "#666" }}>
-                          {v.description?.slice(0, 60)}...
-                        </p>
-                        <p><b>Category:</b> {v.category}</p>
-                        <p><b>Price:</b> ₹{v.Price}</p>
-                        <p><b>Stock:</b> {v.stock}</p>
-                        <p style={{ marginBottom: "20px" }}><b>Rating:</b> ⭐ {v.rate}</p>
-                      </Link>
-                      <a href="/AddLead" style={{
-                        backgroundColor: "skyblue",
-                        border: "none",
-                        padding: "8px 14px",
-                        borderRadius: "6px",
-                        cursor: "pointer",
-                        fontWeight: "bold"
-                      }}>
-                        ➕ Add Lead
-                      </a>
-                    </div>
-                  );
-                })}
-              </div>
+            {/* Filter Bar */}
+          
 
-              {/* Pagination */}
-              <div style={{ marginTop: "30px", textAlign: "center" }}>
-                {Array.from({ length: totalPages }, (_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentPage(index + 1)}
-                    style={{
-                      padding: "8px 12px",
-                      margin: "0 5px",
-                      backgroundColor: currentPage === index + 1 ? "#3b82f6" : "#e5e7eb",
-                      color: currentPage === index + 1 ? "#fff" : "#000",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor: "pointer"
-                    }}
-                  >
-                    {index + 1}
-                  </button>
-                ))}
+            {/* Product Table */}
+         <div className="col-lg-12 grid-margin stretch-card ">
+             <div className="card2  w-100">
+              <div className="card-body2 p-4" >
+                <table className="table table-bordered table-hover align-middle">
+                  <thead className="table-light">
+                    <tr>
+                      <th style={{ width: "5%" }}>#</th>
+                      <th style={{ width: "30%" }}>Product</th>
+                      <th>Category</th>
+                      <th>Price</th>
+                      <th>Rating</th>
+                      <th>Stock</th>
+                      <th style={{ width: "15%" }}>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {displayedProducts.length===0 ?(
+                      <tr>
+                            <td colSpan="7" style={{ textAlign: 'center', padding: '20px', color: 'gray' }}>
+                              Data Not Found
+                            </td>
+                          </tr>
+                    )
+                    :
+                     (displayedProducts.map((product, index) => {
+                      const imageUrl = product.Image?.startsWith("http")
+                        ? product.Image
+                        : `http://localhost:8007${product.Image || ""}`;
+
+                      return (
+                        <tr key={product._id}>
+                          <td>{startIndex + index + 1}</td>
+                          <td>
+                            <div className="d-flex align-items-center">
+                              <img
+                                src={imageUrl}
+                                alt="product"
+                                className="me-3"
+                                style={{ width: "50px", height: "50px", objectFit: "cover", borderRadius: "8px" }}
+                              />
+                              <span className="fw-medium">{product.title}</span>
+                            </div>
+                          </td>
+                          <td>{product.category}</td>
+                          <td>₹{product.Price}</td>
+                          <td>⭐ {product.rate}</td>
+                          <td>
+                              {product.stock === 0 ? (
+                                <span style={{ color: "red", fontWeight: "bold" }}>Out of Stock</span>
+                              ) : (
+                                product.stock
+                              )}
+                          </td> 
+                     
+                           <td className="menu-wrapper" style={{ position: "relative" }}>
+                                <i
+                                  className="ri-more-2-line"
+                                  onClick={() => toggleMenu(product._id)}
+                                  style={{ cursor: "pointer" }}
+                                ></i>
+
+                                {open === product._id && (
+                                  <div className="Menu position-absolute bg-white shadow p-2 rounded">
+                                    <div className="menuBtn mb-1 " >
+                                      <Link to={`/product-details/${product._id}`} style={{color:'grey',textDecoration:'none'}}>
+                                        <i className="ri-eye-fill"></i> View
+                                      </Link>
+                                    </div>
+                                    <div
+                                      className="menuBtn mb-1"  style={{color:'grey',textDecoration:'none'}}
+                                      onClick={() => navigate(`/edit-product/${product._id}`)}
+                                    >
+                                      <i className="ri-edit-line"></i> Edit
+                                    </div>
+                                    <div className="menuBtn text-danger" onClick={() => handleDelete(product._id)}>
+                                      <i className="ri-delete-bin-6-line"></i> Delete
+                                    </div>
+                                  </div>
+                                )}
+                              </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                   
+                  </tbody>
+                </table>
               </div>
             </div>
+         </div>
+
+            {/* Pagination */}
+            <div className="mt-4 text-center">
+              {Array.from({ length: totalPages }, (_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentPage(i + 1)}
+                  className={`btn btn-sm mx-1 ${currentPage === i + 1 ? "btn-primary text-white" : "btn-outline-secondary"}`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+            </div>
+
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import SideBar from "./SideBar";
 import "../App.css"; // Custom CSS
+import Header from "./Header";
 
 export default function FollowUp() {
   const { id } = useParams();
@@ -49,26 +50,31 @@ export default function FollowUp() {
     })
       .then((res) => res.json())
       .then(() => {
-        alert("Follow-Up Added Successfully");
-        navigate("/ViewLeads");
+        // alert("Follow-Up Added Successfully");
+        navigate("/view-leads");
       });
   };
 
   return (
-    <div className="viewleads-container">
+    <div className="container-scroller">
+      <Header/>
+      <div className="container-fluid page-body-wrapper">
       <SideBar />
-      <div className="main-content">
-        <div className="followup-header">
+    <div className="main-panel" style={{marginLeft:'250px',marginTop:'40px'}}>
+      <div className="content-wrapper">
+          <div className="">
+        <div className="page-header">
           <h2>📞 Set Follow-Up</h2>
-          {lead && (
+       
+        </div>
+
+        <form onSubmit={handleSubmit} className="followup-form">
+             {lead && (
             <div className="lead-info">
               <p><strong>Name:</strong> {lead.name}</p>
               <p><strong>Product:</strong> {lead.product?.title} - ₹{lead.product?.Price}</p>
             </div>
           )}
-        </div>
-
-        <form onSubmit={handleSubmit} className="followup-form">
           <label>
             Remark:
             <input
@@ -112,6 +118,10 @@ export default function FollowUp() {
           <button type="submit" className="submit-btn">➕ Set Follow-Up</button>
         </form>
       </div>
+      </div>
+    </div>
+      </div>
+    
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import SideBar from "./SideBar";
+import Header from "./Header";
 
 export default function NewFollowUp() {
   const { id } = useParams(); // lead ID
@@ -59,23 +60,28 @@ export default function NewFollowUp() {
 
   return (
     <>
-      <div className="viewleads-container">
+    <div className="container-scroller">
+      <Header/>
+      <div className="container-fluid page-body-wrapper">
         <SideBar/>
-        <div className="main-content">
-            <h2>Set Follow-Up</h2>
-      {lead && (
+        <div className="main-panel" style={{marginLeft:'250px',marginTop:'40px'}}>
+          <div className="content-wrapper">
+ 
+        <div className="">
+            <div class="page-header" >
+              <h3 class="page-title" style={{marginLeft:'60px'}}>➕ Set Follow Up </h3>
+            
+            </div>
+     
+
+      <form onSubmit={handleSubmit} className="lead-form">
+       {lead && (
         <div>
           <p><b>Name:</b> {lead.name}</p>
           <p><b>Product:</b> {lead.product?.title} - ₹{lead.product?.Price}</p>        </div>
       )}
-
-      <form onSubmit={handleSubmit}>
-        <table border={1}>
-          <tbody>
-            <tr>
-              <td>Remark</td>
-              <td>
-                <input
+              <label>Remark</label>
+             <input
                   type="text"
                   name="remark"
                   placeholder="Enter your Remark"
@@ -83,22 +89,19 @@ export default function NewFollowUp() {
                   onChange={(e) => setRemark(e.target.value)}
                   required
                 />
-              </td>
-            </tr>
-            <tr>
-              <td>Next Follow-Up Date</td>
-              <td>
+             
+       
+              <label>Next Follow-Up Date</label>
+            
                 <input
                   type="date"
                   name="Followup"
                   value={nextFollowup}
                   onChange={(e) => setNextFollowup(e.target.value)}
                 />
-              </td>
-            </tr>
-            <tr>
-              <td>Follow-Up Type</td>
-              <td>
+
+              <label>Follow-Up Type</label>
+              
                 <select
                   name="FollowUpType"
                   value={FollowUpType}
@@ -111,11 +114,8 @@ export default function NewFollowUp() {
                   <option value="Whatsapp">Whatsapp</option>
                   <option value="Email">Email</option>
                 </select>
-              </td>
-            </tr>
-            <tr>
-              <td>Status</td>
-              <td>
+             
+              <label>Status</label>
                 <select
                   name="status"
                   value={status}
@@ -127,19 +127,16 @@ export default function NewFollowUp() {
                   <option value="Converted">Converted</option>
                   <option value="Closed">Closed</option>
                 </select>
-              </td>
-            </tr>
-            <tr>
-              <td></td>
-              <td>
-                <input type="submit" value="Set Follow-Up" />
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                <button  className="submit-btn btn-gradient-primary " style={{textAlign:"center",marginLeft:'250px'}}>Set FollowUp</button>
+              
       </form>
         </div>
+      
+          </div>
+        </div>
       </div>
+    </div>
+    
     </>
   );
 }

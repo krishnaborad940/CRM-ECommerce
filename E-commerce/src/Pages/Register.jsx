@@ -135,7 +135,7 @@ export default function Register() {
             <p style={{ color: "red" }}>{errors.role.message}</p>
           )}
 
-          <button type="submit" className="register-button">
+          <button type="submit" className="btn  btn-gradient-primary">
             Register
           </button>
           <p>

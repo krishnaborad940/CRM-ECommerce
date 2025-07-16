@@ -88,7 +88,7 @@ export default function Login() {
             className="login-input"
             
           />{errors.password && <p style={{color:'red'}}>{errors.password.message}</p>}
-          <button type="submit" className="login-button">
+          <button type="submit" className="btn btn-gradient-primary">
             Login
           </button>
           <p>Don't have an account ? <a href="/Register">SignIn</a></p>

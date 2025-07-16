@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react';
+import { useNavigate, useParams, Link } from 'react-router-dom';
+import Header from './Header';
 import SideBar from './SideBar';
-import { useNavigate, useParams } from 'react-router-dom';
 
 export default function AddCompanies() {
   const [companies, setCompanies] = useState({
-    name: '', email: '', Phone: '', Image: null,
+    name: '', email: '', Phone: '', Image: null,address:'',
     Plan: '', PlanType: '', website: '', AccountUrl: '', status: ''
   });
 
-  const [existingImage, setExistingImage] = useState(null); // ✅ For editing mode
+  const [existingImage, setExistingImage] = useState(null);
   const navigate = useNavigate();
-  const { id } = useParams(); // ✅ UseParams as a function
+  const { id } = useParams();
 
-  // ✅ Load data if in Edit mode
   useEffect(() => {
     if (id) {
       fetch(`http://localhost:8007/api/EditCompanies/${id}`)
@@ -23,14 +23,15 @@ export default function AddCompanies() {
             name: c.name,
             email: c.email,
             Phone: c.Phone,
-            Image: null, // 👈 Don't prefill file
+            Image: null,
+            address:c.address,
             Plan: c.Plan,
             PlanType: c.PlanType,
             website: c.website,
             AccountUrl: c.AccountUrl,
             status: c.status
           });
-          setExistingImage(c.Image); // ✅ Save existing image
+          setExistingImage(c.Image);
         });
     }
   }, [id]);
@@ -67,81 +68,116 @@ export default function AddCompanies() {
   };
 
   return (
-    <div className="viewleads-container">
-      <SideBar />
-      <div className="main-content">
-        <form onSubmit={handleSubmit} encType="multipart/form-data">
-          <label>Name:</label>
-          <input type="text" name='name' value={companies.name} onChange={onChange} required /><br />
+    <div className="container-scroller">
+      <Header />
+      <div className='container-fluid page-body-wrapper'>
+        <SideBar />
+        <div className="main-panel" style={{ marginLeft: '250px', marginTop: '40px' }}>
+          <div className="content-wrapper">
 
-          <label>Email:</label>
-          <input type="email" name='email' value={companies.email} onChange={onChange} required /><br />
+            <div className="page-header">
+              <h3 className="page-title" style={{ marginLeft: '60px' }}>{id ? "✏️ Edit Company" : "🏢 Add New Company"}</h3>
+              <nav aria-label="breadcrumb">
+                <Link to="/view-companies" className="btn btn-gradient-primary p-3 rounded" style={{ color: "white" }}>
+                  📄 View All Companies
+                </Link>
+              </nav>
+            </div>
 
-          <label>Phone:</label>
-          <input type="number" name='Phone' value={companies.Phone} onChange={onChange} required /><br />
+            <form onSubmit={handleSubmit} encType="multipart/form-data" className="lead-form">
+              <label>Name
+                <input type="text" name='name' value={companies.name} onChange={onChange} required />
+              </label>
 
-          <label>Account URL:</label>
-          <input type="text" name='AccountUrl' value={companies.AccountUrl} onChange={onChange} /><br />
+              <label>Email
+                <input type="email" name='email' value={companies.email} onChange={onChange} required />
+              </label>
 
-          <label>Website:</label>
-          <input type="text" name='website' value={companies.website} onChange={onChange} /><br />
+              <label>Phone
+                <input type="number" name='Phone' value={companies.Phone} onChange={onChange} required />
+              </label>
+                <label>Address
+                <input type="text" name='address' value={companies.address} onChange={onChange} />
+              </label>
 
-          <label>Plan:</label>
-          <select name="Plan" value={companies.Plan} onChange={onChange}>
-            <option value="">--select--</option>
-            <option value="Advanced">Advanced</option>
-            <option value="Basic">Basic</option>
-            <option value="EnterPrise">EnterPrise</option>
-          </select><br />
+              <label>Account URL
+                <input type="text" name='AccountUrl' value={companies.AccountUrl} onChange={onChange} />
+              </label>
 
-          <label>Plan Type:</label>
-          <select name="PlanType" value={companies.PlanType} onChange={onChange}>
-            <option value="">--select--</option>
-            <option value="Monthly">Monthly</option>
-            <option value="Yearly">Yearly</option>
-          </select><br />
+              <label>Website
+                <input type="text" name='website' value={companies.website} onChange={onChange} />
+              </label>
 
-          <label>Status:</label>
-          <input
-            type="radio"
-            name='status'
-            value="Active"
-            checked={companies.status === 'Active'}
-            onChange={onChange}
-          /> Active
-          <input
-            type="radio"
-            name='status'
-            value="InActive"
-            checked={companies.status === 'InActive'}
-            onChange={onChange}
-          /> InActive
-          <br />
+              <label>Plan
+                <select name="Plan" value={companies.Plan} onChange={onChange}>
+                  <option value="">--select--</option>
+                  <option value="Advanced">Advanced</option>
+                  <option value="Basic">Basic</option>
+                  <option value="EnterPrise">EnterPrise</option>
+                </select>
+              </label>
 
-          <label>Image:</label>
-          <input type="file" name="Image" onChange={onChange} /><br />
+              <label>Plan Type
+                <select name="PlanType" value={companies.PlanType} onChange={onChange}>
+                  <option value="">--select--</option>
+                  <option value="Monthly">Monthly</option>
+                  <option value="Yearly">Yearly</option>
+                </select>
+              </label>
 
-          {/* ✅ Show existing image preview if editing */}
-          {existingImage && !companies.Image && (
-            <img
-              src={`http://localhost:8007${existingImage}`}
-              alt="Existing Preview"
-              style={{ width: "100px", marginTop: "10px" }}
-            />
-          )}
+              <label>Status</label>
+<div style={{ display: "flex", alignItems: "center", gap: "30px", marginTop: "10px", marginBottom: "15px" }}>
+  <label style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+    <input
+      type="radio"
+      name="status"
+      value="Active"
+      checked={companies.status === "Active"}
+      onChange={onChange}
+    />
+    Active
+  </label>
 
-          {/* ✅ Show new uploaded image preview */}
-          {companies.Image && (
-            <img
-              src={URL.createObjectURL(companies.Image)}
-              alt="New Upload Preview"
-              style={{ width: "100px", marginTop: "10px" }}
-            />
-          )}
+  <label style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+    <input
+      type="radio"
+      name="status"
+      value="InActive"
+      checked={companies.status === "InActive"}
+      onChange={onChange}
+    />
+    InActive
+  </label>
+</div>
 
-          <br />
-          <input type="submit" value={id ? "Update" : "Add"} />
-        </form>
+
+              <label>Upload Logo
+                <input type="file" name="Image" onChange={onChange} />
+              </label>
+
+              {existingImage && !companies.Image && (
+                <img
+                  src={`http://localhost:8007${existingImage}`}
+                  alt="Existing Preview"
+                  style={{ width: "100px", marginTop: "10px" }}
+                />
+              )}
+
+              {companies.Image && (
+                <img
+                  src={URL.createObjectURL(companies.Image)}
+                  alt="New Upload Preview"
+                  style={{ width: "100px", marginTop: "10px" }}
+                />
+              )}
+
+              <button type="submit" className="submit-btn btn-gradient-primary">
+                {id ? "Update Company" : "Add Company"}
+              </button>
+            </form>
+
+          </div>
+        </div>
       </div>
     </div>
   );

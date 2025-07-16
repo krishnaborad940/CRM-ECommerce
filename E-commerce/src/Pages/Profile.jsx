@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import SideBar from "../Pages/SideBar";
+import Header from "./Header";
 
 export default function Profile() {
   const [user, setUser] = useState(null);
@@ -74,9 +75,13 @@ export default function Profile() {
   };
 
   return (
-    <div className="dashboard-container">
+    <div className="container-scroller">
+      <Header/>
+    <div className="container-fluid page-body-wrapper">
       <SideBar />
-      <div className="main-container" style={{ marginTop: "30px" }}>
+      <div className="main-panel" style={{marginLeft:'250px'}}>
+        <div className="content-wrapper">
+          <div className="main-container" style={{ marginTop: "30px" }}>
         <div style={styles.wrapper}>
           <h2 style={styles.title}>👤 User Profile</h2>
           {user ? (
@@ -92,6 +97,7 @@ export default function Profile() {
                 <p><strong>Role:</strong> {user.userRole}</p>
                 {/* <p><strong>Password:</strong> {user.userPassword}</p> */}
                 <button onClick={() => setEditMode(true)}>✏️ Edit Profile</button>
+                <a href="/" className="btn btn-gradient-primary" style={{padding:'10px 12px'}}>Back</a>
               </div>
             </div>
           ) : (
@@ -126,6 +132,10 @@ export default function Profile() {
           </div>
         )}
       </div>
+        </div>
+      </div>
+    </div>
+      
     </div>
   );
 }

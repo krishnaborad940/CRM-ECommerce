@@ -2,11 +2,23 @@ import { useEffect, useState } from 'react';
 import SideBar from '../Pages/SideBar';
 import '../App.css';
 import { Link } from 'react-router-dom';
+import Header from './Header';
 
 export default function ViewCandidates() {
   const [showData, setShowData] = useState([]);
-  const [open,setOpen]=useState(null)
+  const [open,setOpen]=useState(null);
+  const [planList,setPlanList]=useState('')
+  const [searchTerm, setSearchTerm] = useState("");
 
+  // ✅ Filtering by search & plan
+    const filterCandidate=showData.filter((candidate)=>{
+    const matchesPlan = planList?candidate.experience===planList:true
+    const name = candidate?.Fname?.toLowerCase() || "";
+    const search = searchTerm?.toLowerCase() || "";
+
+    const matchesSearch = name.includes(search) 
+    return matchesPlan && matchesSearch;
+  });
   useEffect(() => {
     fetch("http://localhost:8007/api/ViewCandidate")
       .then((res) => res.json())
@@ -30,18 +42,43 @@ export default function ViewCandidates() {
   };
 
   return (
-    <div className="viewleads-container">
+    <div className="container-scroller">
+      <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
+      <div className='container-fluid page-body-wrapper'>
       <SideBar />
-      <div className="main-content">
-            <div className="header">
-                        <h1 style={{ margin: 0 }}>🤵All Candidates</h1>
-                        <Link to="/Candidate" className="addQuotationBtn">➕ Add Candidate</Link>
-                     </div>
+<div className="main-panel" style={{marginTop:'40px',marginLeft:'250px'}}>
+<div className="content-wrapper">
+  <div className="d-flex justify-content-end align-items-center mb-4 gap-3">
+                {/* Add Product Button */}
+               <div style={{marginRight:'700px',fontSize:'18px'}}>  All Candidate</div>
+               <Link to="/add-candidate" className="btn btn-primary" style={{padding:'10px 12px'}}>
+                                    ➕ Add Candidate
+                                </Link>
+              <select
+                    value={planList}
+                    onChange={(e) => setPlanList(e.target.value)}
+                    className="form-select text-dark  p-2"
+                    style={{ width: "180px" }}
+                  >
+                    <option value="">⏳Filter</option>
+                    <option value="Fresher">Fresher</option>
+                    <option value="0-1">0-1 Years</option>
+                    <option value="1-3">1-3 Years</option>
+                    <option value="1-3">3-5 Years</option>
+                    <option value="1-3">5+ Years</option>
+                  </select>
+              
+              </div>
         {/* Candidate Table */}
-        <div >
-          <table >
+      <div className="row">
+        <div className="col-lg-12 grid-margin stretch-card">
+          <div className="card2 p-2 w-100">
+            <div className="card-body2 mb-2">
+                <div >
+          <table className='table table-bordered table-hover' >
             <thead>
               <tr>
+                <th>#</th>
                 <th>Name</th>
                 <th>City</th>
                 <th>Experience</th>
@@ -52,9 +89,16 @@ export default function ViewCandidates() {
               </tr>
             </thead>
             <tbody>
-              {showData.map((v, i) => (
+              {filterCandidate.length ===0?(
+<tr>
+                            <td colSpan="7" style={{ textAlign: 'center', padding: '20px', color: 'gray' }}>
+                              Data Not Found
+                            </td>
+                          </tr>
+              ):(filterCandidate.map((v, i) => (
                 <tr key={i}>
-                   <td><span style={{display:'flex',alignItems:'center',justifyContent:'center'}}>{v.profileImage && <img src={`http://localhost:8007${v.profileImage}`} alt="Profile" width="50" style={{width:'35px',height:'35px',borderRadius:"50%",marginRight:'10px'}} />}{v.Fname} {v.Lname}</span></td>
+                  <td>{i}</td>
+                   <td><span style={{display:'flex',textAlign:'left',alignItems:'center'}}>{v.profileImage && <img src={`http://localhost:8007${v.profileImage}`} alt="Profile" width="50" style={{width:'35px',height:'35px',borderRadius:"50%",marginRight:'10px'}} />}{v.Fname} {v.Lname}</span></td>
                   <td>{v.city}</td>
                     <td>{v.experience}</td>
                   <td>{v.education}</td>
@@ -89,12 +133,20 @@ export default function ViewCandidates() {
                   )}
                 </td>
                 </tr>
-              ))}
+              ))
+              )}
             </tbody>
           </table>
         </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       </div>
+</div>
+      </div>
+      
     </div>
   );
 }
